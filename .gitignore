@@ -1,0 +1,136 @@
+# ============================================================
+# macOS
+# ============================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================================================
+# Xcode / Swift
+# ============================================================
+
+.build/
+DerivedData/
+
+*.xcworkspace
+!default.xcworkspace
+
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# Xcode archives
+*.xcarchive
+
+# ============================================================
+# macOS app artifacts
+# ============================================================
+
+*.app
+*.dmg
+*.pkg
+
+# ============================================================
+# IDE
+# ============================================================
+.cursor/
+.idea/
+.vscode/
+.agent/
+DS_Store
+
+# ============================================================
+# Python
+# ============================================================
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+.coverage
+htmlcov/
+
+# ============================================================
+# Node
+# ============================================================
+
+node_modules/
+
+# ============================================================
+# Logs
+# ============================================================
+
+*.log
+
+# ============================================================
+# Env files
+# ============================================================
+
+.env
+.env.*
+
+# ============================================================
+# Temp
+# ============================================================
+
+tmp/
+temp/
+.cache/
+
+*.swp
+*.swo
+
+# ============================================================
+# Secrets
+# ============================================================
+
+*.pem
+*.key
+*.crt
+
+# ============================================================
+# Local configs
+# ============================================================
+
+local_settings.py
+config.local.py
+
+# ============================================================
+# Other
+# ============================================================
+GEMINI.md
+.claude/
+#scan_algoritm.md
+.geminiignore
+.gemini
+.antigravitycli
+build/
+PLAN.md
+macos-cache-cleanup.sh
+xcuserdata/
+*.xcuserstate
+opencode.json
+.agents
+problematic_apps/
+implementation_plan.md
+
+# OMC / agent runtime state
+.omc/
+.omx/
+*.profraw
+
+# Protected Engine Catalogs (Local only)
+engine_paths.json
+ui_metadata.json
+MacTidy/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset/
+MacTidy/.require-private-catalog
+./derived_data 
+derived_data/
