@@ -1,0 +1,328 @@
+import SwiftUI
+
+struct ProcessRow: View {
+    let process: RunningProcess
+    let permission: KillPermission
+    let isSelected: Bool
+    let settings: AppSettings
+    let onTerminate: () -> Void
+    let onForceKill: () -> Void
+    let onToggleSelection: () -> Void
+
+    @State private var appIcon: NSImage?
+    @State private var isExpanded = false
+    @State private var aiExplanation = ""
+    @State private var isGenerating = false
+    @State private var errorMessage: String? = nil
+    @State private var showForceKill = false
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            Button(action: onToggleSelection) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 16))
+                    .foregroundColor(isSelected ? .accentColor : .secondary)
+            }
+            .buttonStyle(.plain)
+
+            if let icon = appIcon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 20, height: 20)
+            } else {
+                Image(systemName: iconName)
+                    .font(.system(size: 18))
+                    .foregroundColor(iconColor)
+                    .frame(width: 24)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(process.name)
+                        .font(.system(.body, design: .monospaced))
+                        .fontWeight(.medium)
+
+                    if case .blocked = permission {
+                        Text("processes_protected".localized)
+                            .font(.system(size: 9, weight: .bold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule()
+                                    .fill(Color.orange.opacity(0.15))
+                            )
+                            .foregroundColor(.orange)
+                    } else if case .needsConfirmation = permission {
+                        Text("?")
+                            .font(.system(size: 9, weight: .bold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule()
+                                    .fill(Color.yellow.opacity(0.15))
+                            )
+                            .foregroundColor(.yellow)
+                    }
+                }
+
+                HStack(spacing: 8) {
+                    Text(String(format: "process_pid_format".localized, process.pid))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    if let path = process.path {
+                        Text(path)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 2) {
+                HStack(spacing: 12) {
+                    if process.cpuPercent > 0 {
+                        HStack(spacing: 2) {
+                            Image(systemName: "cpu")
+                                .font(.system(size: 10))
+                            Text(process.cpuFormatted)
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        }
+                        .foregroundColor(process.cpuPercent > 50 ? .red : .secondary)
+                    }
+
+                    if process.memoryBytes > 0 {
+                        HStack(spacing: 2) {
+                            Image(systemName: "memorychip")
+                                .font(.system(size: 10))
+                            Text(process.memoryFormatted)
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        }
+                        .foregroundColor(process.memoryBytes > 1_000_000_000 ? .red : .secondary)
+                    }
+
+                    if process.threadCount > 0 {
+                        HStack(spacing: 2) {
+                            Image(systemName: "number")
+                                .font(.system(size: 10))
+                            Text("\(process.threadCount)")
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        }
+                        .foregroundColor(.secondary)
+                    }
+
+                    if let uptime = process.uptimeFormatted {
+                        HStack(spacing: 2) {
+                            Image(systemName: "clock")
+                                .font(.system(size: 10))
+                            Text(uptime)
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        }
+                        .foregroundColor(.secondary)
+                    }
+                }
+
+                if settings.enableAI && AIExplanationService.shared.isAvailable {
+                    Button {
+                        withAnimation(.spring()) {
+                            isExpanded.toggle()
+                        }
+                        if isExpanded && aiExplanation.isEmpty && !isGenerating {
+                            generateAIExplanation()
+                        }
+                    } label: {
+                        Image(systemName: "sparkles")
+                            .foregroundColor(isExpanded ? .purple : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help("uninstaller_explain_with_ai".localized)
+                }
+
+                if case .blocked(let reason) = permission {
+                    Text(reason)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(2)
+                        .frame(maxWidth: 200)
+                } else {
+                    ProcessSplitButton(
+                        title: "processes_terminate".localized,
+                        onTerminate: onTerminate,
+                        onForceKill: onForceKill
+                    )
+                }
+            }
+            
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 4) {
+                    Divider().padding(.vertical, 4)
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .foregroundColor(.purple)
+                            .font(.caption)
+                        
+                        if isGenerating {
+                            HStack(spacing: 8) {
+                                ProgressView().controlSize(.small)
+                                Text("uninstaller_ai_explaining".localized)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        } else if let error = errorMessage {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        } else {
+                            Text(aiExplanation)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .padding(.leading, 64)
+                .padding(.bottom, 4)
+            }
+        }
+        .padding(.vertical, 10)
+        .task {
+            await loadAppIcon()
+        }
+    }
+
+    private func loadAppIcon() async {
+        guard let path = process.path else { return }
+        appIcon = NSWorkspace.shared.icon(forFile: path)
+    }
+
+    private var iconName: String {
+        switch permission {
+        case .blocked: return "lock.shield"
+        case .needsConfirmation: return "questionmark.circle"
+        case .allowed: return "checkmark.circle"
+        }
+    }
+
+    private var iconColor: Color {
+        switch permission {
+        case .blocked: return .orange
+        case .needsConfirmation: return .yellow
+        case .allowed: return .accentColor
+        }
+    }
+
+    private func generateAIExplanation() {
+        isGenerating = true
+        errorMessage = nil
+        
+        let lang = settings.language
+        Task {
+            do {
+                let result = try await AIExplanationService.shared.explainProcess(
+                    processName: process.name,
+                    pid: process.pid,
+                    filePath: process.path ?? "Unknown path",
+                    cpuPercent: process.cpuPercent,
+                    memoryFormatted: process.memoryFormatted,
+                    uptimeFormatted: process.uptimeFormatted ?? "Unknown uptime",
+                    language: lang
+                )
+                
+                await MainActor.run {
+                    self.aiExplanation = result
+                    self.isGenerating = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = error.localizedDescription
+                    self.isGenerating = false
+                }
+            }
+        }
+    }
+}
+
+struct ProcessSplitButton: View {
+    let title: String
+    let onTerminate: () -> Void
+    let onForceKill: () -> Void
+
+    @State private var isHoveredMain = false
+    @State private var isHoveredChevron = false
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Button(action: onTerminate) {
+                HStack(spacing: 4) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                    Text(title)
+                        .font(.system(size: 11, weight: .medium))
+                }
+                .foregroundColor((isHoveredMain || isHoveredChevron) ? .white : .red.opacity(0.85))
+                .padding(.leading, 10)
+                .padding(.trailing, 8)
+                .padding(.vertical, 5)
+                .background(
+                    isHoveredMain ? Color.red.opacity(0.3) : Color.clear
+                )
+            }
+            .buttonStyle(.plain)
+            .help("processes_terminate".localized)
+            .onHover { hovering in
+                isHoveredMain = hovering
+            }
+
+            Rectangle()
+                .fill(Color.red.opacity(0.25))
+                .frame(width: 1, height: 14)
+
+            Menu {
+                Button(action: onTerminate) {
+                    Label("processes_terminate".localized, systemImage: "xmark")
+                }
+                Button(role: .destructive, action: onForceKill) {
+                    Label("processes_force_kill".localized, systemImage: "exclamationmark.triangle")
+                }
+            } label: {
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor((isHoveredMain || isHoveredChevron) ? .white : .red.opacity(0.85))
+                    .frame(width: 22, height: 24)
+                    .background(
+                        isHoveredChevron ? Color.red.opacity(0.3) : Color.clear
+                    )
+            }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .fixedSize()
+            .onHover { hovering in
+                isHoveredChevron = hovering
+            }
+        }
+        .background(
+            ZStack {
+                if #available(macOS 26.0, *) {
+                    Color.clear.background(.ultraThinMaterial)
+                } else {
+                    Color(nsColor: .controlBackgroundColor).opacity(0.5)
+                }
+                Color.red.opacity(0.12)
+            }
+        )
+        .clipShape(Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(
+                    (isHoveredMain || isHoveredChevron) ? Color.red.opacity(0.5) : Color.red.opacity(0.25),
+                    lineWidth: 1
+                )
+        )
+        .animation(.easeInOut(duration: 0.12), value: isHoveredMain)
+        .animation(.easeInOut(duration: 0.12), value: isHoveredChevron)
+    }
+}
