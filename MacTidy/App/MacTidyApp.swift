@@ -22,6 +22,7 @@ struct MacTidyApp: App {
     private let journal = TransactionJournal()
     private let cleanupViewModel: CleanupViewModel
     private let appSettings = AppSettings()
+    private let monitorViewModel = MonitorViewModel()
     private let permissionsManager = PermissionsManager()
     private let updateChecker = UpdateChecker()
     private let updatePrompt = UpdatePromptController()
@@ -73,15 +74,24 @@ struct MacTidyApp: App {
                 cleanupViewModel: cleanupViewModel,
                 journal: journal,
                 appSettings: appSettings,
+                monitorViewModel: monitorViewModel,
                 permissionsManager: permissionsManager,
                 updatePrompt: updatePrompt,
                 availableUpdate: $availableUpdate
             )
             .task {
                 availableUpdate = await updateChecker.checkForUpdate()
+                monitorViewModel.start()
             }
         }
         .windowResizability(.contentMinSize)
+        .defaultSize(width: 1200, height: 760)
+        .defaultPosition(.center)
+
+        MenuBarExtra("MacTidy Monitor", systemImage: "waveform.path.ecg") {
+            MonitorHUDView(viewModel: monitorViewModel)
+        }
+        .menuBarExtraStyle(.window)
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button("about_title".localized) {
