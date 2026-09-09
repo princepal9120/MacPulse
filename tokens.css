@@ -1,0 +1,184 @@
+/* Hallmark · tokens · Fraunces + Geist Atelier-Parchment Theme */
+:root {
+  /* Warm Tactile Surfaces (Nordic / Japanese Parchment) */
+  --color-paper: #F6F4ED;
+  --color-paper-ivory: #FAF8F2;
+  --color-paper-sand: #ECE8DD;
+  --color-surface-card: #FAF8F2;
+  --color-surface-hover: #EFECE1;
+
+  /* Ink & Typography */
+  --color-ink: #161513;
+  --color-ink-darkwarm: #383632;
+  --color-ink-olive: #56534B;
+  --color-ink-stone: #78746B;
+  --color-muted: #948F84;
+
+  /* Hairlines & Rules */
+  --color-line: #DDD9CC;
+  --color-line-faint: #EDEAE1;
+  --color-border-card: #E4E0D2;
+  --color-rule: #DDD9CC;
+
+  /* Deep Prussian Indigo & Signal Accents */
+  --color-brand: #183B6B;
+  --color-brand-light: #285596;
+  --color-brand-tint: #EEF3FA;
+  --color-accent: #183B6B;
+  --color-accent-hover: #122B4E;
+  --color-accent-ink: #FAF8F2;
+  --color-focus: #285596;
+
+  /* Warm Brass / Ochre Sub-signal */
+  --color-brass: #C08630;
+  --color-brass-soft: #F9F1E2;
+
+  /* Dark Capsule Nav (mole.fit signature fur/ink capsule) */
+  --color-nav-dark: #2A2824;
+  --color-nav-ink: #FAF6EC;
+  --color-nav-hover: #3D3934;
+
+  /* Obsidian macOS Window Frame */
+  --shot-bg: #121116;
+  --shot-surface: #1B1A21;
+  --shot-rule: #292832;
+  --shot-text: #F1EFF7;
+  --shot-muted: #8E8B9A;
+
+  /* Status Tokens */
+  --color-success: #1E7845;
+  --color-success-soft: #EBF7EE;
+  --color-warning: #A46900;
+  --color-danger: #B42828;
+
+  /* Typographic Hierarchy */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-body: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type Scale */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.84375rem;  /* 13.5px */
+  --text-base: 0.96875rem;/* 15.5px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.375rem;    /* 22px */
+  --text-2xl: 1.75rem;    /* 28px */
+  --text-3xl: 2.25rem;    /* 36px */
+  --text-display: clamp(2.5rem, 5vw + 0.5rem, 4.125rem);
+
+  /* Line Heights */
+  --lh-tight: 1.10;
+  --lh-snug: 1.25;
+  --lh-normal: 1.55;
+  --lh-relaxed: 1.68;
+
+  /* Spacings */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 6.5rem;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-normal: 260ms;
+
+  --max-width: 1060px;
+  --z-nav: 300;
+  --z-modal: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-paper: #161514;
+    --color-paper-ivory: #1E1C1A;
+    --color-paper-sand: #292724;
+    --color-surface-card: #1E1C1A;
+    --color-surface-hover: #262421;
+
+    --color-ink: #F5F3EC;
+    --color-ink-darkwarm: #D8D4CA;
+    --color-ink-olive: #B5B0A4;
+    --color-ink-stone: #908C82;
+    --color-muted: #747067;
+
+    --color-line: #32302A;
+    --color-line-faint: #25241F;
+    --color-border-card: #3A3730;
+    --color-rule: #32302A;
+
+    --color-brand: #4588DA;
+    --color-brand-light: #5E9CE9;
+    --color-brand-tint: #14253B;
+    --color-accent: #4588DA;
+    --color-accent-hover: #5E9CE9;
+    --color-accent-ink: #0B1624;
+    --color-focus: #5E9CE9;
+
+    --color-nav-dark: #22201D;
+    --color-nav-ink: #FAF6EC;
+    --color-nav-hover: #312E29;
+
+    --shot-bg: #0B0A0E;
+    --shot-surface: #141318;
+    --shot-rule: #23222B;
+    --shot-text: #F1EFF7;
+    --shot-muted: #8E8B9A;
+
+    --color-success: #3EB872;
+    --color-success-soft: #123321;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-paper: #161514;
+  --color-paper-ivory: #1E1C1A;
+  --color-paper-sand: #292724;
+  --color-surface-card: #1E1C1A;
+  --color-surface-hover: #262421;
+
+  --color-ink: #F5F3EC;
+  --color-ink-darkwarm: #D8D4CA;
+  --color-ink-olive: #B5B0A4;
+  --color-ink-stone: #908C82;
+  --color-muted: #747067;
+
+  --color-line: #32302A;
+  --color-line-faint: #25241F;
+  --color-border-card: #3A3730;
+  --color-rule: #32302A;
+
+  --color-brand: #4588DA;
+  --color-brand-light: #5E9CE9;
+  --color-brand-tint: #14253B;
+  --color-accent: #4588DA;
+  --color-accent-hover: #5E9CE9;
+  --color-accent-ink: #0B1624;
+  --color-focus: #5E9CE9;
+
+  --color-nav-dark: #22201D;
+  --color-nav-ink: #FAF6EC;
+  --color-nav-hover: #312E29;
+
+  --shot-bg: #0B0A0E;
+  --shot-surface: #141318;
+  --shot-rule: #23222B;
+  --shot-text: #F1EFF7;
+  --shot-muted: #8E8B9A;
+
+  --color-success: #3EB872;
+  --color-success-soft: #123321;
+}
