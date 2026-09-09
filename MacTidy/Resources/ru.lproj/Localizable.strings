@@ -1,0 +1,963 @@
+/* Common */
+"welcome_msg" = "С возвращением!";
+"app_title" = "Очистка";
+"sidebar_select_item" = "Выберите элемент в боковом меню";
+"sidebar_section_tools" = "Очистка";
+"sidebar_section_system" = "Система";
+"close" = "Закрыть";
+"cancel_description" = "Операция была отменена пользователем.";
+"reset" = "Сбросить";
+"cancel" = "Отмена";
+"done" = "Готово";
+"try_again" = "Повторить";
+"error" = "Ошибка";
+"version" = "Версия";
+"size" = "Размер";
+"last_used" = "Последнее использование";
+
+/* Siri & Automator Settings */
+"settings_siri_section_title" = "Интеграция с Siri и Automator";
+"settings_siri_toggle_title" = "Включить интеграцию с Siri";
+"settings_siri_toggle_description" = "Разрешить управление очисткой через голосовые команды Siri и Быстрые команды.";
+"settings_automator_toggle_title" = "Команды и скрипты Automator";
+"settings_automator_toggle_description" = "Разрешить выполнение очистки в Automator, Быстрых командах и авторасписаниях.";
+"settings_siri_instruction_title" = "Как настроить в macOS";
+"settings_siri_instruction_body" = "Откройте приложение Быстрые команды (Shortcuts.app) → В боковой панели выберите MacTidy. Там отобразятся все доступные действия для Siri, Быстрых команд и Automator.";
+"settings_open_shortcuts_button" = "Открыть Быстрые команды";
+"settings_active_commands_header" = "Активные команды Siri и Быстрых команд";
+"settings_cmd_developer_caches" = "Очистка кэшей разработчика (DerivedData, Homebrew, Docker)";
+"settings_cmd_storage_status" = "Статус свободного места на диске";
+"settings_cmd_clean_category" = "Очистить конкретную категорию (кэши, логи и др.)";
+"settings_cmd_scheduled_cleanup" = "Запланированная фоновая очистка (Automator)";
+"siri_phrase_developer_caches" = "Очисти кэши разработчика";
+"siri_phrase_storage_status" = "Сколько свободного места";
+"siri_phrase_clean_category" = "Очисти системные кэши";
+"siri_phrase_scheduled_cleanup" = "Запусти запланированную очистку";
+
+/* Custom Siri Commands Editor */
+"siri_add_command_button" = "Добавить команду";
+"siri_add_command_title" = "Новая команда Siri";
+"siri_edit_command_title" = "Редактирование команды Siri";
+"siri_command_name_label" = "Название команды";
+"siri_command_phrase_label" = "Голосовая фраза Siri";
+"siri_command_category_label" = "Действие / Категория";
+"siri_no_commands_empty" = "Пользовательские команды не добавлены";
+"siri_new_command_default" = "Новая команда Siri";
+"settings_cmd_category_user_logs" = "Логи пользователя";
+"settings_cmd_category_app_caches" = "Кэши приложений";
+"settings_cmd_category_system_caches" = "Системные кэши";
+"settings_cmd_category_browser_caches" = "Кэши браузеров";
+"settings_cmd_category_orphaned_remnants" = "Остатки удаленных программ";
+"cancel_action" = "Отмена";
+"save_action" = "Сохранить";
+"edit_action" = "Редактировать";
+
+/* Sidebar / Navigation Menu */
+"menu_startup_vendors" = "Вендоры автозапуска";
+
+/* Duplicate Finder Screen */
+"menu_duplicates" = "Поиск дубликатов";
+"duplicate_title" = "Поиск дубликатов файлов";
+"duplicates_subtitle" = "Поиск и удаление совпадающих файлов для освобождения места.";
+"duplicate_start_scan" = "Найти дубликаты";
+"duplicate_folder_home" = "Домашняя папка";
+"duplicate_folder_downloads" = "Загрузки";
+"duplicate_folder_documents" = "Документы";
+"duplicate_folder_custom" = "Выбрать папку...";
+"duplicate_search_placeholder" = "Фильтр дубликатов...";
+"duplicate_smart_select" = "Умный выбор";
+"duplicate_select_keep_oldest" = "Оставить старые копии";
+"duplicate_select_keep_newest" = "Оставить новые копии";
+"duplicate_select_all" = "Выбрать все";
+"duplicate_deselect_all" = "Снять выделение";
+"duplicate_scanning_start" = "Инициализация сканера дубликатов...";
+"duplicate_scan_completed" = "Сканирование завершено: найдено %ld групп дубликатов";
+"duplicate_scan_cancelled" = "Сканирование отменено";
+"duplicate_scan_failed" = "Ошибка сканирования: %@";
+"duplicate_stage_collecting" = "Сбор файлов (сканировано %ld)...";
+"duplicate_stage_size_filtering" = "Фильтрация кандидатов по размеру...";
+"duplicate_stage_header_hashing" = "Хеширование заголовков файлов (%ld из %ld)...";
+"duplicate_stage_full_hashing" = "Вычисление подписей SHA-256 (%ld из %ld)...";
+"duplicate_stage_completed" = "Анализ дубликатов завершен";
+"duplicate_empty_title" = "Дубликаты не найдены";
+"duplicate_empty_subtitle" = "Выберите папку для поиска одинаковых файлов и освобождения места.";
+"duplicate_group_title" = "%ld одинаковых файла (%@ каждый)";
+"duplicate_group_wasted" = "%@ можно освободить";
+"duplicate_reveal_in_finder" = "Показать в Finder";
+"duplicate_selected_summary" = "%ld файлов выбрано для удаления";
+"duplicate_selected_reclaim" = "%@ места будет освобождено";
+"duplicate_move_to_trash" = "Переместить в Корзину";
+"duplicate_trash_confirm_title" = "Удалить выбранные дубликаты?";
+"duplicate_trash_confirm_action" = "Переместить в Корзину";
+"duplicate_trash_confirm_message" = "Вы уверены, что хотите переместить %ld выбранных дубликатов (%@) в Корзину?";
+"duplicate_trash_completed" = "Успешно перемещено %ld файлов (%@) в Корзину";
+"duplicate_trash_failed" = "Не удалось переместить файлы в Корзину: %@";
+
+/* Disk Analyzer Screen */
+"menu_disk_space" = "Анализатор диска";
+"disk_analyzer_title" = "Анализатор диска";
+"disk_space_subtitle" = "Анализ распределения дискового пространства и поиск крупных файлов.";
+"disk_analyzer_scan" = "Сканировать папку";
+"disk_analyzer_scanning" = "Сканирование...";
+"disk_analyzer_back" = "Назад";
+"disk_analyzer_delete_confirm" = "Переместить выбранные элементы в Корзину?";
+"delete_action" = "Удалить";
+"disk_analyzer_show_in_finder" = "Показать в Finder";
+"disk_analyzer_move_to_trash" = "В Корзину";
+"disk_analyzer_select_folder" = "Выбрать папку для сканирования";
+"disk_analyzer_empty" = "Папка пуста или еще не просканирована";
+"disk_analyzer_no_permissions" = "Нет прав доступа к этой папке";
+"folder" = "Папка";
+"disk_analyzer_category_empty" = "Файлов категории «%@» не найдено на вашем Mac";
+"disk_analyzer_category_all" = "Все";
+"disk_analyzer_category_video" = "Видео";
+"disk_analyzer_category_audio" = "Аудио";
+"disk_analyzer_category_photo" = "Фото";
+"disk_analyzer_category_apps" = "Приложения";
+"disk_analyzer_category_docs" = "Документы";
+"disk_analyzer_category_archives" = "Архивы";
+"disk_analyzer_items_count" = "%d файлов";
+"disk_analyzer_quick_look" = "Быстрый просмотр";
+"disk_analyzer_open_folder" = "Открыть папку";
+
+
+/* About View */
+"about_title" = "О программе MacTidy";
+"menu_donate" = "Сделать пожертвование...";
+"about_donate" = "Поддержать проект";
+"about_version" = "Версия %@";
+"about_problem_link" = "Если возникла проблема с приложением, сообщите мне здесь";
+"about_linkedin" = "Профиль LinkedIn";
+"about_website" = "Веб-сайт";
+"about_star_github" = "Поставить ⭐️ проекту на GitHub";
+"settings_about_star_github" = "Поставить ⭐️ проекту на GitHub";
+"about_copyright" = "© 2026 PrincePal. Все права защищены.";
+
+/* Dashboard View */
+"menu_dashboard" = "Обзор";
+"dashboard_title" = "Обзор";
+"dashboard_subtitle" = "Обзор состояния системы и накопителя.";
+"dashboard_system_info" = "Информация о системе";
+"dashboard_model" = "Модель";
+"dashboard_os_version" = "Версия ОС";
+"dashboard_processor" = "Процессор";
+"dashboard_memory" = "Память";
+"dashboard_disk_usage" = "Использование диска";
+"dashboard_used" = "Использовано";
+"dashboard_free" = "Свободно";
+"dashboard_total" = "Всего";
+"dashboard_statistics" = "Статистика";
+"dashboard_total_freed" = "Всего очищено";
+"dashboard_cleanups" = "Очистки";
+"dashboard_status" = "Статус";
+"dashboard_healthy" = "В норме";
+"dashboard_recent_operations" = "Недавние операции";
+"dashboard_no_recent_operations" = "Нет недавних операций";
+"dashboard_radar_caches" = "Кэши";
+"dashboard_radar_logs" = "Логи";
+"dashboard_radar_dev" = "Разработка";
+"dashboard_radar_apps" = "Программы";
+"dashboard_radar_media" = "Медиа";
+"dashboard_radar_other" = "Прочее";
+"dashboard_radar_tooltip_format" = "%@: %@";
+
+/* Language Names */
+"language.english" = "Английский";
+"language.russian" = "Русский";
+"language.ukrainian" = "Украинский";
+"language.spanish" = "Испанский";
+"language.german" = "Немецкий";
+"language.japanese" = "Японский";
+"language.french" = "Французский";
+"language.chinese_simplified" = "Китайский (упрощенный)";
+"language.italian" = "Итальянский";
+"language.portuguese_brazil" = "Португальский (Бразилия)";
+
+/* Settings View */
+"menu_settings" = "Настройки";
+"settings_title" = "Настройки";
+"settings_subtitle" = "Настройка параметров приложения";
+"settings_general" = "Общие";
+"settings_language" = "Язык";
+"settings_theme" = "Тема";
+"theme_system" = "Системная";
+"theme_light" = "Светлая";
+"theme_dark" = "Тёмная";
+"settings_notifications" = "Уведомления";
+"settings_tooltips" = "Подсказки";
+"settings_auto_scan" = "Автосканирование при запуске";
+"settings_processes" = "Процессы";
+"settings_refresh_interval" = "Интервал обновления";
+"settings_sort_by" = "Сортировка";
+"settings_startup" = "Автозапуск";
+"settings_trash_deletion" = "Корзина и удаление";
+"settings_empty_trash_during_cleanup" = "Очищать Корзину при очистке";
+"settings_bypass_trash_on_uninstall" = "Обходить Корзину при удалении";
+"settings_empty_trash_immediately" = "Сразу же очищать Корзину";
+"settings_advanced" = "Дополнительно";
+"settings_show_related" = "Показывать связанные файлы в деинсталляторе";
+"settings_skip_expert" = "Пропускать Экспертный режим в деинсталляторе";
+"settings_data" = "Данные";
+"settings_forget_everything" = "Сбросить все данные";
+"settings_forget_description" = "Очистить все сохраненные данные и восстановить настройки по умолчанию.";
+"settings_reset_button" = "Сбросить все настройки";
+
+/* Uninstaller Scan Mode */
+"settings_uninstaller" = "Деинсталлятор";
+"scan_mode" = "Режим сканирования";
+"scan_mode.safe" = "Безопасный";
+"scan_mode.balanced" = "Сбалансированный";
+"scan_mode.balanced.default" = "По умолчанию";
+"scan_mode.safe.desc" = "Находит только файлы с высокой уверенностью совпадения: по Bundle ID, имени приложения или пакетным квитанциям. Не использует Spotlight. Минимальный риск затронуть файлы других приложений.";
+"scan_mode.balanced.desc" = "Полный скан: включая Spotlight (mdfind), расширенные пути и все возможные совпадения. Находит больше остатков, включая файлы в нестандартных местах. Рекомендуется для максимальной чистоты.";
+
+/* Update Checker */
+"update.check" = "Проверить обновления";
+"update.available" = "Доступна версия %@";
+"update.download" = "Скачать на GitHub";
+"update.up_to_date" = "Актуальная версия";
+"update.up_to_date_message" = "Вы используете актуальную версию приложения.";
+"update.releases_label" = "Релизы:";
+"update.website_label" = "Веб-сайт:";
+"update.checking" = "Проверяем...";
+"update_sheet_title" = "Доступно обновление";
+"update_sheet_subtitle" = "Новая версия MacTidy готова к загрузке.";
+"update_sheet_current" = "Текущая";
+"update_sheet_latest" = "Новая";
+"update.download_dmg" = "Скачать DMG";
+"update.view_releases" = "Открыть релизы";
+"update.dismiss_later" = "Позже";
+"update.dismiss_version" = "Не напоминать об этой версии";
+
+/* Settings Tooltips */
+"settings_tooltip_language" = "Выберите язык интерфейса приложения.";
+
+/* Notification Status */
+"settings_notifications_status" = "Статус уведомлений";
+"settings_notifications_granted" = "Разрешено";
+"settings_notifications_denied" = "Запрещено (открыть Настройки)";
+"settings_notifications_not_determined" = "Не запрашивалось";
+"settings_open_notification_settings" = "Открыть настройки уведомлений";
+"settings_tooltip_theme" = "Выберите тему оформления приложения. 'Системная' соответствует настройкам macOS.";
+"settings_tooltip_notifications" = "Показывать системные уведомления по завершении сканирования и очистки.";
+"settings_tooltip_tooltips" = "Показывать всплывающие подсказки при наведении на элементы интерфейса.";
+"settings_tooltip_auto_scan" = "Автоматически начинать сканирование для очистки при запуске приложения.";
+"settings_tooltip_refresh_interval" = "Как часто обновлять список процессов. «Вручную» отключает автоматическое обновление.";
+"settings_tooltip_sort_by" = "Порядок сортировки списка процессов по умолчанию.";
+"settings_tooltip_empty_trash" = "Если включено, системная Корзина будет очищена в процессе сканирования. Отключено по умолчанию для безопасности.";
+"settings_tooltip_bypass_trash" = "При удалении приложения и его связанных файлов удалять их безвозвратно, минуя Корзину. ВНИМАНИЕ: Это действие необратимо.";
+"settings_tooltip_show_related" = "Отображать список связанных файлов (кэши, настройки, логи) для каждого приложения в окне деинсталлятора.";
+"settings_tooltip_empty_trash_immediately" = "Сразу же очищать Корзину после перемещения файлов. Это делает операцию очистки необратимой.";
+"settings_tooltip_skip_expert" = "Пропускать выбор файлов в Экспертном режиме и сразу удалять приложения со всеми найденными связанными файлами.";
+"settings_tooltip_forget" = "Удалить все сохраненные настройки и восстановить параметры по умолчанию.";
+
+/* Settings Reset Dialog */
+"settings_reset_confirm_title" = "Сбросить все настройки?";
+"settings_reset_confirm_button" = "Сбросить всё";
+"settings_reset_confirm_message" = "Это приведет к очистке всех сохраненных данных и сбросу всех настроек до значений по умолчанию. Это действие нельзя отменить.";
+
+/* Trash & Deletion Warning */
+"settings_trash_warning" = "Эти настройки делают удаление необратимым. Файлы, обходящие Корзину или удаляемые из неё сразу, восстановить нельзя.";
+
+/* Startup Services View */
+"menu_startup_services" = "Автозапуск";
+"startup_title" = "Автозапуск";
+"startup_subtitle" = "Управление агентами автозагрузки.";
+"startup_refresh" = "Обновить список";
+"startup_scanning" = "Сканирование служб...";
+"startup_no_agents" = "Нет агентов автозапуска";
+"startup_no_agents_sub" = "Агенты в папке ~/Library/LaunchAgents не найдены.";
+"startup_scan_failed" = "Ошибка сканирования";
+"startup_status_loaded" = "Загружен";
+"startup_status_unloaded" = "Выгружен";
+"startup_disable" = "Отключить";
+"startup_enable" = "Включить";
+
+/* Startup Categories */
+"startup_category_user" = "Мои сервисы";
+"startup_category_third_party" = "Сторонние";
+"startup_category_system" = "Системные";
+
+/* Startup Filters */
+"startup_filter_all" = "Все";
+
+/* Startup Category Help */
+"startup_help_user" = "Пользовательский сервис из ~/Library/. Безопасно отключать.";
+"startup_help_third_party" = "Сторонний сервис из /Library/. Безопасно отключать.";
+
+/* Startup Vendor Settings */
+"settings_startup_vendors" = "Системные вендоры";
+"startup_vendors_title" = "Системные вендоры";
+"startup_vendors_description" = "Префиксы меток, считающиеся системными службами.";
+"startup_vendors_description_sub" = "Службы с этими префиксами помещаются как «Системные», и их отключение не рекомендуется.";
+"startup_vendors_current" = "Текущие префиксы";
+"startup_vendors_reset" = "Сбросить";
+"startup_vendors_empty" = "Префиксы не добавлены";
+"startup_vendors_protected" = "Защищено";
+"startup_vendors_placeholder" = "com.vendor.";
+"startup_vendors_error_no_dot" = "Префикс должен содержать точку";
+"startup_vendors_error_duplicate" = "Этот префикс уже существует";
+
+/* Cleanup View */
+"menu_cleanup" = "Очистка";
+"cleanup_title" = "Очистка";
+"cleanup_subtitle" = "Безопасное удаление кэшей, логов и системного мусора.";
+"cleanup_scanning" = "Сканирование системы...";
+"cleanup_clean" = "Система чиста";
+"cleanup_clean_sub" = "В ходе сканирования не было найдено ненужных файлов.";
+"cleanup_rescan" = "Повторить сканирование";
+"cleanup_cleaning" = "Очистка...";
+"cleanup_ready" = "Готов к очистке";
+"cleanup_ready_sub" = "Просканируйте систему для поиска безопасных к удалению файлов кэша и временных файлов.";
+"cleanup_additional_options" = "Дополнительные параметры";
+"cleanup_option_ds_store" = "Удалить файлы .DS_Store";
+"cleanup_option_ds_store_sub" = "Удаляет сгенерированные системой файлы метаданных из каталогов.";
+"cleanup_option_maven" = "Очистить репозиторий Maven (~/.m2/repository)";
+"cleanup_option_maven_sub" = "Удаляет скачанные зависимости Maven. Повторно скачиваются при следующей сборке.";
+"cleanup_option_modcache" = "Очистить кэш модулей Go (GOMODCACHE)";
+"cleanup_option_modcache_sub" = "Удаляет скачанные модули Go. Повторно скачиваются при следующей сборке.";
+"cleanup_option_projects" = "Очистить .dart_tool в проектах";
+"cleanup_option_projects_sub" = "Удаляет кэши проектов Flutter/Dart в ~/Documents, ~/Projects, ~/Developer, ~/dev, ~/code, ~/repos.";
+"cleanup_option_cloud_docs" = "Очистить iCloud Документы";
+"cleanup_option_cloud_docs_sub" = "Удаляет кэш iCloud-документов. Документы заново загружаются из iCloud по запросу.";
+"cleanup_option_voice_memos" = "Очистить голосовые заметки";
+"cleanup_option_voice_memos_sub" = "Удаляет записи голосовых заметок из библиотеки.";
+"cleanup_option_garageband_logic" = "Очистить GarageBand / Logic";
+"cleanup_option_garageband_logic_sub" = "Удаляет файлы проектов и кэши GarageBand и Logic Pro.";
+"cleanup_option_imovie_final_cut" = "Очистить iMovie / Final Cut";
+"cleanup_option_imovie_final_cut_sub" = "Удаляет файлы рендеринга и библиотеки iMovie и Final Cut Pro.";
+"cleanup_option_sleep_image" = "Очистить образ сна";
+"cleanup_option_sleep_image_sub" = "Удаляет файл гибернации (/var/vm/sleepimage). macOS воссоздаст его при следующем сне.";
+"cleanup_extended_title" = "Расширенная очистка";
+"cleanup_start_scan" = "Начать сканирование";
+"cleanup_failed" = "Ошибка очистки";
+"cleanup_failed_default" = "Произошла ошибка в процессе очистки.";
+"cleanup_script_logs" = "Логи выполнения:";
+"cleanup_complete" = "Очистка завершена";
+"cleanup_complete_sub" = "Успешно освобождено %@ дискового пространства.";
+"cleanup_summary" = "Сводка удаленных файлов";
+"cleanup_skipped" = "Не удалось очистить";
+"cleanup_selected" = "Выбрано: %@";
+"cleanup_hide_logs" = "Скрыть логи";
+"cleanup_show_logs" = "Показать логи";
+"cleanup_copy" = "Копировать";
+"cleanup_copy_logs" = "Копировать логи";
+"cleanup_now" = "Очистить сейчас";
+"cleanup_manual_instructions" = "Инструкции для ручной очистки";
+"cleanup_scan_results" = "Результаты сканирования";
+"cleanup_scan_results_sub" = "Выберите элементы для удаления и нажмите 'Очистить сейчас'.";
+"cleanup_recommended" = "Рекомендуется к удалению";
+"cleanup_deselect_all" = "Снять выделение";
+"cleanup_select_all" = "Выбрать все";
+"cleanup_show_all_count" = "Показать все (ещё %lld)";
+"cleanup_debug_log" = "Отладочный лог (%lld строк)";
+
+/* Cleanup Notifications */
+"cleanup_scan_complete_title" = "Сканирование завершено";
+"cleanup_scan_complete_body" = "Найдено файлов для удаления: %@.";
+"cleanup_emptying_trash" = "Очистка корзины...";
+"cleanup_complete_title" = "Очистка завершена";
+"cleanup_complete_body" = "Успешно освобождено %@.";
+
+/* Trash */
+"trash_user_label" = "Пользовательская корзина";
+"trash_user_description" = "Содержимое вашей корзины. Включает удаленные файлы.";
+"trash_access_prompt_message" = "Пожалуйста, выберите папку Корзины для предоставления доступа к сканированию и очистке. (Она уже выбрана, просто нажмите «Предоставить доступ»).";
+"trash_access_prompt_button" = "Предоставить доступ";
+
+/* Uninstaller View */
+"menu_uninstaller" = "Деинсталлятор";
+"uninstaller_title" = "Деинсталлятор";
+"uninstaller_subtitle" = "Полное удаление приложений и их связанных остаточных файлов.";
+"uninstaller_search" = "Поиск приложений";
+"uninstaller_reload" = "Обновить список";
+"uninstaller_confirm_perm_delete" = "Удалить безвозвратно?";
+"uninstaller_confirm_move_trash" = "Переместить в Корзину?";
+"uninstaller_delete_permanently" = "Удалить безвозвратно";
+"uninstaller_move_trash" = "Переместить в Корзину";
+"uninstaller_uninstall_app_warning_perm" = "Это приведет к безвозвратному удалению приложения %@ и его связанных файлов (%lld). Это действие нельзя отменить.";
+"uninstaller_uninstall_app_warning_trash" = "Это переместит приложение %@ и его связанные файлы (%lld) в Корзину.";
+"uninstaller_drag_drop" = "Перетащите .app сюда для сканирования";
+"uninstaller_or_select" = "ИЛИ ВЫБЕРИТЕ ИЗ СПИСКА";
+"uninstaller_unknown_bundle" = "Неизвестный Bundle ID";
+"uninstaller_expert_mode" = "Экспертный режим";
+"uninstaller_select_files" = "(выбрать связанные файлы)";
+"uninstaller_action_info_perm" = "Безвозвратное действие";
+"uninstaller_action_info_perm_sub" = "Файлы удаляются навсегда в обход Корзины.";
+"uninstaller_action_info_trash" = "Обратимое действие";
+"uninstaller_action_info_trash_sub" = "Файлы перемещаются в Корзину и могут быть восстановлены.";
+"uninstaller_space_reclaim" = "Всего места к освобождению: %@";
+"uninstaller_button_uninstall" = "Удалить приложение";
+"uninstaller_uninstalling" = "Удаление...";
+"uninstaller_uninstalling_app" = "Удаление «%@»...";
+"uninstaller_uninstalling_sub" = "Пожалуйста, подождите, удаляются файлы приложения...";
+"uninstaller_related_files_count" = "Найдено связанных файлов: %lld";
+"uninstaller_developer_components" = "Связанные данные разработчика";
+"uninstaller_developer_components_description" = "Управляйте этими данными в Smart Cleanup.";
+"uninstaller_open_cleanup" = "Открыть Smart Cleanup";
+"uninstaller_used_by" = "Используется: %@";
+"uninstaller_show_in_finder" = "Показать в Finder";
+"uninstaller_expert_tip" = "В Экспертном режиме вы можете выборочно удалять остаточные файлы, такие как кэши и настройки.";
+"uninstaller_cleanup_items" = "Элементы для очистки";
+"uninstaller_scanning_apps" = "Сканирование приложений...";
+"uninstaller.deep_scanning_progress" = "Сбор остатков: %d из %d приложений...";
+"uninstaller.analyzing" = "Анализ...";
+"uninstaller_complete_title" = "Удаление завершено";
+"uninstaller_complete_body" = "Приложение %@ было успешно удалено.";
+"uninstaller_versions_badge" = "%d верс.";
+"uninstaller_multiple_versions_found" = "Найдено %d версий этого приложения";
+"uninstaller_version_title" = "Версия %@";
+"uninstaller_delete_this_version" = "Удалить эту версию";
+"uninstaller_all_versions_tab" = "Все версии (%d)";
+"uninstaller_uninstall_version_warning_trash" = "Это переместит версию %@ приложения %@ и ее связанные файлы (%lld) в Корзину.";
+"uninstaller_uninstall_version_warning_perm" = "Это приведет к безвозвратному удалению версии %@ приложения %@ и ее связанных файлов (%lld).";
+"uninstaller_version_deleted_body" = "Версия %@ приложения %@ успешно удалена.";
+"uninstaller_versions" = "Версии";
+"shared_data_warning" = "Эти данные общие для других приложений (например, Android SDK, AVD). Удаление может повлиять на другие IDE.";
+
+/* Uninstaller Leftovers */
+"uninstaller_tab_apps" = "Приложения";
+"uninstaller_tab_leftovers" = "Остатки";
+"uninstaller_leftovers_hero_title" = "Поиск остаточных файлов";
+"uninstaller_leftovers_hero_subtitle" = "Поиск и удаление остаточных кэшей, настроек и служебных файлов от ранее удалённых приложений.";
+"uninstaller_start_leftover_scan" = "Найти остатки";
+"uninstaller_scanning_leftovers" = "Поиск остаточных файлов...";
+"uninstaller_no_leftovers_title" = "Остатков не найдено";
+"uninstaller_no_leftovers_subtitle" = "В системе нет осиротевших остаточных файлов приложений.";
+"uninstaller_leftovers_found_count" = "Найдено остатков: %lld";
+"uninstaller_filter_all" = "Все";
+"uninstaller_clean_selected_leftovers" = "Переместить выбранные в Корзину";
+"uninstaller_confirm_trash_leftovers_title" = "Переместить выбранные остатки в Корзину?";
+"uninstaller_confirm_trash_leftovers_message" = "Вы уверены, что хотите переместить %lld выбранных остаточных файлов (%@) в Корзину?";
+"uninstaller_post_leftovers_title" = "Обнаружены остаточные файлы";
+"uninstaller_post_leftovers_subtitle" = "После удаления «%@» обнаружены следующие остаточные файлы. Выберите элементы для удаления.";
+"uninstaller_evidence_card_title" = "Подтверждения и уверенность";
+"uninstaller_evidence_why_flagged" = "Почему этот файл найден?";
+"uninstaller_leftovers_cleaned_notification" = "Удалено %lld остаточных файлов (освобождено %@)";
+"uninstaller_show_in_finder" = "Показать в Finder";
+
+/* Processes View */
+"menu_processes" = "Процессы";
+"processes_title" = "Процессы";
+"processes_subtitle" = "Управление запущенными системными процессами.";
+"processes_search" = "Поиск процессов...";
+"processes_scanning" = "Сканирование процессов...";
+"processes_terminate" = "Завершить";
+"processes_force_kill" = "Принудительно убить";
+"processes_protected" = "Защищён";
+"processes_refresh" = "Обновить список";
+"processes_confirm_terminate" = "Завершить процесс?";
+"processes_confirm_terminate_message" = "Вы уверены, что хотите завершить %@ (PID %lld)?";
+"processes_confirm_force" = "Принудительно убить?";
+"processes_confirm_force_message" = "Принудительное завершение может привести к потере данных. Убить %@ (PID %lld)?";
+"processes_no_results" = "Подходящих процессов не найдено.";
+"processes_no_processes" = "Процессы не найдены";
+"processes_no_processes_sub" = "Запущенные процессы не обнаружены.";
+"processes_scan_failed" = "Ошибка сканирования";
+"processes_manage_blacklist" = "Управление блэклистом";
+"processes_manage_whitelist" = "Управление вайтлистом";
+"processes_tooltip_blacklist" = "Процессы, которые можно всегда убить — добавьте тяжёлые приложения вроде Docker или OrbStack";
+"processes_tooltip_whitelist" = "Процессы, которые нельзя убить — защитите критичные приложения от случайного завершения";
+"processes_tooltip_refresh" = "Обновить список запущенных процессов";
+"processes_section_user" = "Ваши процессы";
+"processes_section_system" = "Системные процессы";
+"processes_badge_blacklist" = "Блэклист (%lld)";
+"processes_badge_whitelist" = "Вайтлист (%lld)";
+"processes_blacklist_title" = "Блэклист";
+"processes_blacklist_placeholder" = "Имя процесса для блокировки...";
+"processes_whitelist_title" = "Вайтлист";
+"processes_whitelist_placeholder" = "Имя процесса для защиты...";
+"add" = "Добавить";
+
+/* Permissions */
+"permissions_title" = "Требуются разрешения";
+"permissions_subtitle" = "MacTidy нужен доступ к системным папкам для очистки.";
+"permissions_fda_description" = "Необходим для доступа к ~/Library/Caches, ~/Library/Application Support и другим системным папкам.";
+"permissions_instructions_title" = "Как предоставить Full Disk Access:";
+"permissions_step1" = "Нажмите 'Открыть System Settings' ниже.";
+"permissions_step2" = "Найдите MacTidy в списке.";
+"permissions_step3" = "Включите переключатель.";
+"permissions_step4" = "Вернитесь в MacTidy и нажмите 'Проверить статус'.";
+"permissions_open_settings" = "Открыть System Settings";
+"permissions_check_status" = "Проверить статус";
+"permissions_dismiss_temp" = "Пропустить пока";
+"permissions_dismiss_permanent" = "Больше не показывать";
+"permissions_warning_title" = "Вы уверены?";
+"permissions_warning_message" = "Без полного доступа к диску приложение не сможет найти и удалить множество ненужных файлов. Качество очистки сильно пострадает.";
+"permissions_warning_confirm" = "Никогда не разрешать";
+"permissions_status_granted" = "Предоставлено";
+"permissions_status_required" = "Требуется";
+"permissions_window_title" = "Разрешения";
+
+/* Settings Permissions */
+"settings_permissions" = "Разрешения";
+"settings_fda_description" = "Необходим для очистки системных кэшей и данных приложений.";
+"settings_open_settings" = "Открыть настройки";
+"settings_check_permissions" = "Проверить разрешения";
+"settings_show_permission_guide" = "Предоставить полный доступ к диску";
+
+/* Format strings */
+"dashboard_used_percent_format" = "%lld%%";
+"dashboard_freed_prefix" = "+%@";
+"cleanup_mb_format" = "%lld МБ";
+
+/* Process format strings */
+"processes_view_mode_grouped" = "Группировать";
+"processes_view_mode_flat" = "Списком";
+"processes_selected_count" = "Выбрано: %lld";
+"processes_process_count" = "%lld процессов";
+"process_pid_format" = "PID %lld";
+"process_cpu_format" = "%.1f%%";
+"process_uptime_hours_format" = "%lldч %lldм";
+"process_uptime_minutes_format" = "%lldм";
+
+/* Common */
+"version_unknown" = "N/A";
+
+/* Operation Risk */
+"risk.safe" = "Безопасно";
+"risk.moderate" = "Умеренно";
+"risk.dangerous" = "Опасно";
+"risk.protected" = "Защищено";
+
+/* Cleanup Dev Badge */
+"cleanup_dev_badge" = "РАЗРАБ";
+
+/* Refresh Interval (Settings -> Processes) */
+"refresh_manual" = "Вручную";
+"refresh_5s" = "Каждые 5 секунд";
+"refresh_10s" = "Каждые 10 секунд";
+"refresh_30s" = "Каждые 30 секунд";
+
+/* Sort By (Settings -> Processes) */
+"sort_cpu" = "Загрузка CPU";
+"sort_memory" = "Использование памяти";
+"sort_name" = "Имя";
+"sort_threads" = "Кол-во потоков";
+
+/* Cleanup Category Names */
+"category.app_caches" = "Кэши приложений";
+"category.package_managers" = "Менеджеры пакетов";
+"category.gradle_maven" = "Gradle + Maven";
+"category.flutter_dart" = "Flutter / Dart";
+"category.xcode" = "Xcode";
+"category.ios_simulators" = "Симуляторы iOS";
+"category.android_caches" = "Кэши Android";
+"category.android_sdk" = "Android SDK";
+"category.ide_caches" = "Кэши IDE / Electron";
+"category.browser_caches" = "Кэши браузеров";
+"category.messaging_media" = "Мессенджеры / медиа";
+"category.docker" = "Docker";
+"category.language_caches" = "Кэши языков";
+"category.user_logs" = "Логи пользователя";
+"category.system_caches" = "Системные кэши";
+"category.app_containers" = "Контейнеры приложений";
+"category.dotfile_caches" = "Кэши точечных файлов";
+"category.scattered_junk" = "Разрозненный мусор";
+"category.orphaned_remnants" = "Остаточные файлы";
+"category.orphaned_files" = "Файлы-сироты";
+"category.large_files" = "Большие файлы";
+"category.dynamic_cache_discovery" = "Динамическое обнаружение кэша";
+"category.time_machine_snapshots" = "Снимки Time Machine";
+"category.ios_backups" = "Резервные копии iOS";
+"category.mail_downloads" = "Загрузки Mail";
+"category.saved_app_state" = "Сохранённое состояние приложений";
+"category.crash_reporter" = "Отчёты о сбоях";
+"category.assets_v2" = "AssetsV2 / Шаблоны iWork";
+"category.cloud_kit_cache" = "Кэш iCloud CloudKit";
+"category.swift_pm_cache" = "Кэш Swift Package Manager";
+"category.carthage_cache" = "Кэш Carthage";
+"category.steam_cache" = "Кэш Steam";
+"category.teams_cache" = "Кэш Microsoft Teams";
+"category.adobe_caches" = "Кэши Adobe";
+"category.chrome_extra_caches" = "Доп. кэши Chrome";
+"category.ide_old_versions" = "Старые версии IDE";
+"category.launch_agents" = "Агенты автозапуска";
+"category.launch_daemons" = "Демоны";
+"category.privileged_helpers" = "Привилегированные инструменты";
+"category.pkg_receipts" = "Квитанции пакетов";
+"category.internet_plugins" = "Плагины интернета";
+"category.shared_file_lists" = "Общие списки файлов";
+"category.cloud_docs" = "Облачные документы";
+"category.photos_cache" = "Кэш фото";
+"category.voice_memos" = "Голосовые заметки";
+"category.garage_band_logic" = "GarageBand / Logic Pro";
+"category.imovie_final_cut" = "iMovie / Final Cut";
+"category.garmin_fitbit" = "Garmin / Fitbit";
+"category.old_backups" = "Старые резервные копии";
+"category.ai_models" = "AI-модели и LLM-данные";
+"category.installer_packages" = "Установочные пакеты";
+"category.dns_flush" = "Кэш DNS";
+"category.font_cache" = "Кэш шрифтов";
+"category.sleep_image" = "Образ сна";
+"category.duplicate_files" = "Дубликаты файлов";
+"category.unused_apps" = "Неиспользуемые приложения";
+"category.project_build_artifacts" = "Артефакты проектов";
+
+/* Process View - Missing Keys */
+"view_mode" = "Режим просмотра";
+"sort_by" = "Сортировка";
+"cancel_selection" = "Отменить выбор";
+"select_multiple" = "Выбрать несколько";
+"select_all" = "Выбрать все";
+"deselect_all" = "Снять выделение";
+"terminate_selected" = "Завершить выбранные";
+"force_kill_selected" = "Принудительно завершить выбранные";
+"processes_terminate_all" = "Завершить все";
+"processes_force_kill_all" = "Принудительно завершить все";
+"process.unknown" = "Неизвестно";
+
+/* Uninstaller - Scan Progress */
+"uninstaller.progress.discovering" = "Поиск приложений...";
+"uninstaller.progress.complete" = "Сканирование завершено";
+
+/* Uninstaller - Confidence Tiers */
+"uninstaller.tier.ignore" = "Игнорировать";
+"uninstaller.tier.possible" = "Возможно";
+"uninstaller.tier.very_likely" = "Очень вероятно";
+"uninstaller.tier.guaranteed" = "Гарантировано";
+
+/* Developer Components */
+"developer.android_sdk" = "Android SDK";
+"developer.android_data" = "Данные Android и виртуальные устройства";
+"developer.gradle_cache" = "Кэш Gradle";
+"developer.xcode_derived_data" = "Xcode Derived Data";
+"developer.ios_simulators" = "Симуляторы iOS";
+"developer.flutter_cache" = "Кэш Flutter";
+"developer.docker" = "Docker";
+"developer.homebrew" = "Homebrew";
+
+/* Evidence Categories */
+"uninstaller.evidence_category.identity" = "Совпадение идентификатора";
+"uninstaller.evidence_category.signature" = "Подпись кода";
+"uninstaller.evidence_category.system" = "Системная интеграция";
+"uninstaller.evidence_category.metadata" = "Метаданные файла";
+"uninstaller.evidence_category.content" = "Анализ содержимого";
+"uninstaller.evidence_category.graph" = "Распространение графа";
+"uninstaller.evidence_category.launch_services" = "Launch Services";
+
+/* Evidence Descriptions */
+"uninstaller.evidence.bundleIDExact.title" = "Совпадение Bundle ID";
+"uninstaller.evidence.bundleIDExact.description" = "Имя совпадает с идентификатором пакета приложения.";
+"uninstaller.evidence.bundleIDPrefix.title" = "Префикс Bundle ID";
+"uninstaller.evidence.bundleIDPrefix.description" = "Имя начинается с идентификатора пакета приложения.";
+"uninstaller.evidence.appNameExact.title" = "Совпадение имени приложения";
+"uninstaller.evidence.appNameExact.description" = "Имя совпадает с названием приложения.";
+"uninstaller.evidence.appNamePrefix.title" = "Префикс имени приложения";
+"uninstaller.evidence.appNamePrefix.description" = "Имя начинается с названия приложения.";
+"uninstaller.evidence.executableName.title" = "Имя исполняемого файла";
+"uninstaller.evidence.executableName.description" = "Имя совпадает с исполняемым файлом приложения.";
+"uninstaller.evidence.frameworkName.title" = "Имя фреймворка";
+"uninstaller.evidence.frameworkName.description" = "Файл является фреймворком, используемым приложением.";
+"uninstaller.evidence.xpcServiceName.title" = "XPC-сервис";
+"uninstaller.evidence.xpcServiceName.description" = "Файл является XPC-сервисом приложения.";
+"uninstaller.evidence.plugInName.title" = "Имя плагина";
+"uninstaller.evidence.plugInName.description" = "Файл является плагином приложения.";
+"uninstaller.evidence.vendorName.title" = "Имя вендора";
+"uninstaller.evidence.vendorName.description" = "Файл принадлежит тому же разработчику.";
+"uninstaller.evidence.teamID.title" = "Совпадение Team ID";
+"uninstaller.evidence.teamID.description" = "Подписано той же командой Apple Developer.";
+"uninstaller.evidence.developerSignature.title" = "Подпись разработчика";
+"uninstaller.evidence.developerSignature.description" = "Подписано тем же сертификатом разработчика.";
+"uninstaller.evidence.launchAgent.title" = "Launch Agent";
+"uninstaller.evidence.launchAgent.description" = "Автозагрузчик, зарегистрированный приложением.";
+"uninstaller.evidence.launchDaemon.title" = "Launch Daemon";
+"uninstaller.evidence.launchDaemon.description" = "Демон, зарегистрированный приложением.";
+"uninstaller.evidence.loginItem.title" = "Элемент входа";
+"uninstaller.evidence.loginItem.description" = "Элемент автозапуска, зарегистрированный приложением.";
+"uninstaller.evidence.appGroup.title" = "Группа приложений";
+"uninstaller.evidence.appGroup.description" = "Принадлежит групповому контейнеру приложения.";
+"uninstaller.evidence.container.title" = "Контейнер приложения";
+"uninstaller.evidence.container.description" = "Песочница приложения.";
+"uninstaller.evidence.extension.title" = "Расширение приложения";
+"uninstaller.evidence.extension.description" = "Расширение, зарегистрированное приложением.";
+"uninstaller.evidence.xpcConnection.title" = "XPC-соединение";
+"uninstaller.evidence.xpcConnection.description" = "XPC-соединение, используемое приложением.";
+"uninstaller.evidence.packageReceipt.title" = "Квитанция пакета";
+"uninstaller.evidence.packageReceipt.description" = "Зарегистрировано через квитанцию пакета.";
+"uninstaller.evidence.knownCatalog.title" = "Известный остаток";
+"uninstaller.evidence.knownCatalog.description" = "Указан в каталоге остатков для этого приложения.";
+"uninstaller.evidence.plistContent.title" = "Содержимое Plist";
+"uninstaller.evidence.plistContent.description" = "Plist содержит имя или Bundle ID приложения.";
+"uninstaller.evidence.spotlight.title" = "Индекс Spotlight";
+"uninstaller.evidence.spotlight.description" = "Найдено через поиск Spotlight.";
+"uninstaller.evidence.spotlightBundleAttr.title" = "Атрибут пакета Spotlight";
+"uninstaller.evidence.spotlightBundleAttr.description" = "Метаданные Spotlight ссылаются на пакет приложения.";
+"uninstaller.evidence.spotlightCreator.title" = "Создатель Spotlight";
+"uninstaller.evidence.spotlightCreator.description" = "Метаданные создателя Spotlight совпадают.";
+"uninstaller.evidence.fileContent.title" = "Содержимое файла";
+"uninstaller.evidence.fileContent.description" = "Содержимое файла ссылается на приложение.";
+"uninstaller.evidence.electronCache.title" = "Кэш Electron";
+"uninstaller.evidence.electronCache.description" = "Кэш приложения на Electron.";
+"uninstaller.evidence.jetBrainsConfig.title" = "Конфиг JetBrains";
+"uninstaller.evidence.jetBrainsConfig.description" = "Конфигурация IDE JetBrains.";
+"uninstaller.evidence.flutterBuild.title" = "Сборка Flutter";
+"uninstaller.evidence.flutterBuild.description" = "Артефакт сборки Flutter.";
+"uninstaller.evidence.parentDirectory.title" = "Родительский каталог";
+"uninstaller.evidence.parentDirectory.description" = "Найдено в каталоге, связанном с приложением.";
+"uninstaller.evidence.launchServicesRegistered.title" = "Launch Services";
+"uninstaller.evidence.launchServicesRegistered.description" = "Зарегистрировано в базе Launch Services.";
+
+/* Permissions - Missing Access Descriptions */
+"permissions.full_disk_access" = "Полный доступ к диску";
+"permissions.accessibility" = "Специальные возможности";
+"permissions.automation" = "Автоматизация (Apple Events)";
+"permissions.trash_access" = "Доступ к Корзине";
+"permissions.notification_provisional" = "Предварительные";
+"permissions.notification_ephemeral" = "Эфемерные";
+"permissions.unknown_status" = "Неизвестно";
+
+/* Process Categories */
+"process.category.applications" = "Приложения";
+"process.category.launch_agents" = "Агенты автозапуска";
+"process.category.launch_daemons" = "Демоны";
+"process.category.system" = "Системные";
+
+/* Uninstaller - Additional UI */
+"uninstaller.scanning_deep" = "Глубокое сканирование...";
+"uninstaller.why_this_file" = "Почему этот файл?";
+"uninstaller.related_files" = "Связанные файлы";
+"uninstaller.developer_artifacts" = "Артефакты разработчика";
+"uninstaller.progress.developer_components" = "Проверка компонентов разработчика...";
+"uninstaller.footer.summary" = "Выбрано %lld файлов в %@ категориях";
+"uninstaller.metadata.difficulty" = "Сложность удаления";
+"uninstaller.metadata.difficulty.critical" = "Критическая";
+"uninstaller.metadata.difficulty.high" = "Высокая";
+"uninstaller.metadata.difficulty.medium" = "Средняя";
+"uninstaller.metadata.difficulty.low" = "Низкая";
+"uninstaller.metadata.parent_suite" = "Сюита";
+"uninstaller.metadata.known_issues" = "Известные особенности";
+"uninstaller.shared_component" = "Общий";
+"uninstaller.shared_component.help" = "Общий компонент (другие приложения тоже используют) — по умолчанию не выбран; включите только если хотите удалить общее.";
+"uninstaller.shared_help.microsoft" = "Общий компонент пакета Microsoft Office (Word, Excel, PowerPoint, Outlook)";
+"uninstaller.shared_help.google" = "Общий компонент службы обновлений Google (Chrome, Google Drive, Earth)";
+"uninstaller.shared_help.adobe" = "Общий компонент пакета Adobe Creative Cloud (Photoshop, Illustrator, Premiere)";
+"uninstaller.shared_help.jetbrains" = "Общий компонент среды JetBrains (IntelliJ IDEA, PyCharm, WebStorm, CLion)";
+"uninstaller.shared_help.android" = "Общие данные разработки Android (Android Studio, IntelliJ IDEA, Gradle)";
+"uninstaller.shared_help.apple_developer" = "Общие средства разработки Apple (Xcode, Command Line Tools, Simulator)";
+
+/* Format Helpers */
+"format_bytes_b" = "%lld Б";
+"format_bytes_kb" = "%.1f КБ";
+"format_bytes_mb" = "%.1f МБ";
+"format_bytes_gb" = "%.2f ГБ";
+
+/* Process Block Reasons */
+"process_block_pid_format" = "PID %lld — системный критический процесс";
+"process_block_whitelist_name_format" = "%@ в вашем белом списке (защищён)";
+"process_block_whitelist_bundle_format" = "%@ в вашем белом списке (защищён)";
+"process_block_protected_format" = "%@ — защищённый системный процесс";
+"process_block_no_path_format" = "%@ — нет информации о пути, действуйте осторожно";
+
+/* Error Messages */
+"error_ps_failed_format" = "Не удалось получить список процессов: %@";
+"error_operation_blocked_format" = "Невозможно завершить %@: %@";
+"error_kill_failed_format" = "Не удалось завершить %@ (код %lld): %@";
+"error_timeout" = "Время операции истекло";
+"error_safety_violation_format" = "Нарушение безопасности: %@";
+"error_command_failed_format" = "Команда не выполнена: %@";
+"error_invalid_transition_format" = "Недопустимый переход из %@ в %@";
+
+/* OS Version */
+"os_version_format" = "macOS %lld.%lld.%lld";
+
+/* Apple Intelligence settings */
+"settings_ai_title" = "Apple Intelligence";
+"settings_enable_ai" = "Локальные ИИ-объяснения";
+"settings_tooltip_enable_ai" = "Использовать локальные языковые модели на устройстве для объяснения связанных файлов и служб автозагрузки.";
+"settings_ai_status" = "Статус ИИ";
+"settings_ai_status_disabled" = "Отключен";
+"settings_ai_status_ready" = "Готов";
+"settings_ai_status_unsupported_device" = "Устройство не поддерживает";
+"settings_ai_status_not_enabled" = "Не включен в системных настройках";
+"settings_ai_status_downloading" = "Скачивание модели...";
+"settings_ai_status_unavailable" = "Недоступен";
+
+/* AI Explanations */
+"uninstaller_explain_with_ai" = "Объяснить с помощью ИИ";
+"uninstaller_ai_explaining" = "Генерация объяснения...";
+"uninstaller_ai_failed" = "ИИ недоступен или не удалось создать описание.";
+
+"cleanup_option_tm_snapshots" = "Time Machine Снапшоты";
+"cleanup_option_tm_snapshots_sub" = "Безопасное удаление локальных APFS снапшотов для освобождения места (требуется пароль).";
+
+/* New Settings Redesign */
+"settings_category_overview" = "Обзор";
+"settings_category_general" = "Основные";
+"settings_category_permissions" = "Разрешения";
+"settings_category_cleanup" = "Очистка";
+"settings_category_automation" = "Siri и ИИ";
+"settings_category_ai" = "Apple Intelligence";
+"settings_category_processes" = "Процессы";
+"settings_category_advanced" = "Дополнительно";
+"settings_category_about" = "О программе";
+"settings_category_danger_zone" = "Опасная зона";
+
+"settings_overview_subtitle" = "Нативный оптимизатор и очиститель для macOS";
+"settings_overview_auto_scan" = "Автосканирование";
+"settings_overview_scan_at_launch" = "Сканировать при запуске";
+"settings_quick_actions" = "Быстрые действия";
+"settings_quick_actions_sub" = "Основные административные задачи";
+"settings_quick_action_check_updates" = "Проверить обновления";
+"settings_quick_action_check_updates_sub" = "Проверить релизы на GitHub";
+"settings_quick_action_update_available" = "Доступно обновление!";
+"settings_quick_action_permissions_sub" = "Управление доступом к диску и Корзине";
+"settings_quick_action_shortcuts_siri" = "Быстрые команды и Siri";
+"settings_quick_action_shortcuts_siri_sub" = "Настройка автоматизации";
+"settings_quick_action_advanced_sub" = "Отладка и диагностика";
+"settings_system_status" = "Статус системы";
+"settings_system_status_sub" = "Состояние и метрики приложения";
+"settings_system_status_db" = "База данных приложения";
+
+"settings_appearance_language" = "Оформление и язык";
+"settings_appearance_language_sub" = "Персонализация интерфейса";
+"settings_language_sub" = "Язык отображения интерфейса";
+"settings_theme_sub" = "Цветовая схема приложения";
+"settings_tooltips_sub" = "Подсказки при наведении";
+"settings_system_maintenance_title" = "Системное обслуживание";
+"settings_system_maintenance_sub" = "Системные оптимизации для macOS";
+"settings_touchid_sudo_title" = "Touch ID для sudo";
+"settings_touchid_sudo_sub" = "Подтверждение команд sudo по отпечатку пальца (/etc/pam.d/sudo_local)";
+"settings_touchid_sudo_unsupported" = "Touch ID недоступен на этом Mac";
+"settings_touchid_sudo_enabled" = "Включено";
+"settings_touchid_sudo_copy_cmd" = "Скопировать команду";
+"settings_touchid_sudo_copied" = "Скопировано!";
+"settings_touchid_sudo_check_status" = "Проверить статус";
+"settings_touchid_sudo_hint" = "Вставьте эту команду в Терминал и выполните её, чтобы включить Touch ID для sudo. SIP запрещает приложениям писать в /etc/pam.d/ напрямую.";
+"settings_spotlight_reindex_title" = "Переиндексация Spotlight";
+"settings_spotlight_reindex_sub" = "Принудительно перестраивает поисковый индекс для исправления поиска и расчета места (mdutil -E /)";
+"settings_spotlight_reindex_button" = "Переиндексировать";
+"settings_spotlight_reindexing" = "Переиндексация...";
+"settings_spotlight_reindex_success" = "Переиндексация Spotlight запущена";
+"settings_software_updates" = "Обновления ПО";
+"settings_software_updates_sub" = "Проверка версий";
+"settings_current_version" = "Текущая версия";
+
+"settings_permissions_sub" = "Права системного доступа";
+"settings_permissions_overall" = "Общий статус разрешений";
+"settings_permissions_overall_sub" = "Необходимо для сканирования системных кэшей и остатков";
+"settings_fda_title" = "Полный доступ к диску (FDA)";
+"settings_fda_body" = "Полный доступ позволяет MacTidy безопасно находить остаточные файлы, Xcode DerivedData и логи.";
+"settings_open_privacy_settings" = "Открыть настройки приватности";
+"settings_check_status" = "Проверить статус";
+"settings_permission_guide" = "Инструкция";
+"settings_notifications_enable" = "Включить уведомления";
+"settings_notifications_enable_sub" = "Получать уведомления после завершения очистки или при накоплении мусора";
+"settings_notifications_denied_body" = "Уведомления отключены в Системных настройках";
+"status_granted" = "Разрешено";
+"status_attention" = "Требуется внимание";
+"status_required" = "Требуется";
+"status_disabled" = "Отключено";
+
+"settings_scan_config" = "Конфигурация сканирования";
+"settings_scan_config_sub" = "Опции деинсталлятора и поиска мусора";
+"settings_scan_mode_sub" = "Глубина сканирования остаточных файлов";
+"settings_auto_scan_sub" = "Автоматически сканировать мусор при запуске приложения";
+"settings_show_related_sub" = "Включать файлы настроек и кэша в деинсталлятор";
+"settings_deletion_behavior" = "Поведение удаления и Корзины";
+"settings_deletion_behavior_sub" = "Правила безопасного удаления";
+"settings_trash_safety_note" = "Настройки Корзины влияют на безвозвратность удаления.";
+"settings_empty_trash_cleanup_sub" = "Автоматически очищать системную Корзину после удаления мусора";
+"settings_bypass_trash_sub" = "Безвозвратно удалять остатки программ в обход Корзины";
+"settings_empty_trash_immediately_sub" = "Пропускать буфер Корзины для всех операций";
+
+"settings_automation_title" = "Siri и Быстрые команды";
+"settings_automation_sub" = "Голосовые команды и сценарии автоматизации";
+"settings_enable_siri_sub" = "Запускать очистку с помощью голосовых фраз Siri";
+"settings_enable_shortcuts_sub" = "Разрешить использование AppIntents в Быстрых командах macOS";
+"settings_open_shortcuts_title" = "Открыть Быстрые команды macOS";
+"settings_open_shortcuts_sub" = "Управление сценариями в системном приложении Быстрые команды";
+"settings_launch_shortcuts_button" = "Запустить приложение Быстрые команды";
+"settings_custom_siri_commands" = "Пользовательские команды Siri";
+"settings_custom_siri_commands_sub" = "Голосовые фразы-триггеры";
+"settings_no_custom_commands" = "Пользовательские команды Siri не настроены.";
+
+"settings_ai_sub" = "Локальная модель ИИ для умной очистки";
+"settings_enable_ai_sub" = "Анализировать системные файлы локально с помощью FoundationModels";
+"settings_ai_readiness" = "Статус готовности модели";
+"settings_ai_readiness_sub" = "Доступность ИИ-движка на устройстве";
+"settings_ai_capabilities" = "Доступные возможности";
+"settings_ai_capabilities_sub" = "Умные функции и полная приватность на устройстве";
+"settings_ai_feat_smart_cleanup" = "Умная очистка";
+"settings_ai_feat_smart_cleanup_sub" = "Категоризация и ранжирование кэшей по уровню риска";
+"settings_ai_feat_recs" = "Интеллектуальные рекомендации";
+"settings_ai_feat_recs_sub" = "Предложения по удалению остатков на основе активности";
+"settings_ai_feat_duplicates" = "Поиск дубликатов";
+"settings_ai_feat_duplicates_sub" = "Семантическое группирование одинаковых файлов";
+"settings_ai_feat_privacy" = "Защита приватности";
+"settings_ai_feat_privacy_sub" = "Все вычисления ИИ выполняются локально на Apple Silicon NPU";
+"settings_ai_feat_voice" = "Голосовое управление Siri";
+"settings_ai_feat_voice_sub" = "Запуск задач обслуживания системы голосовыми командами";
+"settings_ai_feat_shortcuts" = "Сценарии автоматизации";
+"settings_ai_feat_shortcuts_sub" = "Глубокая интеграция с Быстрыми командами macOS";
+
+"settings_processes_title" = "Настройки монитора процессов";
+"settings_processes_sub" = "Конфигурация фонового сканера CPU и памяти";
+"settings_refresh_interval_sub" = "Частота обновления списка процессов";
+"settings_sort_option_title" = "Сортировка по умолчанию";
+"settings_sort_option_sub" = "Сортировка процессов по потреблению ресурсов";
+
+"settings_advanced_dev_title" = "Разработка и дополнительно";
+"settings_advanced_dev_sub" = "Расширенные параметры диагностики и сканирования";
+"settings_show_related_app_files" = "Показывать связанные файлы приложений";
+"settings_show_related_app_files_sub" = "Включать скрытые plist и контейнеры в результаты поиска";
+"settings_debug_mode" = "Дебаг режим";
+"settings_debug_mode_sub" = "Отображать подробные логи во время очистки";
+"settings_startup_vendors_sub" = "Управление известными системными вендорами автозапуска";
+
+"settings_about_tagline" = "Разработано для macOS 26+. Создано на Swift 6, SwiftUI и Liquid Glass.";
+"settings_about_resources" = "Ресурсы и поддержка";
+"settings_about_resources_sub" = "Официальные ссылки и документация";
+"settings_about_github" = "Репозиторий GitHub (Исходный код)";
+"settings_about_github_releases" = "Репозиторий GitHub (релизы)";
+"settings_about_wiki" = "Документация и Wiki";
+"settings_about_wiki_sub" = "Подробное руководство по использованию приложения";
+"settings_about_report_issue" = "Сообщить о проблеме";
+"settings_about_website" = "Сайт";
+
+/* Privacy & Safety (About) */
+"settings_privacy_safety_title" = "Приватность и безопасность 🛡️";
+"settings_privacy_safety_sub" = "Базовая защита системы и гарантии конфиденциальности данных";
+"settings_privacy_item_1_title" = "100% приватность";
+"settings_privacy_item_1_desc" = "Никакой телеметрии, аналитики, отслеживания использования и удаленного логирования. Все операции выполняются локально на вашем устройстве.";
+"settings_privacy_item_2_title" = "Минимум сети";
+"settings_privacy_item_2_desc" = "Единственное сетевое обращение — опциональная проверка обновлений при запуске или вручную через публичный API релизов GitHub (версия и URL DMG). Без телеметрии.";
+"settings_privacy_item_3_title" = "Безопасное восстановление из Корзины";
+"settings_privacy_item_3_desc" = "Инструменты Анализ диска и Деинсталлятор перемещают файлы в Корзину через trashItem(at:) — их можно восстановить.";
+"settings_privacy_item_4_title" = "Подтверждение Умной очистки";
+"settings_privacy_item_4_desc" = "Удаляет выбранные кэши и временные данные только после явного подтверждения.";
+"settings_privacy_item_5_title" = "Защита SafetyManager";
+"settings_privacy_item_5_desc" = "Блокирует доступ к /System, /usr, /bin, ~/.ssh и другим критически важным путям.";
+"settings_privacy_item_6_title" = "Политика ProcessSafetyPolicy";
+"settings_privacy_item_6_desc" = "Защищает критически важные системные процессы от случайного завершения.";
+"settings_privacy_item_7_title" = "Безвозвратное удаление по выбору";
+"settings_privacy_item_7_desc" = "Безвозвратное удаление и автоматическая очистка Корзины отключены по умолчанию и требуют явного выбора.";
+"settings_privacy_item_8_title" = "Мягкое закрытие приложений";
+"settings_privacy_item_8_desc" = "Приложения закрываются перед очисткой (мягкое завершение → принудительное завершение через 3 секунды).";
+"settings_privacy_item_9_title" = "Полный доступ к диску";
+"settings_privacy_item_9_desc" = "Полный доступ к диску запрашивается при запуске для полноценного сканирования файловой системы.";
+"settings_about_privacy_policy_sub" = "100% локально, гарантия отсутствия телеметрии";
+"settings_about_acknowledgements" = "Благодарности";
+"settings_about_acknowledgements_sub" = "Библиотеки и фреймворки Open Source";
+
+"settings_danger_zone_title" = "Опасная зона";
+"settings_danger_zone_sub" = "Необратимые действия приложения";
+"settings_reset_all_title" = "Сбросить все настройки приложения";
+"settings_reset_all_sub" = "Сбрасывает все параметры, команды Siri и кэши до заводских настроек.";
+"settings_reset_action_button" = "Сбросить данные и настройки";
+
+"settings_search_prompt" = "Поиск в настройках...";
+"settings_search_results_title" = "Результаты поиска по запросу «%@»";
+"settings_search_no_results" = "Настройки не найдены";
+"settings_search_no_results_sub" = "Попробуйте поискать 'корзина', 'FDA', 'ИИ' или 'тема'";
+
+"settings_about_report_issue_sub" = "Отчеты об ошибках и пожелания";
+"startup_help_system" = "Системная служба Apple. Отключать не рекомендуется.";
+
+"settings_project_artifacts_age" = "Возраст артефактов проектов";
+"settings_project_artifacts_age_sub" = "Поиск папок сборок, не менявшихся дольше указанного срока";
+"settings_days_count" = "> %d дн.";
+
+/* System Monitor */
+"menu_monitor" = "Monitor";
+"monitor_subtitle" = "Live system metrics";
