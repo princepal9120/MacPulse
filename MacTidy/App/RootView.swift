@@ -15,6 +15,19 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
+            // A quiet, platform-native canvas keeps every screen visually related
+            // without competing with the data-heavy cards and lists.
+            LinearGradient(
+                colors: [
+                    Color.accentColor.opacity(0.09),
+                    Color.clear,
+                    Color.primary.opacity(0.025)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+
             VStack(spacing: 0) {
                 topNavigationBar
                 
@@ -84,6 +97,13 @@ struct RootView: View {
 
     private var topNavigationBar: some View {
         HStack(spacing: 0) {
+            brandLockup
+
+            Divider()
+                .frame(height: 20)
+                .opacity(0.35)
+                .padding(.horizontal, 10)
+
             ForEach(navGroups.indices, id: \.self) { groupIndex in
                 let group = navGroups[groupIndex]
 
@@ -100,15 +120,33 @@ struct RootView: View {
                         .padding(.horizontal, 4)
                 }
             }
+
+            Spacer(minLength: 10)
         }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 3)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 5)
         .glassEffect(Glass.regular, in: RoundedRectangle(cornerRadius: 12))
         .id(appSettings.language)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 12)
         .padding(.top, 4)
         .padding(.bottom, 6)
+    }
+
+    private var brandLockup: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 26, height: 26)
+                .background(Color.accentColor.opacity(0.12), in: Circle())
+
+            Text("MacTidy")
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundStyle(.primary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("MacTidy")
     }
 
     @ViewBuilder
