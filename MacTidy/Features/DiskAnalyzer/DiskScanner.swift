@@ -32,7 +32,8 @@ public actor DiskScanner {
             .fileSizeKey,
             .totalFileAllocatedSizeKey,
             .isUbiquitousItemKey,
-            .ubiquitousItemDownloadingStatusKey
+            .ubiquitousItemDownloadingStatusKey,
+            .contentModificationDateKey
         ]
         
         let rootNode = DirectoryNode(url: rootURL, name: rootURL.lastPathComponent, parentURL: nil)
@@ -108,7 +109,8 @@ public actor DiskScanner {
                     size: pkgSize.size,
                     fileCount: pkgSize.fileCount,
                     fileType: .apps,
-                    parentURL: parentURL
+                    parentURL: parentURL,
+                    modifiedAt: values.contentModificationDate
                 )
                 parentNode.fileChildren.append(item)
                 propagateSize(pkgSize.size, fileCount: pkgSize.fileCount, from: parentNode, directoryNodes: directoryNodes, rootURL: rootURL)
@@ -129,7 +131,8 @@ public actor DiskScanner {
                     size: allocatedSize,
                     fileCount: 1,
                     fileType: FileCategory.from(url: standardURL),
-                    parentURL: parentURL
+                    parentURL: parentURL,
+                    modifiedAt: values.contentModificationDate
                 )
                 parentNode.fileChildren.append(item)
                 propagateSize(allocatedSize, fileCount: 1, from: parentNode, directoryNodes: directoryNodes, rootURL: rootURL)
@@ -250,6 +253,7 @@ private final class DirectoryNode: @unchecked Sendable {
             allChildren.append(subNode.toDiskItem())
         }
         allChildren.sort { $0.size > $1.size }
+        let newestChild = allChildren.compactMap(\.modifiedAt).max()
         
         return DiskItem(
             url: url,
@@ -260,7 +264,8 @@ private final class DirectoryNode: @unchecked Sendable {
             fileCount: fileCount,
             children: allChildren,
             fileType: .all,
-            parentURL: parentURL
+            parentURL: parentURL,
+            modifiedAt: newestChild
         )
     }
 }

@@ -23,6 +23,18 @@
 		11A7D2871426F39EFA6D740B /* EvidenceProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED4199D09AC66B4B220BDC8 /* EvidenceProbeTests.swift */; };
 		162CB83D7194D6BD718593A0 /* CommandRunning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9BB7DDAA6BEB78C47B1EAD3 /* CommandRunning.swift */; };
 		1665896332214762C62ED272 /* EpicGames.json in Resources */ = {isa = PBXBuildFile; fileRef = 26A12A1159CFA31A969B390C /* EpicGames.json */; };
+		0F0F0F0F0F0F0F0F0F000003 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000001 /* MonitorView.swift */; };
+		0F0F0F0F0F0F0F0F0F000004 /* MonitorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000002 /* MonitorViewModel.swift */; };
+		0F0F0F0F0F0F0F0F0F000007 /* BatteryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000006 /* BatteryInfo.swift */; };
+		0F0F0F0F0F0F0F0F0F000009 /* NetworkThroughput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000008 /* NetworkThroughput.swift */; };
+		0F0F0F0F0F0F0F0F0F00000B /* RingGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F00000A /* RingGaugeView.swift */; };
+		0F0F0F0F0F0F0F0F0F00000D /* SparklineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F00000C /* SparklineView.swift */; };
+		0F0F0F0F0F0F0F0F0F00000F /* PrivacyMonitorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F00000E /* PrivacyMonitorViewModel.swift */; };
+		0F0F0F0F0F0F0F0F0F000011 /* PrivacyAlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000010 /* PrivacyAlertsView.swift */; };
+		0F0F0F0F0F0F0F0F0F000014 /* DiskAgeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000013 /* DiskAgeAnalyzer.swift */; };
+		0F0F0F0F0F0F0F0F0F000016 /* DiskAgeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000015 /* DiskAgeMapView.swift */; };
+		0F0F0F0F0F0F0F0F0F000018 /* DiskSunburstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000017 /* DiskSunburstView.swift */; };
+		0F0F0F0F0F0F0F0F0F00001A /* DiskTreemapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F0F0F0F0F0F0F0F000019 /* DiskTreemapView.swift */; };
 		1B1A4ECA59DA1C797866ED70 /* DuplicatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103AADAB692813C6D04C0E97 /* DuplicatesView.swift */; };
 		1BC98E1954D1AFBBCC49050D /* CleanupStateMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BDBFF77A67A9141C1C5796 /* CleanupStateMachineTests.swift */; };
 		1BE271D883FB9BB89236DA15 /* OperationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9733A8855228C1AC3476B /* OperationRecord.swift */; };
@@ -275,6 +287,18 @@
 		0E2054AC6A4525A796258743 /* FileSystemContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemContext.swift; sourceTree = "<group>"; };
 		0E50B7CFC3A4DFDD52CC0EF1 /* MacTidyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacTidyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F6BA430DBA22418A7A0D0D8 /* String+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localization.swift"; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000001 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000002 /* MonitorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorViewModel.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000006 /* BatteryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryInfo.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000008 /* NetworkThroughput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkThroughput.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F00000A /* RingGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingGaugeView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F00000C /* SparklineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparklineView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F00000E /* PrivacyMonitorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyMonitorViewModel.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000010 /* PrivacyAlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAlertsView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000013 /* DiskAgeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskAgeAnalyzer.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000015 /* DiskAgeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskAgeMapView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000017 /* DiskSunburstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSunburstView.swift; sourceTree = "<group>"; };
+		0F0F0F0F0F0F0F0F0F000019 /* DiskTreemapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskTreemapView.swift; sourceTree = "<group>"; };
 		103AADAB692813C6D04C0E97 /* DuplicatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicatesView.swift; sourceTree = "<group>"; };
 		10C83428355794B6561FCF78 /* CustomSiriCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSiriCommand.swift; sourceTree = "<group>"; };
 		1157C1A1D919A5A05D6F76FE /* LiveResidualAuditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResidualAuditTests.swift; sourceTree = "<group>"; };
@@ -562,6 +586,10 @@
 				B43BADDC2D912E6DCD4FB078 /* DiskAnalyzerViewModel.swift */,
 				829209F31C2C64485ADD1F74 /* DiskItem.swift */,
 				93A4B8FC5247795B48722C8E /* DiskScanner.swift */,
+				0F0F0F0F0F0F0F0F0F000013 /* DiskAgeAnalyzer.swift */,
+				0F0F0F0F0F0F0F0F0F000015 /* DiskAgeMapView.swift */,
+				0F0F0F0F0F0F0F0F0F000017 /* DiskSunburstView.swift */,
+				0F0F0F0F0F0F0F0F0F000019 /* DiskTreemapView.swift */,
 			);
 			path = DiskAnalyzer;
 			sourceTree = "<group>";
@@ -690,7 +718,9 @@
 				C8BB00A9C6F9B8C48B055441 /* Dashboard */,
 				1B65F853368321C72C177963 /* DiskAnalyzer */,
 				8AFF1E2EC97DE6C1F6A24C7F /* Duplicates */,
+				0F0F0F0F0F0F0F0F0F000005 /* Monitor */,
 				366AFB5C6194CEB0E6465E95 /* Permissions */,
+				0F0F0F0F0F0F0F0F0F000012 /* Privacy */,
 				486FFC3EF3DDBDAFAA3397EB /* Processes */,
 				3763CF3EC0BEBFBF397B8E66 /* Settings */,
 				D429B3164548F8E23B63AE5B /* StartupServices */,
@@ -827,6 +857,24 @@
 			path = Rules;
 			sourceTree = "<group>";
 		};
+		0F0F0F0F0F0F0F0F0F000005 /* Monitor */ = {
+			isa = PBXGroup;
+			children = (
+				0F0F0F0F0F0F0F0F0F000001 /* MonitorView.swift */,
+				0F0F0F0F0F0F0F0F0F000002 /* MonitorViewModel.swift */,
+			);
+			path = Monitor;
+			sourceTree = "<group>";
+		};
+		0F0F0F0F0F0F0F0F0F000012 /* Privacy */ = {
+			isa = PBXGroup;
+			children = (
+				0F0F0F0F0F0F0F0F0F00000E /* PrivacyMonitorViewModel.swift */,
+				0F0F0F0F0F0F0F0F0F000010 /* PrivacyAlertsView.swift */,
+			);
+			path = Privacy;
+			sourceTree = "<group>";
+		};
 		8AFF1E2EC97DE6C1F6A24C7F /* Duplicates */ = {
 			isa = PBXGroup;
 			children = (
@@ -950,6 +998,8 @@
 				180E53446953349EB5FB2E04 /* SystemInfo.swift */,
 				93C5FD8CA29FB9E59A400223 /* TrashManager.swift */,
 				BFC6DDA4FC825892B619F2CD /* UpdateChecker.swift */,
+				0F0F0F0F0F0F0F0F0F000006 /* BatteryInfo.swift */,
+				0F0F0F0F0F0F0F0F0F000008 /* NetworkThroughput.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -967,6 +1017,8 @@
 			isa = PBXGroup;
 			children = (
 				60941639B01D13FFFDAC8E36 /* GlassPillPicker.swift */,
+				0F0F0F0F0F0F0F0F0F00000A /* RingGaugeView.swift */,
+				0F0F0F0F0F0F0F0F0F00000C /* SparklineView.swift */,
 			);
 			path = SharedViews;
 			sourceTree = "<group>";
@@ -1261,6 +1313,18 @@
 				C439E95DB3E8B6666B81BDE1 /* DuplicateFileItem.swift in Sources */,
 				F094BF7BF4EA75B947A0DF3F /* DuplicateFinderEngine.swift in Sources */,
 				1B1A4ECA59DA1C797866ED70 /* DuplicatesView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000003 /* MonitorView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000004 /* MonitorViewModel.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000007 /* BatteryInfo.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000009 /* NetworkThroughput.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F00000B /* RingGaugeView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F00000D /* SparklineView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F00000F /* PrivacyMonitorViewModel.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000011 /* PrivacyAlertsView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000014 /* DiskAgeAnalyzer.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000016 /* DiskAgeMapView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F000018 /* DiskSunburstView.swift in Sources */,
+				0F0F0F0F0F0F0F0F0F00001A /* DiskTreemapView.swift in Sources */,
 				538ACA8962099BFC748E72B6 /* DuplicatesViewModel.swift in Sources */,
 				C50AEB6F8125492F79A73313 /* ElectronRule.swift in Sources */,
 				0034381EEDFEBD9342599AB4 /* EmbeddedCleanupPaths.swift in Sources */,

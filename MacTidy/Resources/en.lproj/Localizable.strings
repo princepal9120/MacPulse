@@ -962,3 +962,51 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+"monitor_live_trends" = "Live Trends";
+"monitor_power_thermal" = "Power & Thermal";
+"monitor_charging" = "Charging";
+"monitor_on_battery" = "On Battery";
+"monitor_no_battery" = "No battery detected (desktop Mac).";
+"monitor_charge_limit" = "Charge Limit (80%)";
+"monitor_privileged_helper_note" = "Requires a privileged helper tool — not yet available.";
+"monitor_thermals_fan" = "Thermals & Fan";
+"monitor_fan_note" = "Fan speed and RPM require undocumented, hardware-specific SMC access and are not read directly. Thermal pressure above is a real, live proxy for fan activity — from macOS's public thermal-state API.";
+"monitor_footer_note" = "Read-only metrics from public Apple APIs (IOKit power sources, ProcessInfo thermal state, network interface counters). Hardware writes (fan control, charge limiting) require privileged APIs and are intentionally not enabled.";
+
+/* Privacy Alerts */
+"menu_privacy" = "Privacy Alerts";
+"privacy_subtitle" = "Camera & microphone activity";
+"privacy_recent_activity" = "Recent Activity";
+"privacy_in_use" = "In use";
+"privacy_idle" = "Idle";
+"privacy_active" = "Active";
+"privacy_ended" = "Ended";
+"privacy_empty_state" = "No camera or microphone activity detected yet.";
+"privacy_footer_note" = "Monitors AVCaptureDevice's public in-use indicator — the same signal behind the orange/green camera/mic dots. No video or audio is accessed, recorded, or transmitted.";
+
+/* Disk Analyzer — view modes */
+"disk_view_mode_list" = "List";
+"disk_view_mode_treemap" = "Treemap";
+"disk_view_mode_sunburst" = "Sunburst";
+"disk_view_mode_age_map" = "Age Map";
+"disk_analyzer_treemap_hint" = "Click to select, double-click a folder to open it";
+
+/* Disk Analyzer — age map */
+"age_bucket_week" = "Last 7 days";
+"age_bucket_month" = "Last 30 days";
+"age_bucket_quarter" = "Last 3 months";
+"age_bucket_year" = "Last year";
+"age_bucket_two_years" = "1–2 years";
+"age_bucket_ancient" = "2+ years";
+"age_map_empty" = "Rescan to see how your files break down by age.";
+"age_map_breakdown_title" = "Bytes by Age";
+"age_map_breakdown_subtitle" = "%@ across %d files with a known modification date";
+"age_map_heatmap_title" = "Last-Modified Heatmap";
+"age_map_heatmap_subtitle" = "The last 24 months — darker means more written that month";
+"age_map_untouched_title" = "Big & Untouched";
+"age_map_untouched_subtitle" = "Files over %@ you haven't opened in a year";
+"age_map_untouched_none" = "Nothing big has gone untouched for a year. Nice.";
+"age_map_stage_all" = "Move All to Trash (%@)";
+"age_map_stage_all_confirm_title" = "Move all untouched files to Trash?";
+"age_map_stage_all_confirm_message" = "This moves %d file(s) totaling %@ to the Trash. You can restore them from there.";
+"age_map_stage_all_confirm_action" = "Move to Trash";

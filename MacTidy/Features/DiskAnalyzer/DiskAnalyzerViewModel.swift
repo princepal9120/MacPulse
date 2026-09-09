@@ -3,6 +3,34 @@ import SwiftUI
 import Observation
 import OSLog
 
+/// How the scan result is drawn. One scan, several readings of it.
+public enum DiskViewMode: String, CaseIterable, Identifiable, Sendable {
+    case list
+    case treemap
+    case sunburst
+    case ageMap
+
+    public var id: String { rawValue }
+
+    public var localizedName: String {
+        switch self {
+        case .list: return "disk_view_mode_list".localized
+        case .treemap: return "disk_view_mode_treemap".localized
+        case .sunburst: return "disk_view_mode_sunburst".localized
+        case .ageMap: return "disk_view_mode_age_map".localized
+        }
+    }
+
+    public var systemImage: String {
+        switch self {
+        case .list: return "list.bullet"
+        case .treemap: return "square.grid.2x2"
+        case .sunburst: return "chart.pie"
+        case .ageMap: return "calendar"
+        }
+    }
+}
+
 @MainActor
 @Observable
 public final class DiskAnalyzerViewModel {
@@ -20,8 +48,12 @@ public final class DiskAnalyzerViewModel {
     public var quickLookURL: URL?
     public var selectedCategory: FileCategory = .all
     public var searchQuery: String = ""
-    
+    public var viewMode: DiskViewMode = .list
+    public private(set) var ageReport: DiskAgeReport?
+    public private(set) var isBuildingAgeReport = false
+
     private var scanTask: Task<Void, Never>?
+    private var ageTask: Task<Void, Never>?
     
     public init() {}
     
@@ -76,6 +108,8 @@ public final class DiskAnalyzerViewModel {
         pathTrail = []
         selectedItem = nil
         quickLookURL = nil
+        ageTask?.cancel()
+        ageReport = nil
         
         scanTask = Task {
             do {
@@ -89,6 +123,7 @@ public final class DiskAnalyzerViewModel {
                 self.rootItem = scannedRoot
                 self.pathTrail = [scannedRoot]
                 self.isScanning = false
+                self.buildAgeReport(for: scannedRoot)
             } catch {
                 self.logger.error("Scan failed: \(error.localizedDescription)")
                 self.isScanning = false
@@ -96,6 +131,39 @@ public final class DiskAnalyzerViewModel {
         }
     }
     
+    /// The walk is O(files), so it runs off the main actor once a scan lands.
+    private func buildAgeReport(for root: DiskItem) {
+        ageTask?.cancel()
+        isBuildingAgeReport = true
+        ageTask = Task {
+            let report = await Task.detached(priority: .utility) {
+                DiskAgeAnalyzer().analyze(root: root)
+            }.value
+            guard !Task.isCancelled else { return }
+            self.ageReport = report
+            self.isBuildingAgeReport = false
+        }
+    }
+
+    /// Trashes every big-and-untouched file in one pass, then rebuilds the report
+    /// from whatever survived.
+    public func trashAllUntouched() {
+        guard let report = ageReport, !report.bigAndUntouched.isEmpty else { return }
+        Task {
+            for item in report.bigAndUntouched {
+                do {
+                    _ = try await trashManager.trashItem(at: item.url)
+                    removeItemFromTree(item: item)
+                } catch {
+                    self.logger.error("Failed to trash \(item.url.path): \(error.localizedDescription)")
+                }
+            }
+            if let root = rootItem {
+                buildAgeReport(for: root)
+            }
+        }
+    }
+
     public func drillDown(into item: DiskItem) {
         guard item.isDirectory && !item.isPackage else { return }
         pathTrail.append(item)
@@ -134,6 +202,7 @@ public final class DiskAnalyzerViewModel {
                 
                 // Remove item from currentItem's children in memory
                 removeItemFromTree(item: item)
+                dropFromAgeReport(item: item)
             } catch {
                 self.logger.error("Failed to move item to trash: \(error.localizedDescription)")
             }
@@ -144,6 +213,17 @@ public final class DiskAnalyzerViewModel {
         NSWorkspace.shared.selectFile(item.url.path, inFileViewerRootedAtPath: "")
     }
     
+    private func dropFromAgeReport(item: DiskItem) {
+        guard let report = ageReport, report.bigAndUntouched.contains(where: { $0.url == item.url }) else { return }
+        ageReport = DiskAgeReport(
+            slices: report.slices,
+            months: report.months,
+            bigAndUntouched: report.bigAndUntouched.filter { $0.url != item.url },
+            totalBytes: report.totalBytes,
+            datedFileCount: report.datedFileCount
+        )
+    }
+
     private func removeItemFromTree(item: DiskItem) {
         guard var curr = pathTrail.last else { return }
         let freedSize = item.size

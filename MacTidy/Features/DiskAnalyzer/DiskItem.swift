@@ -53,6 +53,8 @@ public struct DiskItem: Identifiable, Hashable, Sendable {
     public var children: [DiskItem]?
     public let fileType: FileCategory
     public let parentURL: URL?
+    /// Last write time. Directories carry the newest date found beneath them.
+    public let modifiedAt: Date?
     
     public init(
         id: UUID = UUID(),
@@ -64,7 +66,8 @@ public struct DiskItem: Identifiable, Hashable, Sendable {
         fileCount: Int = 0,
         children: [DiskItem]? = nil,
         fileType: FileCategory,
-        parentURL: URL? = nil
+        parentURL: URL? = nil,
+        modifiedAt: Date? = nil
     ) {
         self.id = id
         self.url = url
@@ -76,6 +79,7 @@ public struct DiskItem: Identifiable, Hashable, Sendable {
         self.children = children
         self.fileType = fileType
         self.parentURL = parentURL
+        self.modifiedAt = modifiedAt
     }
     
     /// Recursively gathers all leaf files/packages under this item matching an optional category.

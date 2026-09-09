@@ -12,17 +12,15 @@ public struct DiskAnalyzerView: View {
     public var body: some View {
         VStack(spacing: 12) {
             headerControlsView
-            
+
             if !viewModel.isScanning && viewModel.currentItem != nil {
                 breadcrumbsView
             }
-            
+
             if viewModel.isScanning {
                 scanningView
-            } else if viewModel.displayedItems.isEmpty {
-                emptyView
             } else {
-                itemsListView
+                modeContent
             }
         }
         .padding(16)
@@ -31,6 +29,68 @@ public struct DiskAnalyzerView: View {
             if viewModel.rootURL == nil {
                 viewModel.startScan(for: FileManager.default.homeDirectoryForCurrentUser)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var modeContent: some View {
+        switch viewModel.viewMode {
+        case .list:
+            if viewModel.displayedItems.isEmpty {
+                emptyView
+            } else {
+                itemsListView
+            }
+        case .treemap:
+            if viewModel.displayedItems.isEmpty {
+                emptyView
+            } else {
+                DiskTreemapView(
+                    items: viewModel.displayedItems,
+                    selectedItem: viewModel.selectedItem,
+                    onSelect: { viewModel.selectedItem = $0 },
+                    onOpen: { drillOrSelect($0) }
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .glassCard(cornerRadius: 10)
+            }
+        case .sunburst:
+            if let current = viewModel.currentItem, !viewModel.displayedItems.isEmpty {
+                DiskSunburstView(
+                    root: current,
+                    selectedItem: viewModel.selectedItem,
+                    onSelect: { viewModel.selectedItem = $0 },
+                    onOpen: { drillOrSelect($0) }
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .glassCard(cornerRadius: 10)
+            } else {
+                emptyView
+            }
+        case .ageMap:
+            if viewModel.isBuildingAgeReport {
+                scanningView
+            } else {
+                DiskAgeMapView(
+                    report: viewModel.ageReport ?? DiskAgeReport(slices: [], months: [], bigAndUntouched: [], totalBytes: 0, datedFileCount: 0),
+                    selectedItem: viewModel.selectedItem,
+                    onSelect: { viewModel.selectedItem = $0 },
+                    onQuickLook: { viewModel.toggleQuickLook(for: $0) },
+                    onShowInFinder: { viewModel.showInFinder(item: $0) },
+                    onTrash: { viewModel.moveToTrash(item: $0) },
+                    onTrashAllUntouched: { viewModel.trashAllUntouched() }
+                )
+            }
+        }
+    }
+
+    private func drillOrSelect(_ item: DiskItem) {
+        if item.isDirectory && !item.isPackage {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                viewModel.drillDown(into: item)
+            }
+        } else {
+            viewModel.selectedItem = item
         }
     }
     
@@ -60,6 +120,8 @@ public struct DiskAnalyzerView: View {
             }
 
             Spacer()
+
+            viewModePicker
 
             categoryFilterView
 
@@ -101,6 +163,15 @@ public struct DiskAnalyzerView: View {
         GlassPillPicker(
             items: FileCategory.allCases,
             selection: $viewModel.selectedCategory,
+            label: { $0.localizedName }
+        )
+    }
+
+    private var viewModePicker: some View {
+        GlassPillPicker(
+            items: DiskViewMode.allCases,
+            selection: $viewModel.viewMode,
+            icon: { $0.systemImage },
             label: { $0.localizedName }
         )
     }
