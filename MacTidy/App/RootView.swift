@@ -6,6 +6,7 @@ struct RootView: View {
     let journal: TransactionJournal
     let appSettings: AppSettings
     let monitorViewModel: MonitorViewModel
+    let privacyMonitorViewModel: PrivacyMonitorViewModel
     @Bindable var permissionsManager: PermissionsManager
     @Bindable var updatePrompt: UpdatePromptController
     @Binding var availableUpdate: AvailableUpdate?
@@ -16,7 +17,7 @@ struct RootView: View {
 
     var body: some View {
         NavigationSplitView {
-            sidebar
+            sidebarcomm
         } detail: {
             detail
         }
@@ -53,6 +54,13 @@ struct RootView: View {
             if !showing {
                 presentUpdateIfReady()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .macTidyNavigate)) { notification in
+            guard let rawValue = notification.object as? String,
+                  let item = NavigationItem(rawValue: rawValue) else { return }
+            selection = .feature(item)
+            NSApp.activate(ignoringOtherApps: true)
+            NSApp.windows.first(where: { $0.canBecomeMain })?.makeKeyAndOrderFront(nil)
         }
     }
 
@@ -170,7 +178,11 @@ struct RootView: View {
     private func featureView(for item: NavigationItem) -> some View {
         switch item {
         case .dashboard:
-            DashboardView(journal: journal)
+            DashboardView(
+                journal: journal,
+                monitorViewModel: monitorViewModel,
+                privacyMonitor: privacyMonitorViewModel
+            )
         case .cleanup:
             CleanupView(viewModel: cleanupViewModel)
         case .diskSpace:
@@ -182,7 +194,7 @@ struct RootView: View {
         case .monitor:
             MonitorView(viewModel: monitorViewModel)
         case .privacy:
-            PrivacyAlertsView()
+            PrivacyAlertsView(viewModel: privacyMonitorViewModel)
         case .startupServices:
             StartupServicesView(settings: appSettings)
         case .uninstaller:
@@ -204,6 +216,7 @@ struct RootView: View {
         journal: journal,
         appSettings: settings,
         monitorViewModel: MonitorViewModel(),
+        privacyMonitorViewModel: PrivacyMonitorViewModel(),
         permissionsManager: PermissionsManager(),
         updatePrompt: UpdatePromptController(),
         availableUpdate: .constant(nil)

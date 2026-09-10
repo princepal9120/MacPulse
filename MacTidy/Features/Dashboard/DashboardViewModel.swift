@@ -156,7 +156,8 @@ class DashboardViewModel: ObservableObject {
         self.isCategoriesLoading = false
     }
     
-    private func calculatePathSize(_ path: String) async -> Int64 {
+    // ponytail: nonisolated to avoid blocking main thread on directory enumeration
+    private nonisolated func calculatePathSize(_ path: String) async -> Int64 {
         let fm = FileManager.default
         let url = URL(fileURLWithPath: path)
         var isDirectory: ObjCBool = false

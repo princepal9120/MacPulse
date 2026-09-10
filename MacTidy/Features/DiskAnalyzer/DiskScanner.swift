@@ -1,29 +1,27 @@
 import Foundation
 import OSLog
+import Darwin
 
 public actor DiskScanner {
     private let logger = Logger(subsystem: "input.MacTidy", category: "DiskScanner")
-    
+
     private static let packageExtensions: Set<String> = [
-        "app", "bundle", "framework", "plugin", "kext", "photoslibrary",
+        "app", "bundle", "framework", "plugin", "kext", "photoslibrary", "musiclibrary",
         "savedstate", "pkg", "dmg", "lproj", "workflow", "qlgenerator", "prefpane"
     ]
-    
+
+    private static let packageDirectoryNames: Set<String> = [
+        "node_modules", "Pods", "DerivedData", ".build", "target", ".gradle",
+        ".cargo", "vendor", ".venv", "venv", ".next", ".nuxt", ".svelte-kit", ".bundle"
+    ]
+
     public init() {}
-    
+
     /// Scans a directory and returns its hierarchical tree rooted at `directoryURL`.
     public func scan(
         directoryURL: URL,
         onProgress: @Sendable @escaping (String) -> Void
     ) async throws -> DiskItem {
-        let activity = ProcessInfo.processInfo.beginActivity(
-            options: .userInitiated,
-            reason: "Scanning disk space at \(directoryURL.lastPathComponent)"
-        )
-        defer {
-            ProcessInfo.processInfo.endActivity(activity)
-        }
-        
         let rootURL = directoryURL.standardizedFileURL
         let fm = FileManager.default
         let keys: [URLResourceKey] = [
@@ -35,34 +33,35 @@ public actor DiskScanner {
             .ubiquitousItemDownloadingStatusKey,
             .contentModificationDateKey
         ]
-        
+
         let rootNode = DirectoryNode(url: rootURL, name: rootURL.lastPathComponent, parentURL: nil)
         var directoryNodes: [URL: DirectoryNode] = [rootURL: rootNode]
-        
+
         guard let enumerator = fm.enumerator(
             at: rootURL,
             includingPropertiesForKeys: keys,
-            options: [.skipsHiddenFiles],
+            // Include hidden folders: macOS storage is concentrated in Library and dot-directories.
+            options: [],
             errorHandler: { _, _ in true }
         ) else {
             return rootNode.toDiskItem()
         }
-        
+
         var count = 0
-        
+
         while let fileURL = enumerator.nextObject() as? URL {
             if Task.isCancelled { break }
             let standardURL = fileURL.standardizedFileURL
-            
+
             if FileManager.shouldExclude(url: standardURL) {
                 if (try? standardURL.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
                     enumerator.skipDescendants()
                 }
                 continue
             }
-            
+
             guard let values = try? standardURL.resourceValues(forKeys: Set(keys)) else { continue }
-            
+
             // Skip dataless iCloud files to avoid triggering network downloads
             if let isUbiquitous = values.isUbiquitousItem, isUbiquitous {
                 if values.ubiquitousItemDownloadingStatus == .notDownloaded {
@@ -72,11 +71,14 @@ public actor DiskScanner {
                     continue
                 }
             }
-            
+
             let isDir = values.isDirectory ?? false
+            let lastComp = standardURL.lastPathComponent
             let ext = standardURL.pathExtension.lowercased()
-            let isPackage = (values.isPackage ?? false) || Self.packageExtensions.contains(ext)
-            
+            let isPackage = (values.isPackage ?? false) ||
+                Self.packageExtensions.contains(ext) ||
+                Self.packageDirectoryNames.contains(lastComp)
+
             if isDir && !isPackage {
                 let parentURL = standardURL.deletingLastPathComponent().standardizedFileURL
                 let parentNode = getOrCreateDirectoryNode(
@@ -86,7 +88,7 @@ public actor DiskScanner {
                 )
                 let node = DirectoryNode(
                     url: standardURL,
-                    name: standardURL.lastPathComponent,
+                    name: lastComp,
                     parentURL: parentURL
                 )
                 directoryNodes[standardURL] = node
@@ -100,20 +102,19 @@ public actor DiskScanner {
                     rootURL: rootURL,
                     directoryNodes: &directoryNodes
                 )
-                
+
                 let item = DiskItem(
                     url: standardURL,
-                    name: standardURL.lastPathComponent,
+                    name: lastComp,
                     isDirectory: true,
                     isPackage: true,
                     size: pkgSize.size,
                     fileCount: pkgSize.fileCount,
-                    fileType: .apps,
+                    fileType: Self.packageDirectoryNames.contains(lastComp) ? .archives : .apps,
                     parentURL: parentURL,
                     modifiedAt: values.contentModificationDate
                 )
                 parentNode.fileChildren.append(item)
-                propagateSize(pkgSize.size, fileCount: pkgSize.fileCount, from: parentNode, directoryNodes: directoryNodes, rootURL: rootURL)
             } else {
                 let allocatedSize = Int64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
                 let parentURL = standardURL.deletingLastPathComponent().standardizedFileURL
@@ -122,10 +123,10 @@ public actor DiskScanner {
                     rootURL: rootURL,
                     directoryNodes: &directoryNodes
                 )
-                
+
                 let item = DiskItem(
                     url: standardURL,
-                    name: standardURL.lastPathComponent,
+                    name: lastComp,
                     isDirectory: false,
                     isPackage: false,
                     size: allocatedSize,
@@ -135,19 +136,18 @@ public actor DiskScanner {
                     modifiedAt: values.contentModificationDate
                 )
                 parentNode.fileChildren.append(item)
-                propagateSize(allocatedSize, fileCount: 1, from: parentNode, directoryNodes: directoryNodes, rootURL: rootURL)
             }
-            
+
             count += 1
-            if count % 1000 == 0 {
-                onProgress(standardURL.lastPathComponent)
+            if count % 200 == 0 {
+                onProgress(lastComp)
                 await Task.yield()
             }
         }
-        
+
         return rootNode.toDiskItem()
     }
-    
+
     private func getOrCreateDirectoryNode(
         url: URL,
         rootURL: URL,
@@ -156,7 +156,7 @@ public actor DiskScanner {
         if let existing = directoryNodes[url] {
             return existing
         }
-        
+
         let parentURL = url.deletingLastPathComponent().standardizedFileURL
         let parentNode: DirectoryNode?
         if url != rootURL && url.path.hasPrefix(rootURL.path) {
@@ -168,7 +168,7 @@ public actor DiskScanner {
         } else {
             parentNode = nil
         }
-        
+
         let node = DirectoryNode(
             url: url,
             name: url.lastPathComponent,
@@ -178,55 +178,42 @@ public actor DiskScanner {
         parentNode?.subdirectories[url] = node
         return node
     }
-    
-    private func propagateSize(
-        _ size: Int64,
-        fileCount: Int,
-        from node: DirectoryNode,
-        directoryNodes: [URL: DirectoryNode],
-        rootURL: URL
-    ) {
-        var current: DirectoryNode? = node
-        while let curr = current {
-            curr.size += size
-            curr.fileCount += fileCount
-            if curr.url == rootURL { break }
-            if let pURL = curr.parentURL {
-                current = directoryNodes[pURL]
-            } else {
-                break
-            }
-        }
-    }
-    
+
     private func calculatePackageSize(url: URL) async -> (size: Int64, fileCount: Int) {
-        if Task.isCancelled { return (0, 0) }
-        let fm = FileManager.default
-        let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileSizeKey, .isDirectoryKey]
-        
-        guard let enumerator = fm.enumerator(
-            at: url,
-            includingPropertiesForKeys: keys,
-            options: [.skipsHiddenFiles]
-        ) else {
-            let values = try? url.resourceValues(forKeys: Set(keys))
+        let path = url.path
+        let cPath = path.withCString { strdup($0) }
+        guard let cPath else { return (0, 1) }
+        defer { free(cPath) }
+
+        var paths: [UnsafeMutablePointer<CChar>?] = [cPath, nil]
+        guard let tree = fts_open(&paths, FTS_PHYSICAL | FTS_NOCHDIR | FTS_XDEV, nil) else {
+            let values = try? url.resourceValues(forKeys: [.totalFileAllocatedSizeKey, .fileSizeKey])
             let s = Int64(values?.totalFileAllocatedSize ?? values?.fileSize ?? 0)
             return (s, 1)
         }
-        
+        defer { fts_close(tree) }
+
         var totalSize: Int64 = 0
         var totalFiles = 0
-        
-        while let fileURL = enumerator.nextObject() as? URL {
+
+        while let entry = fts_read(tree) {
             if Task.isCancelled { break }
-            guard let values = try? fileURL.resourceValues(forKeys: Set(keys)) else { continue }
-            let isDir = values.isDirectory ?? false
-            if !isDir {
-                totalSize += Int64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
+            let info = Int32(entry.pointee.fts_info)
+            if info == FTS_F || info == FTS_NSOK {
                 totalFiles += 1
+                if let stat = entry.pointee.fts_statp {
+                    totalSize += Int64(stat.pointee.st_blocks) * 512
+                }
+            }
+
+            // Package directories can contain hundreds of thousands of files.
+            // Yield periodically so cancellation and UI work are serviced
+            // promptly instead of monopolising the cooperative executor.
+            if totalFiles.isMultiple(of: 256) {
+                await Task.yield()
             }
         }
-        
+
         return (totalSize, max(1, totalFiles))
     }
 }
@@ -235,33 +222,43 @@ private final class DirectoryNode: @unchecked Sendable {
     let url: URL
     let name: String
     let parentURL: URL?
-    var fileCount: Int = 0
-    var size: Int64 = 0
     var fileChildren: [DiskItem] = []
     var subdirectories: [URL: DirectoryNode] = [:]
-    
+
     init(url: URL, name: String, parentURL: URL?) {
         self.url = url
         self.name = name
         self.parentURL = parentURL
     }
-    
+
     func toDiskItem() -> DiskItem {
         var allChildren: [DiskItem] = []
-        allChildren.append(contentsOf: fileChildren)
-        for (_, subNode) in subdirectories {
-            allChildren.append(subNode.toDiskItem())
+        var totalSize: Int64 = 0
+        var totalFiles: Int = 0
+
+        for file in fileChildren {
+            totalSize += file.size
+            totalFiles += file.fileCount
+            allChildren.append(file)
         }
+
+        for (_, subNode) in subdirectories {
+            let subItem = subNode.toDiskItem()
+            totalSize += subItem.size
+            totalFiles += subItem.fileCount
+            allChildren.append(subItem)
+        }
+
         allChildren.sort { $0.size > $1.size }
         let newestChild = allChildren.compactMap(\.modifiedAt).max()
-        
+
         return DiskItem(
             url: url,
             name: name.isEmpty ? "/" : name,
             isDirectory: true,
             isPackage: false,
-            size: size,
-            fileCount: fileCount,
+            size: totalSize,
+            fileCount: totalFiles,
             children: allChildren,
             fileType: .all,
             parentURL: parentURL,
@@ -269,4 +266,3 @@ private final class DirectoryNode: @unchecked Sendable {
         )
     }
 }
-

@@ -82,6 +82,39 @@ public struct DiskItem: Identifiable, Hashable, Sendable {
         self.modifiedAt = modifiedAt
     }
     
+    /// Recursively gathers all directory items under this item.
+    public func allDescendantFolders() -> [DiskItem] {
+        var results: [DiskItem] = []
+        func traverse(_ item: DiskItem) {
+            if item.isDirectory && !item.isPackage {
+                if item.id != self.id {
+                    results.append(item)
+                }
+                if let children = item.children {
+                    for child in children {
+                        traverse(child)
+                    }
+                }
+            }
+        }
+        traverse(self)
+        return results.sorted { $0.size > $1.size }
+    }
+
+    /// Total count of subdirectories under this item.
+    public var folderCount: Int {
+        var count = 0
+        func traverse(_ item: DiskItem) {
+            guard let children = item.children else { return }
+            for child in children where child.isDirectory && !child.isPackage {
+                count += 1
+                traverse(child)
+            }
+        }
+        traverse(self)
+        return count
+    }
+
     /// Recursively gathers all leaf files/packages under this item matching an optional category.
     public func allDescendantFiles(matching category: FileCategory? = nil) -> [DiskItem] {
         var results: [DiskItem] = []

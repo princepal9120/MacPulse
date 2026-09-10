@@ -4,9 +4,7 @@ import SwiftUI
 
 enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     case general
-    case cleanup
     case automation
-    case processes
     case advanced
     case about
 
@@ -15,9 +13,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     var displayName: String {
         switch self {
         case .general: return "settings_category_general".localized
-        case .cleanup: return "settings_category_cleanup".localized
         case .automation: return "settings_category_automation".localized
-        case .processes: return "settings_category_processes".localized
         case .advanced: return "settings_category_advanced".localized
         case .about: return "settings_category_about".localized
         }
@@ -26,9 +22,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     var iconName: String {
         switch self {
         case .general: return "gearshape.fill"
-        case .cleanup: return "trash.circle.fill"
         case .automation: return "waveform"
-        case .processes: return "cpu"
         case .advanced: return "wrench.and.screwdriver.fill"
         case .about: return "info.circle.fill"
         }
@@ -37,9 +31,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     var iconColor: Color {
         switch self {
         case .general: return .gray
-        case .cleanup: return .teal
         case .automation: return .purple
-        case .processes: return .orange
         case .advanced: return .indigo
         case .about: return .cyan
         }
@@ -84,19 +76,19 @@ struct SettingsSearchRegistry {
         SettingsItem(id: "fda", category: .general, titleKey: "permissions.full_disk_access", subtitleKey: "settings_fda_body", keywords: ["fda", "full disk access", "permissions", "диск", "права", "полный доступ"], iconName: "lock.shield"),
         SettingsItem(id: "notifications", category: .general, titleKey: "settings_notifications", subtitleKey: "settings_notifications_enable_sub", keywords: ["notifications", "уведомления", "alerts", "алерты"], iconName: "bell"),
 
-        // Cleanup
-        SettingsItem(id: "scanMode", category: .cleanup, titleKey: "scan_mode", subtitleKey: "settings_scan_mode_sub", keywords: ["scan", "uninstaller", "mode", "режим", "сканирование"], iconName: "slider.horizontal.3"),
-        SettingsItem(id: "emptyTrash", category: .cleanup, titleKey: "settings_empty_trash_during_cleanup", subtitleKey: "settings_empty_trash_cleanup_sub", keywords: ["empty", "trash", "очистка", "корзина"], iconName: "trash"),
-        SettingsItem(id: "bypassTrash", category: .cleanup, titleKey: "settings_bypass_trash_on_uninstall", subtitleKey: "settings_bypass_trash_sub", keywords: ["bypass", "direct", "delete", "обход корзины", "удаление"], iconName: "xmark.bin"),
+        // Cleanup & Deletion (in Advanced)
+        SettingsItem(id: "scanMode", category: .advanced, titleKey: "scan_mode", subtitleKey: "settings_scan_mode_sub", keywords: ["scan", "uninstaller", "mode", "режим", "сканирование"], iconName: "slider.horizontal.3"),
+        SettingsItem(id: "emptyTrash", category: .advanced, titleKey: "settings_empty_trash_during_cleanup", subtitleKey: "settings_empty_trash_cleanup_sub", keywords: ["empty", "trash", "очистка", "корзина"], iconName: "trash"),
+        SettingsItem(id: "bypassTrash", category: .advanced, titleKey: "settings_bypass_trash_on_uninstall", subtitleKey: "settings_bypass_trash_sub", keywords: ["bypass", "direct", "delete", "обход корзины", "удаление"], iconName: "xmark.bin"),
 
         // Automation & AI
         SettingsItem(id: "siri", category: .automation, titleKey: "settings_siri_toggle_title", subtitleKey: "settings_enable_siri_sub", keywords: ["siri", "voice", "сири", "голос", "команды"], iconName: "waveform"),
         SettingsItem(id: "shortcuts", category: .automation, titleKey: "settings_automator_toggle_title", subtitleKey: "settings_enable_shortcuts_sub", keywords: ["shortcuts", "automator", "быстрые команды", "автоматизация"], iconName: "square.stack.3d.up"),
         SettingsItem(id: "enableAI", category: .automation, titleKey: "settings_enable_ai", subtitleKey: "settings_enable_ai_sub", keywords: ["ai", "apple intelligence", "smart", "искусственный интеллект", "модель"], iconName: "sparkles"),
 
-        // Processes
-        SettingsItem(id: "refreshInterval", category: .processes, titleKey: "settings_refresh_interval", subtitleKey: "settings_refresh_interval_sub", keywords: ["refresh", "interval", "processes", "процессы", "интервал"], iconName: "timer"),
-        SettingsItem(id: "sortBy", category: .processes, titleKey: "settings_sort_option_title", subtitleKey: "settings_sort_option_sub", keywords: ["sort", "cpu", "memory", "сортировка", "память"], iconName: "arrow.up.arrow.down"),
+        // Processes (in Advanced)
+        SettingsItem(id: "refreshInterval", category: .advanced, titleKey: "settings_refresh_interval", subtitleKey: "settings_refresh_interval_sub", keywords: ["refresh", "interval", "processes", "процессы", "интервал"], iconName: "timer"),
+        SettingsItem(id: "sortBy", category: .advanced, titleKey: "settings_sort_option_title", subtitleKey: "settings_sort_option_sub", keywords: ["sort", "cpu", "memory", "сортировка", "память"], iconName: "arrow.up.arrow.down"),
 
         // Advanced
         SettingsItem(id: "relatedFiles", category: .advanced, titleKey: "settings_show_related_app_files", subtitleKey: "settings_show_related_app_files_sub", keywords: ["related", "advanced", "файлы", "связанные"], iconName: "doc.on.doc"),

@@ -1973,8 +1973,8 @@ extension CleanupEngine {
         let home = fileSystemContext.homePath
         progress?(.log("Scanning scattered junk..."))
 
+        // ponytail: targeted user directories where junk accumulates; exclude full home root
         let scanDirs = [
-            home,
             "/Applications",
             "\(home)/Documents",
             "\(home)/Downloads",
@@ -2242,7 +2242,14 @@ extension CleanupEngine {
 
         // IPSW firmware files
         progress?(.log("  Scanning for IPSW firmware files..."))
-        let ipswSearchDirs = [home, "/tmp"]
+        // ponytail: check standard Apple restore image locations; avoid scanning entire home
+        let ipswSearchDirs = [
+            "\(home)/Library/iTunes/iPhone Software Updates",
+            "\(home)/Library/iTunes/iPad Software Updates",
+            "\(home)/Library/iTunes/iPod Software Updates",
+            "\(home)/Library/Group Containers/K36BKF7T3D.group.com.apple.configurator/Library/Caches",
+            "/tmp"
+        ]
         for dir in ipswSearchDirs {
             guard fm.fileExists(atPath: dir) else { continue }
             guard let enumerator = fm.enumerator(atPath: dir) else { continue }

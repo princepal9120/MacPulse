@@ -69,7 +69,8 @@ extension FileManager {
     /// 2. `lastPathComponent` matches `excludedFileNames`
     /// 3. Any ancestor directory name matches `excludedDirectoryNames`
     public static func shouldExclude(url: URL) -> Bool {
-        if url.path.hasPrefix("/System") { return true }
+        let path = url.path
+        if path.hasPrefix("/System") { return true }
 
         let ext = url.pathExtension.lowercased()
         if excludedExtensions.contains(ext) { return true }
@@ -77,14 +78,10 @@ extension FileManager {
         let lastPath = url.lastPathComponent
         if excludedFileNames.contains(lastPath) { return true }
 
-        var parent = url.deletingLastPathComponent()
-        var depth = 0
-        while parent.path != "/" && depth < 10 {
-            if excludedDirectoryNames.contains(where: { parent.lastPathComponent.hasSuffix($0) }) {
+        for dirName in excludedDirectoryNames {
+            if path.contains("/" + dirName + "/") || path.hasSuffix("/" + dirName) {
                 return true
             }
-            parent = parent.deletingLastPathComponent()
-            depth += 1
         }
 
         return false
@@ -217,5 +214,10 @@ extension FileManager {
         FileManager._sizeCache.setObject(NSNumber(value: size), forKey: cacheKey)
         FileManager._sizeCacheLock.unlock()
         return size
+    }
+
+    /// Format byte size using project-standard byte count formatter.
+    public static func formatSize(_ bytes: Int64) -> String {
+        bytes.formattedByteCount()
     }
 }

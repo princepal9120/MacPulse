@@ -1,0 +1,5 @@
+schemaVersion: 1
+sessionDefaults:
+  projectPath: /Users/princepal/Downloads/MacTidy/MacTidy/MacTidy.xcodeproj
+  scheme: MacTidy
+  platform: macos

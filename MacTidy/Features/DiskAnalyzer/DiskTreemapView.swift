@@ -1,36 +1,16 @@
 import SwiftUI
 
-/// Shared colouring so a folder keeps the same colour in every visual mode.
-enum DiskPalette {
-    private static let folderHues: [Color] = [.blue, .indigo, .teal, .cyan, .mint, .purple]
-
-    static func color(for item: DiskItem) -> Color {
-        if item.isDirectory && !item.isPackage {
-            let index = abs(item.name.hashValue) % folderHues.count
-            return folderHues[index]
-        }
-        switch item.fileType {
-        case .video: return .purple
-        case .audio: return .pink
-        case .photo: return .orange
-        case .apps: return .blue
-        case .docs: return .teal
-        case .archives: return .brown
-        case .all: return .gray
-        }
-    }
-}
-
 /// Squarified treemap layout — tiles stay close to square so small items remain
 /// clickable instead of collapsing into slivers.
 struct TreemapLayout {
     struct Tile: Identifiable {
         let item: DiskItem
         let rect: CGRect
+        let depth: Int
         var id: UUID { item.id }
     }
 
-    static func tiles(for items: [DiskItem], in bounds: CGRect) -> [Tile] {
+    static func tiles(for items: [DiskItem], in bounds: CGRect, maxDepth: Int = 3, currentDepth: Int = 1) -> [Tile] {
         let ranked = items.filter { $0.size > 0 }.sorted { $0.size > $1.size }
         guard !ranked.isEmpty, bounds.width > 2, bounds.height > 2 else { return [] }
 
@@ -55,20 +35,36 @@ struct TreemapLayout {
             if currentRow.isEmpty || worstAspect(widened, side: shortSide) <= worstAspect(currentRow, side: shortSide) {
                 index += 1
             } else {
-                tiles.append(contentsOf: place(currentRow, items: ranked, from: rowStart, in: &rect))
+                tiles.append(contentsOf: place(currentRow, items: ranked, from: rowStart, in: &rect, depth: currentDepth))
                 rowStart = index
             }
         }
 
         if rowStart < areas.count {
             let lastRow = Array(areas[rowStart...])
-            tiles.append(contentsOf: place(lastRow, items: ranked, from: rowStart, in: &rect))
+            tiles.append(contentsOf: place(lastRow, items: ranked, from: rowStart, in: &rect, depth: currentDepth))
+        }
+
+        // Recursive sub-tiling for large folders up to maxDepth
+        if currentDepth < maxDepth {
+            var subTiles: [Tile] = []
+            for tile in tiles where tile.item.isDirectory && !tile.item.isPackage {
+                if let children = tile.item.children, !children.isEmpty, tile.rect.width > 75, tile.rect.height > 75 {
+                    let innerBounds = CGRect(
+                        x: tile.rect.minX + 4,
+                        y: tile.rect.minY + 28,
+                        width: max(0, tile.rect.width - 8),
+                        height: max(0, tile.rect.height - 32)
+                    )
+                    subTiles.append(contentsOf: TreemapLayout.tiles(for: children, in: innerBounds, maxDepth: maxDepth, currentDepth: currentDepth + 1))
+                }
+            }
+            tiles.append(contentsOf: subTiles)
         }
 
         return tiles
     }
 
-    /// Ratio of the least square-like tile in the row; lower is better.
     private static func worstAspect(_ row: [Double], side: Double) -> Double {
         guard let maxArea = row.max(), let minArea = row.min(), maxArea > 0, minArea > 0 else { return .infinity }
         let sum = row.reduce(0, +)
@@ -78,27 +74,23 @@ struct TreemapLayout {
         return max(sideSquared * maxArea / sumSquared, sumSquared / (sideSquared * minArea))
     }
 
-    /// Lays the row along the short edge of `rect` and shrinks `rect` by what it consumed.
-    private static func place(
-        _ row: [Double],
-        items: [DiskItem],
-        from startIndex: Int,
-        in rect: inout CGRect
-    ) -> [Tile] {
+    private static func place(_ row: [Double], items: [DiskItem], from startIndex: Int, in rect: inout CGRect, depth: Int) -> [Tile] {
+        guard !row.isEmpty else { return [] }
         let sum = row.reduce(0, +)
         guard sum > 0 else { return [] }
 
         var tiles: [Tile] = []
-        let isVerticalRow = rect.width >= rect.height
+        let alongWidth = rect.width < rect.height
 
-        if isVerticalRow {
+        if alongWidth {
             let rowWidth = CGFloat(sum) / rect.height
             var y = rect.minY
             for (offset, area) in row.enumerated() {
                 let height = CGFloat(area) / rowWidth
                 tiles.append(Tile(
                     item: items[startIndex + offset],
-                    rect: CGRect(x: rect.minX, y: y, width: rowWidth, height: height)
+                    rect: CGRect(x: rect.minX, y: y, width: rowWidth, height: height),
+                    depth: depth
                 ))
                 y += height
             }
@@ -110,7 +102,8 @@ struct TreemapLayout {
                 let width = CGFloat(area) / rowHeight
                 tiles.append(Tile(
                     item: items[startIndex + offset],
-                    rect: CGRect(x: x, y: rect.minY, width: width, height: rowHeight)
+                    rect: CGRect(x: x, y: rect.minY, width: width, height: rowHeight),
+                    depth: depth
                 ))
                 x += width
             }
@@ -121,22 +114,40 @@ struct TreemapLayout {
     }
 }
 
-struct DiskTreemapView: View {
+public struct DiskTreemapView: View {
     let items: [DiskItem]
+    let maxDepth: Int
     let selectedItem: DiskItem?
+    let coloringMode: ColoringMode
     let onSelect: (DiskItem) -> Void
     let onOpen: (DiskItem) -> Void
 
     @State private var hoveredID: UUID?
 
-    private let inset: CGFloat = 1.5
-    private let labelMinWidth: CGFloat = 68
-    private let labelMinHeight: CGFloat = 34
+    private let inset: CGFloat = 1.0
+    private let labelMinWidth: CGFloat = 50
+    private let labelMinHeight: CGFloat = 26
 
-    var body: some View {
+    public init(
+        items: [DiskItem],
+        maxDepth: Int = 4,
+        selectedItem: DiskItem?,
+        coloringMode: ColoringMode = .byFolder,
+        onSelect: @escaping (DiskItem) -> Void,
+        onOpen: @escaping (DiskItem) -> Void
+    ) {
+        self.items = items
+        self.maxDepth = max(1, min(7, maxDepth))
+        self.selectedItem = selectedItem
+        self.coloringMode = coloringMode
+        self.onSelect = onSelect
+        self.onOpen = onOpen
+    }
+
+    public var body: some View {
         GeometryReader { geometry in
             let bounds = CGRect(origin: .zero, size: geometry.size)
-            let tiles = TreemapLayout.tiles(for: items, in: bounds)
+            let tiles = TreemapLayout.tiles(for: items, in: bounds, maxDepth: maxDepth)
 
             Canvas { context, _ in
                 for tile in tiles {
@@ -147,59 +158,61 @@ struct DiskTreemapView: View {
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let point):
-                    hoveredID = tiles.first { $0.rect.contains(point) }?.id
+                    hoveredID = tiles.last { $0.rect.contains(point) }?.id
                 case .ended:
                     hoveredID = nil
                 }
             }
             .gesture(
                 SpatialTapGesture(count: 2).onEnded { event in
-                    if let tile = tiles.first(where: { $0.rect.contains(event.location) }) {
+                    if let tile = tiles.last(where: { $0.rect.contains(event.location) }) {
                         onOpen(tile.item)
                     }
                 }
             )
             .gesture(
                 SpatialTapGesture().onEnded { event in
-                    if let tile = tiles.first(where: { $0.rect.contains(event.location) }) {
+                    if let tile = tiles.last(where: { $0.rect.contains(event.location) }) {
                         onSelect(tile.item)
                     }
                 }
             )
-            .help("disk_analyzer_treemap_hint".localized)
         }
     }
 
     private func draw(_ tile: TreemapLayout.Tile, in context: inout GraphicsContext) {
         let rect = tile.rect.insetBy(dx: inset, dy: inset)
-        guard rect.width > 1, rect.height > 1 else { return }
+        guard rect.width > 2, rect.height > 2 else { return }
 
-        let isHovered = hoveredID == tile.id
+        let path = Path(roundedRect: rect, cornerRadius: max(2, 6 - CGFloat(tile.depth)))
+        let base = DiskPalette.color(for: tile.item, mode: coloringMode)
+        let isHovered = hoveredID == tile.item.id
         let isSelected = selectedItem?.id == tile.item.id
-        let base = DiskPalette.color(for: tile.item)
-        let path = Path(roundedRect: rect, cornerRadius: min(5, rect.height / 3))
 
-        context.fill(path, with: .color(base.opacity(isHovered ? 0.85 : 0.55)))
+        let alpha = tile.depth == 1 ? (isHovered ? 0.90 : 0.65) : (isHovered ? 0.95 : 0.80)
+        context.fill(path, with: .color(base.opacity(alpha)))
         context.stroke(
             path,
-            with: .color(isSelected ? Color.primary : Color.black.opacity(0.25)),
-            lineWidth: isSelected ? 2 : 0.5
+            with: .color(isSelected ? Color.accentColor : Color.black.opacity(tile.depth == 1 ? 0.20 : 0.10)),
+            lineWidth: isSelected ? 2.5 : 0.8
         )
 
         guard rect.width >= labelMinWidth, rect.height >= labelMinHeight else { return }
 
         let label = context.resolve(
             Text(tile.item.name)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(.white)
+                .font(.system(size: max(9, min(12, rect.width * 0.12)), weight: .semibold, design: .rounded))
+                .foregroundStyle(Color.primary.opacity(0.85))
         )
-        let size = context.resolve(
-            Text(tile.item.size.formattedByteCount())
-                .font(.system(size: 10).monospacedDigit())
-                .foregroundStyle(.white.opacity(0.85))
-        )
+        context.draw(label, in: CGRect(x: rect.minX + 5, y: rect.minY + 4, width: rect.width - 10, height: 14))
 
-        context.draw(label, in: CGRect(x: rect.minX + 6, y: rect.minY + 5, width: rect.width - 12, height: 14))
-        context.draw(size, in: CGRect(x: rect.minX + 6, y: rect.minY + 20, width: rect.width - 12, height: 13))
+        if rect.height >= 40 {
+            let size = context.resolve(
+                Text(FileManager.formatSize(tile.item.size))
+                    .font(.system(size: 9, weight: .regular, design: .monospaced))
+                    .foregroundStyle(Color.secondary)
+            )
+            context.draw(size, in: CGRect(x: rect.minX + 5, y: rect.minY + 18, width: rect.width - 10, height: 12))
+        }
     }
 }

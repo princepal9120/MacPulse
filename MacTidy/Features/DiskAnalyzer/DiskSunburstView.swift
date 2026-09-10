@@ -12,11 +12,10 @@ struct SunburstLayout {
         var sweep: Double { endAngle - startAngle }
     }
 
-    static let maxDepth = 3
     /// Below this a wedge is a hairline nobody can hit — drop it and its subtree.
-    private static let minimumSweep: Double = .pi / 180 * 1.2
+    private static let minimumSweep: Double = .pi / 180 * 1.0
 
-    static func slices(for root: DiskItem, maxDepth: Int = maxDepth) -> [Slice] {
+    static func slices(for root: DiskItem, maxDepth: Int = 4) -> [Slice] {
         var result: [Slice] = []
         appendRing(children: root.children ?? [], parentSize: root.size, depth: 1, from: -.pi / 2, maxDepth: maxDepth, into: &result)
         return result
@@ -51,18 +50,36 @@ struct SunburstLayout {
     }
 }
 
-struct DiskSunburstView: View {
+public struct DiskSunburstView: View {
     let root: DiskItem
+    let maxDepth: Int
     let selectedItem: DiskItem?
+    let coloringMode: ColoringMode
     let onSelect: (DiskItem) -> Void
     let onOpen: (DiskItem) -> Void
 
     @State private var hovered: DiskItem?
 
-    var body: some View {
+    public init(
+        root: DiskItem,
+        maxDepth: Int = 4,
+        selectedItem: DiskItem?,
+        coloringMode: ColoringMode = .byFolder,
+        onSelect: @escaping (DiskItem) -> Void,
+        onOpen: @escaping (DiskItem) -> Void
+    ) {
+        self.root = root
+        self.maxDepth = max(1, min(7, maxDepth))
+        self.selectedItem = selectedItem
+        self.coloringMode = coloringMode
+        self.onSelect = onSelect
+        self.onOpen = onOpen
+    }
+
+    public var body: some View {
         GeometryReader { geometry in
-            let slices = SunburstLayout.slices(for: root)
-            let metrics = Metrics(size: geometry.size)
+            let slices = SunburstLayout.slices(for: root, maxDepth: maxDepth)
+            let metrics = Metrics(size: geometry.size, depthCount: maxDepth)
 
             ZStack {
                 Canvas { context, _ in
@@ -94,36 +111,50 @@ struct DiskSunburstView: View {
                     }
                 )
 
-                centerLabel
-                    .frame(width: metrics.innerRadius * 1.7)
-                    .allowsHitTesting(false)
+                centerDisc(metrics: metrics)
             }
         }
     }
 
-    private var centerLabel: some View {
-        let focus = hovered ?? root
-        return VStack(spacing: 2) {
-            Text(focus.name.isEmpty ? "/" : focus.name)
-                .font(.caption.weight(.semibold))
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-            Text(focus.size.formattedByteCount())
-                .font(.caption2.monospacedDigit())
-                .foregroundStyle(.secondary)
+    private func centerDisc(metrics: Metrics) -> some View {
+        let focus = hovered ?? selectedItem ?? root
+        return ZStack {
+            Circle()
+                .fill(Color(nsColor: .windowBackgroundColor))
+                .overlay(
+                    Circle().stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                )
+
+            VStack(spacing: 3) {
+                Text(focus.name.isEmpty ? "/" : focus.name)
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.primary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+
+                Text(FileManager.formatSize(focus.size))
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .foregroundStyle(Color.secondary)
+            }
+            .padding(6)
         }
+        .frame(width: metrics.innerRadius * 1.9, height: metrics.innerRadius * 1.9)
+        .position(metrics.center)
+        .allowsHitTesting(false)
     }
 
     private struct Metrics {
         let center: CGPoint
         let innerRadius: CGFloat
         let ringWidth: CGFloat
+        let depthCount: Int
 
-        init(size: CGSize) {
+        init(size: CGSize, depthCount: Int) {
+            self.depthCount = depthCount
             center = CGPoint(x: size.width / 2, y: size.height / 2)
-            let outer = max(40, min(size.width, size.height) / 2 - 10)
-            innerRadius = outer * 0.24
-            ringWidth = (outer - innerRadius) / CGFloat(SunburstLayout.maxDepth)
+            let outer = max(40, min(size.width, size.height) / 2 - 14)
+            innerRadius = outer * 0.22
+            ringWidth = (outer - innerRadius) / CGFloat(max(1, depthCount))
         }
 
         func radii(forDepth depth: Int) -> (inner: CGFloat, outer: CGFloat) {
@@ -136,31 +167,31 @@ struct DiskSunburstView: View {
         let radii = metrics.radii(forDepth: slice.depth)
         let path = wedgePath(slice, metrics: metrics)
 
-        let base = DiskPalette.color(for: slice.item)
+        let base = DiskPalette.color(for: slice.item, mode: coloringMode)
         let isHovered = hovered?.id == slice.item.id
         let isSelected = selectedItem?.id == slice.item.id
-        let fade = 0.75 - Double(slice.depth - 1) * 0.16
 
-        context.fill(path, with: .color(base.opacity(isHovered ? 0.95 : fade)))
-        context.stroke(path, with: .color(Color.black.opacity(0.22)), lineWidth: 0.5)
+        context.fill(path, with: .color(base.opacity(isHovered ? 0.95 : 0.70)))
+        context.stroke(path, with: .color(Color.black.opacity(0.15)), lineWidth: 0.5)
         if isSelected {
-            context.stroke(path, with: .color(Color.primary), lineWidth: 2)
+            context.stroke(path, with: .color(Color.accentColor), lineWidth: 2.5)
         }
 
-        // Only the outermost readable wedges get a label; the rest live in the hub.
-        guard slice.sweep > .pi / 9, radii.outer - radii.inner > 22 else { return }
-        let mid = (slice.startAngle + slice.endAngle) / 2
-        let radius = (radii.inner + radii.outer) / 2
-        let point = CGPoint(
-            x: metrics.center.x + cos(mid) * radius,
-            y: metrics.center.y + sin(mid) * radius
-        )
-        let label = context.resolve(
-            Text(slice.item.name)
-                .font(.system(size: 10, weight: .medium))
-                .foregroundStyle(.white)
-        )
-        context.draw(label, at: point, anchor: .center)
+        // Draw text label on sufficiently large wedges
+        if slice.sweep > .pi / 8, (radii.outer - radii.inner) > 16 {
+            let mid = (slice.startAngle + slice.endAngle) / 2
+            let radius = (radii.inner + radii.outer) / 2
+            let point = CGPoint(
+                x: metrics.center.x + cos(mid) * radius,
+                y: metrics.center.y + sin(mid) * radius
+            )
+            let label = context.resolve(
+                Text(slice.item.name)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(Color.primary.opacity(0.85))
+            )
+            context.draw(label, at: point, anchor: .center)
+        }
     }
 
     private func wedgePath(_ slice: SunburstLayout.Slice, metrics: Metrics) -> Path {
@@ -187,16 +218,18 @@ struct DiskSunburstView: View {
     private func slice(at point: CGPoint, in slices: [SunburstLayout.Slice], metrics: Metrics) -> SunburstLayout.Slice? {
         let dx = point.x - metrics.center.x
         let dy = point.y - metrics.center.y
-        let radius = sqrt(dx * dx + dy * dy)
-        guard radius > metrics.innerRadius else { return nil }
+        let distance = sqrt(dx * dx + dy * dy)
 
-        let depth = Int((radius - metrics.innerRadius) / metrics.ringWidth) + 1
-        guard depth >= 1, depth <= SunburstLayout.maxDepth else { return nil }
-
-        // Wedge angles run from -90°, so normalise the hit angle into the same turn.
         var angle = atan2(dy, dx)
-        if angle < -.pi / 2 { angle += 2 * .pi }
+        if angle < -.pi / 2 {
+            angle += 2 * .pi
+        }
 
-        return slices.first { $0.depth == depth && angle >= $0.startAngle && angle < $0.endAngle }
+        let depth = Int((distance - metrics.innerRadius) / metrics.ringWidth) + 1
+        guard depth >= 1, depth <= metrics.depthCount else { return nil }
+
+        return slices.first {
+            $0.depth == depth && angle >= $0.startAngle && angle < $0.endAngle
+        }
     }
 }

@@ -174,4 +174,164 @@ final class DiskScannerTests: XCTestCase {
         viewModel.selectedCategory = .photo
         XCTAssertEqual(viewModel.displayedItems.count, 0)
     }
+
+    @MainActor
+    func testVisualModes_and_breakdowns() async throws {
+        XCTAssertEqual(DiskViewMode.allCases.count, 9)
+        XCTAssertEqual(ColoringMode.allCases.count, 3)
+
+        let downloads = tempDir.appendingPathComponent("Downloads", isDirectory: true)
+        let buildDir = tempDir.appendingPathComponent("build", isDirectory: true)
+        try FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: buildDir, withIntermediateDirectories: true)
+
+        let sampleMovie = downloads.appendingPathComponent("movie.mp4")
+        let sampleZip = downloads.appendingPathComponent("archive.zip")
+        let artifact = buildDir.appendingPathComponent("output.bin")
+        try Data(repeating: 0x1, count: 1024).write(to: sampleMovie)
+        try Data(repeating: 0x2, count: 2048).write(to: sampleZip)
+        try Data(repeating: 0x3, count: 512).write(to: artifact)
+
+        let viewModel = DiskAnalyzerViewModel()
+        viewModel.startScan(for: tempDir)
+
+        var attempts = 0
+        while viewModel.isScanning && attempts < 50 {
+            try await Task.sleep(nanoseconds: 50_000_000)
+            attempts += 1
+        }
+
+        XCTAssertEqual(viewModel.viewMode, .folders)
+        XCTAssertEqual(viewModel.coloringMode, .byFolder)
+        XCTAssertEqual(viewModel.depth, 4)
+
+        // Quick wins should detect Downloads and Build artifacts
+        let wins = viewModel.quickWins
+        XCTAssertTrue(wins.contains(where: { $0.id == "downloads" }))
+        XCTAssertTrue(wins.contains(where: { $0.id == "build_artifacts" }))
+
+        // File types breakdown should register video and archive
+        let fileTypes = viewModel.fileTypesBreakdown
+        XCTAssertTrue(fileTypes.contains(where: { $0.category == .video }))
+        XCTAssertTrue(fileTypes.contains(where: { $0.category == .archives }))
+
+        // Biggest files anywhere should find the files
+        XCTAssertFalse(viewModel.biggestFilesAnywhere.isEmpty)
+        XCTAssertFalse(viewModel.biggestFoldersAnywhere.isEmpty)
+    }
+
+    // MARK: - Root-anchored removal (Age Map trash)
+
+    @MainActor
+    func testRemoveItemFromTree_usesRootAnchor_notPathTrailLast() throws {
+        let rootURL = URL(fileURLWithPath: "/scan/root")
+        let fileA1 = DiskItem(url: rootURL.appendingPathComponent("A/a1.bin"), name: "a1.bin", isDirectory: false, size: 120, fileCount: 1, fileType: .all)
+        let fileA2 = DiskItem(url: rootURL.appendingPathComponent("A/a2.bin"), name: "a2.bin", isDirectory: false, size: 80, fileCount: 1, fileType: .all)
+        let folderA = DiskItem(url: rootURL.appendingPathComponent("A"), name: "A", isDirectory: true, size: 200, fileCount: 2, children: [fileA1, fileA2], fileType: .all)
+        let fileB = DiskItem(url: rootURL.appendingPathComponent("B/b.bin"), name: "b.bin", isDirectory: false, size: 100, fileCount: 1, fileType: .all)
+        let folderB = DiskItem(url: rootURL.appendingPathComponent("B"), name: "B", isDirectory: true, size: 100, fileCount: 1, children: [fileB], fileType: .all)
+        let root = DiskItem(url: rootURL, name: "root", isDirectory: true, size: 300, fileCount: 3, children: [folderA, folderB], fileType: .all)
+
+        let viewModel = DiskAnalyzerViewModel()
+        viewModel.rootItem = root
+        viewModel.pathTrail = [root]
+        // The user is browsing B; the removed item lives under A. A pathTrail-last
+        // implementation would target B and corrupt its totals.
+        viewModel.drillDown(into: folderB)
+        XCTAssertEqual(viewModel.pathTrail.count, 2)
+
+        viewModel.removeItemFromTree(item: fileA2)
+
+        let newRoot = try XCTUnwrap(viewModel.rootItem)
+        XCTAssertEqual(newRoot.size, 220)
+        XCTAssertEqual(newRoot.fileCount, 2)
+
+        let newA = try XCTUnwrap(newRoot.children?.first { $0.name == "A" })
+        XCTAssertEqual(newA.children?.count, 1)
+        XCTAssertEqual(newA.children?.first?.name, "a1.bin")
+        XCTAssertEqual(newA.size, 120)
+        XCTAssertEqual(newA.fileCount, 1)
+
+        // B is untouched.
+        let newB = try XCTUnwrap(newRoot.children?.first { $0.name == "B" })
+        XCTAssertEqual(newB.size, 100)
+        XCTAssertEqual(newB.fileCount, 1)
+        XCTAssertEqual(newB.children?.count, 1)
+
+        // Path trail survives and stays anchored to the rebuilt tree.
+        XCTAssertEqual(viewModel.pathTrail.count, 2)
+        XCTAssertEqual(viewModel.pathTrail.last?.name, "B")
+        XCTAssertEqual(viewModel.currentItem?.name, "B")
+    }
+
+    @MainActor
+    func testRemoveItemFromTree_truncatesTrailWhenAncestorRemoved() throws {
+        let rootURL = URL(fileURLWithPath: "/scan/root")
+        let nested = DiskItem(url: rootURL.appendingPathComponent("A/deep/x.bin"), name: "x.bin", isDirectory: false, size: 10, fileCount: 1, fileType: .all)
+        let deep = DiskItem(url: rootURL.appendingPathComponent("A/deep"), name: "deep", isDirectory: true, size: 10, fileCount: 1, children: [nested], fileType: .all)
+        let folderA = DiskItem(url: rootURL.appendingPathComponent("A"), name: "A", isDirectory: true, size: 10, fileCount: 1, children: [deep], fileType: .all)
+        let root = DiskItem(url: rootURL, name: "root", isDirectory: true, size: 10, fileCount: 1, children: [folderA], fileType: .all)
+
+        let viewModel = DiskAnalyzerViewModel()
+        viewModel.rootItem = root
+        viewModel.pathTrail = [root]
+        viewModel.drillDown(into: folderA)
+        viewModel.drillDown(into: deep)
+        XCTAssertEqual(viewModel.pathTrail.map(\.name), ["root", "A", "deep"])
+
+        // Removing an ancestor of the current trail must not leave a hole.
+        viewModel.removeItemFromTree(item: folderA)
+
+        XCTAssertEqual(viewModel.pathTrail.count, 1)
+        XCTAssertEqual(viewModel.pathTrail.first?.name, "root")
+    }
+
+    // MARK: - Stale scan results
+
+    @MainActor
+    func testStaleScanResult_doesNotOverwriteNewerScan() async throws {
+        let dirA = tempDir.appendingPathComponent("A", isDirectory: true)
+        let dirB = tempDir.appendingPathComponent("B", isDirectory: true)
+        try FileManager.default.createDirectory(at: dirA, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: dirB, withIntermediateDirectories: true)
+        try "a".write(to: dirA.appendingPathComponent("a.txt"), atomically: true, encoding: .utf8)
+        try "b".write(to: dirB.appendingPathComponent("b.txt"), atomically: true, encoding: .utf8)
+
+        let viewModel = DiskAnalyzerViewModel()
+        viewModel.startScan(for: dirA)
+        // Supersede A before its result can land.
+        viewModel.startScan(for: dirB)
+
+        var attempts = 0
+        while (viewModel.isScanning || viewModel.isBuildingAgeReport) && attempts < 200 {
+            try await Task.sleep(nanoseconds: 20_000_000)
+            attempts += 1
+        }
+
+        XCTAssertFalse(viewModel.isScanning)
+        XCTAssertFalse(viewModel.isBuildingAgeReport)
+        XCTAssertEqual(viewModel.rootItem?.url.standardizedFileURL, dirB.standardizedFileURL)
+        XCTAssertEqual(viewModel.rootItem?.children?.first?.name, "b.txt")
+    }
+
+    // MARK: - Age-report build flag
+
+    @MainActor
+    func testIsBuildingAgeReport_resetsOnCancelAndOnNewScan() {
+        let viewModel = DiskAnalyzerViewModel()
+        let root = DiskItem(url: tempDir, name: "root", isDirectory: true, size: 0, children: [], fileType: .all)
+        viewModel.rootItem = root
+
+        viewModel.buildAgeReport(for: root)
+        XCTAssertTrue(viewModel.isBuildingAgeReport)
+
+        viewModel.cancelScan()
+        XCTAssertFalse(viewModel.isBuildingAgeReport)
+
+        viewModel.buildAgeReport(for: root)
+        XCTAssertTrue(viewModel.isBuildingAgeReport)
+
+        viewModel.startScan(for: tempDir)
+        XCTAssertFalse(viewModel.isBuildingAgeReport)
+    }
 }

@@ -6,7 +6,7 @@ private let crashLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "inp
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true
+        return false // stay resident in menu bar (Monitor keeps running)
     }
 }
 
@@ -23,17 +23,25 @@ struct MacTidyApp: App {
     private let cleanupViewModel: CleanupViewModel
     private let appSettings = AppSettings()
     private let monitorViewModel = MonitorViewModel()
+    private let privacyMonitorViewModel = PrivacyMonitorViewModel()
     private let permissionsManager = PermissionsManager()
     private let updateChecker = UpdateChecker()
     private let updatePrompt = UpdatePromptController()
     @State private var availableUpdate: AvailableUpdate? = nil
     @State private var isCheckingForUpdates = false
     
+    // ponytail: detect test runner so app host stays inert during unit tests
+    private static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || NSClassFromString("XCTestCase") != nil
+    }
+
     init() {
         Self.installCrashHandlers()
-        
+
         let engine = CleanupEngine(commandRunner: commandRunner)
         self.cleanupViewModel = CleanupViewModel(engine: engine, journal: journal, settings: appSettings)
+
+        guard !Self.isRunningTests else { return }
 
         // Preload Launch Services cache and register AppShortcuts
         Task {
@@ -70,26 +78,32 @@ struct MacTidyApp: App {
 
     var body: some Scene {
         WindowGroup("MacTidy") {
-            RootView(
-                cleanupViewModel: cleanupViewModel,
-                journal: journal,
-                appSettings: appSettings,
-                monitorViewModel: monitorViewModel,
-                permissionsManager: permissionsManager,
-                updatePrompt: updatePrompt,
-                availableUpdate: $availableUpdate
-            )
-            .task {
-                availableUpdate = await updateChecker.checkForUpdate()
-                monitorViewModel.start()
+            if Self.isRunningTests {
+                EmptyView()
+            } else {
+                RootView(
+                    cleanupViewModel: cleanupViewModel,
+                    journal: journal,
+                    appSettings: appSettings,
+                    monitorViewModel: monitorViewModel,
+                    privacyMonitorViewModel: privacyMonitorViewModel,
+                    permissionsManager: permissionsManager,
+                    updatePrompt: updatePrompt,
+                    availableUpdate: $availableUpdate
+                )
+                .task {
+                    availableUpdate = await updateChecker.checkForUpdate()
+                    monitorViewModel.start()
+                    privacyMonitorViewModel.start()
+                }
             }
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 1200, height: 760)
         .defaultPosition(.center)
 
-        MenuBarExtra("MacTidy Monitor", systemImage: "waveform.path.ecg") {
-            MonitorHUDView(viewModel: monitorViewModel)
+        MenuBarExtra("MacTidy", systemImage: "waveform.path.ecg") {
+            MonitorHUDView(viewModel: monitorViewModel, privacyMonitor: privacyMonitorViewModel)
         }
         .menuBarExtraStyle(.window)
         .commands {
