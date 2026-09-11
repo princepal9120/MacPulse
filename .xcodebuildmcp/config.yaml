@@ -1,0 +1,5 @@
+schemaVersion: 1
+sessionDefaults:
+  projectPath: /Users/princepal/Downloads/MacPulse/MacPulse/MacPulse.xcodeproj
+  scheme: MacPulse
+  platform: macos

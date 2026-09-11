@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MacTidy · Native macOS System Cleaner & Deep Uninstaller</title>
-  <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free & open-source.">
+  <title>MacPulse · Native macOS System Cleaner & Deep Uninstaller</title>
+  <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free for personal use.">
 
   <!-- Google Fonts: Fraunces (Tactile Editorial Serif), Geist (Clean Modern Sans), JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,9 +18,9 @@
   <!-- Floating Nav Pill (Mole.fit style capsule: N5 Archetype) -->
   <div class="nav-wrap">
     <nav class="site-nav" aria-label="Main Navigation">
-      <a href="#" class="nav-brand" aria-label="MacTidy Home">
+      <a href="#" class="nav-brand" aria-label="MacPulse Home">
         <div class="nav-brand-icon" aria-hidden="true">MT</div>
-        <span>MacTidy</span>
+        <span>MacPulse</span>
       </a>
 
       <ul class="nav-links">
@@ -41,7 +41,7 @@
 
   <main id="main-content">
 
-    <!-- HERO SECTION (Warm, Literary, Honest) -->
+    <!-- HERO SECTION (Warm, Literary, Centered) -->
     <header class="hero">
       <div class="container hero-content">
         <h1 class="hero-title">The quiet, native Mac cleaner that leaves no trace.</h1>
@@ -50,7 +50,7 @@
         </p>
 
         <div class="hero-trust-bar">
-          <span>Free & Open Source</span>
+          <span>Free for Personal Use</span>
           <span>Pure Swift & SwiftUI</span>
           <span>Zero Background Daemons</span>
           <span>Zero Telemetry</span>
@@ -62,7 +62,7 @@
           <a href="#download" class="btn-primary">Download for Mac</a>
 
           <div class="terminal-pill" id="copyPill" role="button" tabindex="0" aria-label="Copy brew install command">
-            <code>brew install --cask mactidy</code>
+            <code>brew install --cask macpulse</code>
             <span id="copyFeedback" style="color: var(--color-ink-stone); margin-left: 4px;" aria-hidden="true">
               <svg id="copySvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               <svg id="checkSvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
@@ -72,312 +72,147 @@
       </div>
     </header>
 
-    <!-- 00 · SEE IT (Mole.fit style interactive gallery tabs) -->
+    <!-- 00 · SEE IT (Image #3 Exact Toolbar Capsule + Real Live App Showcase) -->
     <section class="gallery-section" id="overview">
       <div class="container gallery-container">
 
-        <!-- Tab List Controls -->
-        <div class="gallery-tabs" role="tablist" aria-label="MacTidy Tools Showcase">
-          <button type="button" class="gallery-tab is-active" role="tab" aria-selected="true" data-target="uninstaller">Uninstaller</button>
-          <button type="button" class="gallery-tab" role="tab" aria-selected="false" data-target="clean">Caches & Junk</button>
-          <button type="button" class="gallery-tab" role="tab" aria-selected="false" data-target="startup">Startup Items</button>
-          <button type="button" class="gallery-tab" role="tab" aria-selected="false" data-target="analyze">Disk Tree</button>
-          <button type="button" class="gallery-tab" role="tab" aria-selected="false" data-target="monitor">Monitor</button>
+        <!-- Top Navigation Toolbar Capsule matching Image #3 -->
+        <div class="app-toolbar-capsule" role="tablist" aria-label="Choose a MacPulse Tool">
+          <!-- 1. Dashboard -->
+          <button type="button" class="tool-btn is-active" role="tab" aria-selected="true" data-screen="dashboard" title="Dashboard">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            <span class="btn-label">Dashboard</span>
+          </button>
+
+          <!-- Divider -->
+          <div class="tool-divider" aria-hidden="true"></div>
+
+          <!-- 2. Cleanup -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="cleanup" title="Cleanup">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>
+            </span>
+            <span class="btn-label">Cleanup</span>
+          </button>
+
+          <!-- 3. Disk Space -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="dashboard" title="Disk Space">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span class="btn-label">Disk Space</span>
+          </button>
+
+          <!-- 4. Duplicates -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="duplicates" title="Duplicates">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </span>
+            <span class="btn-label">Duplicates</span>
+          </button>
+
+          <!-- 5. Uninstaller -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="uninstaller" title="Uninstaller">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </span>
+            <span class="btn-label">Uninstaller</span>
+          </button>
+
+          <!-- Divider -->
+          <div class="tool-divider" aria-hidden="true"></div>
+
+          <!-- 6. Monitor -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="monitor" title="Monitor">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            <span class="btn-label">Monitor</span>
+          </button>
+
+          <!-- 7. Processes -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="monitor" title="Processes">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            </span>
+            <span class="btn-label">Processes</span>
+          </button>
+
+          <!-- 8. Startup Services (As shown in Image #3) -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="startup" title="Startup Services">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </span>
+            <span class="btn-label">Startup Services</span>
+          </button>
+
+          <!-- 9. Settings -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="dashboard" title="Settings">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span class="btn-label">Settings</span>
+          </button>
         </div>
 
-        <!-- Native macOS App Window Preview Shell -->
-        <div class="app-window" aria-label="MacTidy Application Window">
+        <!-- Sub-options Bar reflecting active module -->
+        <div class="tool-subnav" id="subnavBar" aria-label="Sub-navigation options">
+          <span class="subnav-pill" id="subnavTitle">Live System Telemetry</span>
+          <span>·</span>
+          <span id="subnavOptions">Disk Breakdown · Memory Pressure · System Specifications</span>
+        </div>
+
+        <!-- Real Native macOS Window Displaying Real Screenshots -->
+        <div class="app-window" aria-label="Live MacPulse Application Preview">
           <div class="app-titlebar">
             <div class="traffic-dots" aria-hidden="true">
               <div class="traffic-dot dot-red"></div>
               <div class="traffic-dot dot-yellow"></div>
               <div class="traffic-dot dot-green"></div>
             </div>
-            <div class="app-window-title">MacTidy — Evidence Graph & System Inspector</div>
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-success);">● Ready</div>
+            <div class="app-window-title" id="windowTitle">MacPulse — Dashboard</div>
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-success);">● Live App</div>
           </div>
 
           <div class="app-viewport">
-            <!-- Sidebar -->
-            <aside class="app-sidebar" aria-label="App Navigation">
-              <span class="sidebar-label">Cleanup</span>
-              <div class="sidebar-item" data-tab="clean">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                <span>Caches & Logs</span>
-              </div>
-              <div class="sidebar-item is-active" data-tab="uninstaller">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
-                <span>Uninstaller</span>
-              </div>
+            <!-- 1. Real Dashboard View -->
+            <figure class="app-screen-view is-active" id="screen-dashboard">
+              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with 71% Disk Usage concentric rings" class="app-screen-img" loading="eager">
+            </figure>
 
-              <span class="sidebar-label" style="margin-top: 10px;">Maintenance</span>
-              <div class="sidebar-item" data-tab="startup">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>Startup Daemons</span>
-              </div>
-              <div class="sidebar-item" data-tab="analyze">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                <span>Disk Tree</span>
-              </div>
-              <div class="sidebar-item" data-tab="monitor">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                <span>Process & CPU</span>
-              </div>
-            </aside>
+            <!-- 2. Real Cleanup View -->
+            <figure class="app-screen-view" id="screen-cleanup">
+              <img src="assets/screenshots/macpulse_cleanup_real.jpg" alt="MacPulse Ready to Clean screen with Time Machine & DS_Store toggles" class="app-screen-img" loading="lazy">
+            </figure>
 
-            <!-- Main Interactive Stage Panels -->
-            <div class="app-stage">
+            <!-- 3. Real Duplicates View -->
+            <figure class="app-screen-view" id="screen-duplicates">
+              <img src="assets/screenshots/macpulse_duplicates.jpg" alt="MacPulse Duplicate Finder screen" class="app-screen-img" loading="lazy">
+            </figure>
 
-              <!-- PANEL 1: UNINSTALLER (Default Active) -->
-              <div class="panel-content is-active" id="panel-uninstaller">
-                <div class="stage-head">
-                  <div>
-                    <h3 class="stage-title">Docker Desktop.app</h3>
-                    <p style="font-family: var(--font-mono); font-size: 11px; color: var(--shot-muted);">com.docker.docker · Mach-O & Entitlement Graph Verified</p>
-                  </div>
-                  <div class="stage-metric" id="selectedSize">Selected: 8.42 GB</div>
-                </div>
+            <!-- 4. Real Uninstaller View -->
+            <figure class="app-screen-view" id="screen-uninstaller">
+              <img src="assets/screenshots/macpulse_uninstaller.jpg" alt="MacPulse Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="lazy">
+            </figure>
 
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <label class="stage-item-row" style="cursor: pointer;">
-                    <div class="stage-item-left">
-                      <input type="checkbox" checked class="item-chk" data-bytes="1932735283" aria-label="Select Docker bundle">
-                      <span class="stage-item-badge high">APP BUNDLE</span>
-                      <span>/Applications/Docker.app</span>
-                    </div>
-                    <span class="stage-item-size">1.84 GB</span>
-                  </label>
+            <!-- 5. Real Startup View -->
+            <figure class="app-screen-view" id="screen-startup">
+              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
+            </figure>
 
-                  <label class="stage-item-row" style="cursor: pointer;">
-                    <div class="stage-item-left">
-                      <input type="checkbox" checked class="item-chk" data-bytes="6571294720" aria-label="Select VM containers">
-                      <span class="stage-item-badge high">CONTAINER VM</span>
-                      <span>~/Library/Containers/com.docker.docker/Data/vms</span>
-                    </div>
-                    <span class="stage-item-size">6.12 GB</span>
-                  </label>
-
-                  <label class="stage-item-row" style="cursor: pointer;">
-                    <div class="stage-item-left">
-                      <input type="checkbox" checked class="item-chk" data-bytes="24576" aria-label="Select launch daemon">
-                      <span class="stage-item-badge high">LAUNCH DAEMON</span>
-                      <span>~/Library/LaunchAgents/com.docker.helper.plist</span>
-                    </div>
-                    <span class="stage-item-size">24 KB</span>
-                  </label>
-
-                  <label class="stage-item-row" style="cursor: pointer;">
-                    <div class="stage-item-left">
-                      <input type="checkbox" checked class="item-chk" data-bytes="438304768" aria-label="Select group containers">
-                      <span class="stage-item-badge">GROUP DATA</span>
-                      <span>~/Library/Group Containers/group.com.docker</span>
-                    </div>
-                    <span class="stage-item-size">418 MB</span>
-                  </label>
-
-                  <label class="stage-item-row" style="cursor: pointer;">
-                    <div class="stage-item-left">
-                      <input type="checkbox" checked class="item-chk" data-bytes="44040192" aria-label="Select application logs">
-                      <span class="stage-item-badge">LOG REPOSITORY</span>
-                      <span>~/Library/Logs/Docker Desktop/</span>
-                    </div>
-                    <span class="stage-item-size">42 MB</span>
-                  </label>
-                </div>
-
-                <div style="margin-top: auto; padding: 10px 14px; background-color: var(--shot-surface); border: 1px solid var(--shot-rule); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12px; flex-wrap: wrap; gap: 8px;">
-                  <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    Pre-uninstall snapshot #2026-104 ready
-                  </span>
-                  <span style="font-family: var(--font-mono); color: var(--shot-muted);">Confidence Score: 98% (High)</span>
-                </div>
-              </div>
-
-              <!-- PANEL 2: CACHES & JUNK -->
-              <div class="panel-content" id="panel-clean">
-                <div class="stage-head">
-                  <div>
-                    <h3 class="stage-title">System & App Caches</h3>
-                    <p style="font-family: var(--font-mono); font-size: 11px; color: var(--shot-muted);">Safe Application Rule Registry · Zero Personal File Touched</p>
-                  </div>
-                  <div class="stage-metric" style="color: var(--color-warning);">Reclaimable: 14.8 GB</div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge high">XCODE</span>
-                      <span>DerivedData & iOS DeviceSupport</span>
-                    </div>
-                    <span class="stage-item-size">8.40 GB</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge high">DEV CACHE</span>
-                      <span>CocoaPods, Gradle & Node Modules Cache</span>
-                    </div>
-                    <span class="stage-item-size">3.90 GB</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">BROWSERS</span>
-                      <span>Safari & Chrome Cache (History preserved)</span>
-                    </div>
-                    <span class="stage-item-size">1.85 GB</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">LOGS</span>
-                      <span>Rotated DiagnosticReports & CrashLogs</span>
-                    </div>
-                    <span class="stage-item-size">650 MB</span>
-                  </div>
-                </div>
-
-                <div style="margin-top: auto; padding: 10px 14px; background-color: var(--shot-surface); border: 1px solid var(--shot-rule); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                  <span style="color: var(--shot-muted);">Protected paths excluded automatically</span>
-                  <span style="font-family: var(--font-mono); color: #fff;">4 safe categories</span>
-                </div>
-              </div>
-
-              <!-- PANEL 3: STARTUP ITEMS -->
-              <div class="panel-content" id="panel-startup">
-                <div class="stage-head">
-                  <div>
-                    <h3 class="stage-title">LaunchAgents & Daemons</h3>
-                    <p style="font-family: var(--font-mono); font-size: 11px; color: var(--shot-muted);">Inspect background persistence items with instant toggle</p>
-                  </div>
-                  <div class="stage-metric">14 Items Detected</div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">AGENT</span>
-                      <span>com.adobe.AdobeCreativeCloud.plist</span>
-                    </div>
-                    <span style="color: var(--color-warning); font-family: var(--font-mono); font-size: 11px;">[Enabled] High Impact</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">AGENT</span>
-                      <span>com.spotify.webhelper.plist</span>
-                    </div>
-                    <span style="color: var(--shot-muted); font-family: var(--font-mono); font-size: 11px;">[Disabled]</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge high">ORPHAN</span>
-                      <span>com.dropbox.DropboxMacUpdate.plist (App uninstalled)</span>
-                    </div>
-                    <span style="color: var(--color-danger); font-family: var(--font-mono); font-size: 11px;">[Zombie] Safe to remove</span>
-                  </div>
-                </div>
-
-                <div style="margin-top: auto; padding: 10px 14px; background-color: var(--shot-surface); border: 1px solid var(--shot-rule); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                  <span style="color: var(--shot-muted);">Direct launchd control without system modification</span>
-                  <span style="font-family: var(--font-mono); color: #fff;">SMAppService compliant</span>
-                </div>
-              </div>
-
-              <!-- PANEL 4: DISK TREE -->
-              <div class="panel-content" id="panel-analyze">
-                <div class="stage-head">
-                  <div>
-                    <h3 class="stage-title">APFS Disk Hierarchy</h3>
-                    <p style="font-family: var(--font-mono); font-size: 11px; color: var(--shot-muted);">Fast directory size tree scanner without kernel indexing</p>
-                  </div>
-                  <div class="stage-metric">Macintosh HD · 512 GB</div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">42%</span>
-                      <span>~/Library/Developer/</span>
-                    </div>
-                    <span class="stage-item-size">48.2 GB</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">26%</span>
-                      <span>~/Downloads/Archives/</span>
-                    </div>
-                    <span class="stage-item-size">29.8 GB</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">18%</span>
-                      <span>~/Library/Containers/</span>
-                    </div>
-                    <span class="stage-item-size">20.4 GB</span>
-                  </div>
-                </div>
-
-                <div style="margin-top: auto; padding: 10px 14px; background-color: var(--shot-surface); border: 1px solid var(--shot-rule); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                  <span style="color: var(--shot-muted);">Sort by size, modification date, or orphan probability</span>
-                  <span style="font-family: var(--font-mono); color: #fff;">Instant APFS clone support</span>
-                </div>
-              </div>
-
-              <!-- PANEL 5: PROCESS MONITOR -->
-              <div class="panel-content" id="panel-monitor">
-                <div class="stage-head">
-                  <div>
-                    <h3 class="stage-title">Live Resource Sampler</h3>
-                    <p style="font-family: var(--font-mono); font-size: 11px; color: var(--shot-muted);">Async CPU & Memory telemetry with background helper detection</p>
-                  </div>
-                  <div class="stage-metric" style="color: var(--color-success);">Memory Pressure: Nominal</div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">PID 4128</span>
-                      <span>com.apple.WebKit.WebContent</span>
-                    </div>
-                    <span class="stage-item-size">2.14 GB RAM · 1.2% CPU</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge high">ZOMBIE</span>
-                      <span>crashpad_handler (Parent process dead)</span>
-                    </div>
-                    <span class="stage-item-size" style="color: var(--color-warning);">Kill candidate</span>
-                  </div>
-
-                  <div class="stage-item-row">
-                    <div class="stage-item-left">
-                      <span class="stage-item-badge">PID 920</span>
-                      <span>WindowServer</span>
-                    </div>
-                    <span class="stage-item-size">610 MB RAM · 4.8% CPU</span>
-                  </div>
-                </div>
-
-                <div style="margin-top: auto; padding: 10px 14px; background-color: var(--shot-surface); border: 1px solid var(--shot-rule); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                  <span style="color: var(--shot-muted);">Direct POSIX signal dispatch without administrative daemon</span>
-                  <span style="font-family: var(--font-mono); color: #fff;">100ms async polling</span>
-                </div>
-              </div>
-
-            </div>
+            <!-- 6. Real Monitor View -->
+            <figure class="app-screen-view" id="screen-monitor">
+              <img src="assets/screenshots/macpulse_monitor.jpg" alt="MacPulse Live Resource Monitor and Processes screen" class="app-screen-img" loading="lazy">
+            </figure>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- 01 · FEATURES (Feature Summary Grid) -->
+    <!-- 01 · FEATURES (Centered Header & Balanced Grid) -->
     <section class="features-section" id="features">
       <div class="container">
         <div class="section-head">
@@ -446,14 +281,14 @@
       </div>
     </section>
 
-    <!-- 02 · COMPARISON (CleanMyMac vs MacTidy) -->
+    <!-- 02 · COMPARISON (Centered Table Layout) -->
     <section class="comparison-section" id="comparison">
       <div class="container">
         <div class="section-head">
           <p class="section-num">02 · Philosophy</p>
-          <h2 class="section-title">How does MacTidy compare to CleanMyMac?</h2>
+          <h2 class="section-title">How does MacPulse compare to CleanMyMac?</h2>
           <p class="section-lede">
-            Traditional commercial utilities lock you into yearly recurring payments and install heavy background processes. MacTidy is a transparent, developer-grade utility.
+            Traditional commercial utilities lock you into yearly recurring payments and install heavy background processes. MacPulse is a transparent, developer-grade utility.
           </p>
         </div>
 
@@ -462,14 +297,14 @@
             <thead>
               <tr>
                 <th style="width: 40%;">Capability</th>
-                <th style="width: 30%;">MacTidy</th>
+                <th style="width: 30%;">MacPulse</th>
                 <th style="width: 30%;">Typical Cleaner (CleanMyMac)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="compare-feature">License Model</td>
-                <td class="compare-val highlight">Free & Open Source (MIT)</td>
+                <td class="compare-val highlight">Free for Personal Use</td>
                 <td class="compare-val dim">$39.95 / year subscription</td>
               </tr>
               <tr>
@@ -494,7 +329,7 @@
               </tr>
               <tr>
                 <td class="compare-feature">CLI & Terminal Support</td>
-                <td class="compare-val highlight">First-class `mactidy` CLI included</td>
+                <td class="compare-val highlight">First-class `macpulse` CLI included</td>
                 <td class="compare-val dim">GUI only / limited CLI</td>
               </tr>
             </tbody>
@@ -503,7 +338,7 @@
       </div>
     </section>
 
-    <!-- 03 · FAQ (Straight answers) -->
+    <!-- 03 · STRAIGHT ANSWERS (FAQ Center Aligned — Image #1 Fix) -->
     <section class="faq-section" id="faq">
       <div class="container">
         <div class="section-head">
@@ -515,57 +350,57 @@
         <div class="faq-list">
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>How does MacTidy find residual files that other tools miss?</span>
+              <span>How does MacPulse find residual files that other tools miss?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              When an app installs components on macOS, it registers sandboxed group containers, daemon launch plists, and bundle receipt IDs. Most tools search for folder names containing the app title. MacTidy parses the app's Info.plist, Mach-O load dependencies, and codesign entitlements to build an exact graph of every artifact created by that app.
+              When an app installs components on macOS, it registers sandboxed group containers, daemon launch plists, and bundle receipt IDs. Most tools search for folder names containing the app title. MacPulse parses the app's Info.plist, Mach-O load dependencies, and codesign entitlements to build an exact graph of every artifact created by that app.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Can MacTidy accidentally delete my personal documents?</span>
+              <span>Can MacPulse accidentally delete my personal documents?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              No. MacTidy enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacTidy records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
+              No. MacPulse enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacPulse records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Which permissions does MacTidy require on macOS?</span>
+              <span>Which permissions does MacPulse require on macOS?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              MacTidy requests Full Disk Access so it can inspect user Caches and sandboxed Application Support folders. It does not require kernel extensions or system extension entitlements. All scanning and deletion execution occurs locally on your machine.
+              MacPulse requests Full Disk Access so it can inspect user Caches and sandboxed Application Support folders. It does not require kernel extensions or system extension entitlements. All scanning and deletion execution occurs locally on your machine.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Why doesn't MacTidy run in the background 24/7?</span>
+              <span>Why doesn't MacPulse run in the background 24/7?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacTidy does its work when you open it, and when you quit it, it exits completely.
+              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacPulse does its work when you open it, and when you quit it, it exits completely.
             </div>
           </div>
         </div>
 
-        <!-- Download Card -->
+        <!-- Download Card (Centered) -->
         <div class="download-card" id="download">
-          <h3 class="download-title">Download MacTidy for macOS</h3>
+          <h3 class="download-title">Download MacPulse for macOS</h3>
           <p style="color: var(--color-ink-olive); max-width: 44ch;">
             Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later.
           </p>
 
           <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center;">
-            <a href="https://github.com/princepal/MacTidy/releases/latest" class="btn-primary" style="height: 44px; padding-inline: 28px;">
-              Download MacTidy .dmg (14.2 MB)
+            <a href="https://github.com/princepal/MacPulse/releases/latest" class="btn-primary" style="height: 44px; padding-inline: 28px;">
+              Download MacPulse .dmg (14.2 MB)
             </a>
-            <a href="https://github.com/princepal/MacTidy" class="btn-primary" style="background-color: var(--color-paper-ivory); color: var(--color-ink); border: 1px solid var(--color-line);">
+            <a href="https://github.com/princepal/MacPulse" class="btn-primary" style="background-color: var(--color-paper-ivory); color: var(--color-ink); border: 1px solid var(--color-line);">
               View Source on GitHub
             </a>
           </div>
@@ -584,16 +419,16 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <strong style="color: var(--color-ink); font-family: var(--font-display);">MacTidy</strong>
-        <span>· v1.4.2 · Pure Swift & SwiftUI · Free & Open Source</span>
+        <strong style="color: var(--color-ink); font-family: var(--font-display);">MacPulse</strong>
+        <span>· v1.4.2 · Pure Swift & SwiftUI · Free for Personal Use</span>
       </div>
 
       <div class="footer-links">
         <a href="#overview" class="footer-link">Overview</a>
         <a href="#features" class="footer-link">Features</a>
         <a href="#comparison" class="footer-link">Comparison</a>
-        <a href="https://github.com/princepal/MacTidy" class="footer-link">GitHub</a>
-        <a href="https://github.com/princepal/MacTidy/blob/main/LICENSE" class="footer-link">MIT License</a>
+        <a href="https://github.com/princepal/MacPulse" class="footer-link">GitHub</a>
+        <a href="https://github.com/princepal/MacPulse/blob/main/LICENSE" class="footer-link">Personal Use License</a>
       </div>
     </div>
   </footer>
@@ -601,35 +436,39 @@
   <!-- ⌘K COMMAND SEARCH MODAL -->
   <div class="cmd-modal" id="cmdModal" role="dialog" aria-modal="true" aria-label="Command Search">
     <div class="cmd-box">
-      <input type="text" class="cmd-input" id="cmdSearchInput" placeholder="Search MacTidy tools or actions..." autocomplete="off">
+      <input type="text" class="cmd-input" id="cmdSearchInput" placeholder="Search MacPulse tools or actions..." autocomplete="off">
       <ul class="cmd-menu" id="cmdMenuList">
         <li class="cmd-row" data-action="download">
-          <span>Download MacTidy .dmg release</span>
+          <span>Download MacPulse .dmg release</span>
           <span class="cmd-kbd">Enter</span>
         </li>
         <li class="cmd-row" data-action="brew">
           <span>Copy Homebrew install command</span>
           <span class="cmd-kbd">⌘C</span>
         </li>
-        <li class="cmd-row" data-tab="uninstaller">
-          <span>Inspect App Residuals (Uninstaller)</span>
+        <li class="cmd-row" data-screen="dashboard">
+          <span>Open Dashboard view</span>
           <span class="cmd-kbd">1</span>
         </li>
-        <li class="cmd-row" data-tab="clean">
-          <span>Review System Caches</span>
+        <li class="cmd-row" data-screen="cleanup">
+          <span>Open System Cleanup view</span>
           <span class="cmd-kbd">2</span>
         </li>
-        <li class="cmd-row" data-tab="startup">
-          <span>Manage LaunchAgents & Daemons</span>
+        <li class="cmd-row" data-screen="uninstaller">
+          <span>Open Uninstaller & Leftovers view</span>
           <span class="cmd-kbd">3</span>
         </li>
-        <li class="cmd-row" data-tab="analyze">
-          <span>Open APFS Disk Tree</span>
+        <li class="cmd-row" data-screen="startup">
+          <span>Open Startup Services manager</span>
           <span class="cmd-kbd">4</span>
         </li>
-        <li class="cmd-row" data-tab="monitor">
-          <span>View Real-time Process Monitor</span>
+        <li class="cmd-row" data-screen="duplicates">
+          <span>Open Duplicate Finder</span>
           <span class="cmd-kbd">5</span>
+        </li>
+        <li class="cmd-row" data-screen="monitor">
+          <span>Open Process & Resource Monitor</span>
+          <span class="cmd-kbd">6</span>
         </li>
         <li class="cmd-row" data-action="github">
           <span>Open GitHub repository</span>
@@ -646,7 +485,7 @@
     const checkSvg = document.getElementById('checkSvg');
 
     function copyBrew() {
-      navigator.clipboard.writeText('brew install --cask mactidy').then(() => {
+      navigator.clipboard.writeText('brew install --cask macpulse').then(() => {
         copySvg.style.display = 'none';
         checkSvg.style.display = 'inline-block';
         setTimeout(() => {
@@ -666,61 +505,71 @@
       });
     }
 
-    // 2. Interactive Gallery / Workbench Tool Tabs
-    const galleryTabs = document.querySelectorAll('.gallery-tab');
-    const sidebarItems = document.querySelectorAll('.sidebar-item');
-    const panelContents = document.querySelectorAll('.panel-content');
+    // 2. Interactive App Toolbar Capsule (Image #3 exact behavior)
+    const toolBtns = document.querySelectorAll('.tool-btn');
+    const screenViews = document.querySelectorAll('.app-screen-view');
+    const windowTitle = document.getElementById('windowTitle');
+    const subnavTitle = document.getElementById('subnavTitle');
+    const subnavOptions = document.getElementById('subnavOptions');
 
-    function switchTool(targetKey) {
-      galleryTabs.forEach(t => {
-        const match = t.getAttribute('data-target') === targetKey;
-        t.classList.toggle('is-active', match);
-        t.setAttribute('aria-selected', match ? 'true' : 'false');
+    const subnavConfig = {
+      dashboard: {
+        title: "Live System Telemetry",
+        options: "Disk Breakdown · Memory Pressure · System Specifications",
+        name: "MacPulse — Dashboard"
+      },
+      cleanup: {
+        title: "Caches & Junk Cleaner",
+        options: "Clean .DS_Store · Time Machine Snapshots · Extended Clean",
+        name: "MacPulse — Cleanup"
+      },
+      duplicates: {
+        title: "Duplicate Finder",
+        options: "Binary Hash Comparison · Fast Directory Select · Reclaim Space",
+        name: "MacPulse — Duplicate Finder"
+      },
+      uninstaller: {
+        title: "Deep Application Uninstaller",
+        options: "Applications · Leftovers · Mach-O Link Discovery",
+        name: "MacPulse — Uninstaller"
+      },
+      startup: {
+        title: "Startup Services Manager",
+        options: "LaunchAgents · LaunchDaemons · Login Items · Disable Toggles",
+        name: "MacPulse — Startup Services"
+      },
+      monitor: {
+        title: "Real-time Resource Monitor",
+        options: "Process Allocation · CPU Sampling · Zombie Process Killer",
+        name: "MacPulse — Monitor"
+      }
+    };
+
+    function switchScreen(screenKey) {
+      toolBtns.forEach(btn => {
+        const match = btn.getAttribute('data-screen') === screenKey;
+        btn.classList.toggle('is-active', match);
+        btn.setAttribute('aria-selected', match ? 'true' : 'false');
       });
 
-      sidebarItems.forEach(s => {
-        s.classList.toggle('is-active', s.getAttribute('data-tab') === targetKey);
+      screenViews.forEach(v => {
+        v.classList.toggle('is-active', v.id === 'screen-' + screenKey);
       });
 
-      panelContents.forEach(p => {
-        p.classList.toggle('is-active', p.id === 'panel-' + targetKey);
-      });
+      if (subnavConfig[screenKey]) {
+        subnavTitle.textContent = subnavConfig[screenKey].title;
+        subnavOptions.textContent = subnavConfig[screenKey].options;
+        windowTitle.textContent = subnavConfig[screenKey].name;
+      }
     }
 
-    galleryTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        switchTool(tab.getAttribute('data-target'));
+    toolBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchScreen(btn.getAttribute('data-screen'));
       });
     });
 
-    sidebarItems.forEach(item => {
-      item.addEventListener('click', () => {
-        switchTool(item.getAttribute('data-tab'));
-      });
-    });
-
-    // 3. Interactive Checkboxes & Live Calculation
-    const checkboxes = document.querySelectorAll('.item-chk');
-    const selectedSizeEl = document.getElementById('selectedSize');
-
-    function formatBytes(b) {
-      if (b >= 1073741824) return (b / 1073741824).toFixed(2) + ' GB';
-      if (b >= 1048576) return (b / 1048576).toFixed(1) + ' MB';
-      if (b >= 1024) return (b / 1024).toFixed(0) + ' KB';
-      return b + ' B';
-    }
-
-    function recalcSize() {
-      let total = 0;
-      checkboxes.forEach(c => {
-        if (c.checked) total += parseInt(c.getAttribute('data-bytes') || '0', 10);
-      });
-      if (selectedSizeEl) selectedSizeEl.textContent = 'Selected: ' + formatBytes(total);
-    }
-
-    checkboxes.forEach(c => c.addEventListener('change', recalcSize));
-
-    // 4. FAQ Accordions
+    // 3. FAQ Accordions
     document.querySelectorAll('.faq-item').forEach(item => {
       const q = item.querySelector('.faq-question');
       q.addEventListener('click', () => {
@@ -730,7 +579,7 @@
       });
     });
 
-    // 5. Command Palette Modal (⌘K)
+    // 4. Command Palette Modal (⌘K)
     const cmdModal = document.getElementById('cmdModal');
     const openSearchBtn = document.getElementById('openSearchBtn');
     const cmdSearchInput = document.getElementById('cmdSearchInput');
@@ -775,18 +624,18 @@
     cmdRows.forEach(row => {
       row.addEventListener('click', () => {
         const action = row.getAttribute('data-action');
-        const tab = row.getAttribute('data-tab');
+        const screen = row.getAttribute('data-screen');
         closeModal();
 
         if (action === 'download') {
           window.location.href = '#download';
         } else if (action === 'brew') {
           copyBrew();
-        } else if (tab) {
-          switchTool(tab);
+        } else if (screen) {
+          switchScreen(screen);
           document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
         } else if (action === 'github') {
-          window.open('https://github.com/princepal/MacTidy', '_blank');
+          window.open('https://github.com/princepal/MacPulse', '_blank');
         }
       });
     });
