@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MacTidy · Native macOS System Cleaner & Deep Uninstaller</title>
-  <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free & open-source.">
+  <title>MacPulse · Native macOS System Cleaner & Deep Uninstaller</title>
+  <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free for personal use.">
 
   <!-- Google Fonts: Fraunces (Tactile Editorial Serif), Geist (Clean Modern Sans), JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,9 +18,9 @@
   <!-- Floating Nav Pill (Mole.fit style capsule: N5 Archetype) -->
   <div class="nav-wrap">
     <nav class="site-nav" aria-label="Main Navigation">
-      <a href="#" class="nav-brand" aria-label="MacTidy Home">
+      <a href="#" class="nav-brand" aria-label="MacPulse Home">
         <div class="nav-brand-icon" aria-hidden="true">MT</div>
-        <span>MacTidy</span>
+        <span>MacPulse</span>
       </a>
 
       <ul class="nav-links">
@@ -50,7 +50,7 @@
         </p>
 
         <div class="hero-trust-bar">
-          <span>Free & Open Source</span>
+          <span>Free for Personal Use</span>
           <span>Pure Swift & SwiftUI</span>
           <span>Zero Background Daemons</span>
           <span>Zero Telemetry</span>
@@ -62,7 +62,7 @@
           <a href="#download" class="btn-primary">Download for Mac</a>
 
           <div class="terminal-pill" id="copyPill" role="button" tabindex="0" aria-label="Copy brew install command">
-            <code>brew install --cask mactidy</code>
+            <code>brew install --cask macpulse</code>
             <span id="copyFeedback" style="color: var(--color-ink-stone); margin-left: 4px;" aria-hidden="true">
               <svg id="copySvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               <svg id="checkSvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
@@ -77,7 +77,7 @@
       <div class="container gallery-container">
 
         <!-- Top Navigation Toolbar Capsule matching Image #3 -->
-        <div class="app-toolbar-capsule" role="tablist" aria-label="Choose a MacTidy Tool">
+        <div class="app-toolbar-capsule" role="tablist" aria-label="Choose a MacPulse Tool">
           <!-- 1. Dashboard -->
           <button type="button" class="tool-btn is-active" role="tab" aria-selected="true" data-screen="dashboard" title="Dashboard">
             <span class="btn-icon">
@@ -165,46 +165,46 @@
         </div>
 
         <!-- Real Native macOS Window Displaying Real Screenshots -->
-        <div class="app-window" aria-label="Live MacTidy Application Preview">
+        <div class="app-window" aria-label="Live MacPulse Application Preview">
           <div class="app-titlebar">
             <div class="traffic-dots" aria-hidden="true">
               <div class="traffic-dot dot-red"></div>
               <div class="traffic-dot dot-yellow"></div>
               <div class="traffic-dot dot-green"></div>
             </div>
-            <div class="app-window-title" id="windowTitle">MacTidy — Dashboard</div>
+            <div class="app-window-title" id="windowTitle">MacPulse — Dashboard</div>
             <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-success);">● Live App</div>
           </div>
 
           <div class="app-viewport">
             <!-- 1. Real Dashboard View -->
             <figure class="app-screen-view is-active" id="screen-dashboard">
-              <img src="assets/screenshots/mactidy_dashboard.jpg" alt="MacTidy Live Dashboard with 71% Disk Usage concentric rings" class="app-screen-img" loading="eager">
+              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with 71% Disk Usage concentric rings" class="app-screen-img" loading="eager">
             </figure>
 
             <!-- 2. Real Cleanup View -->
             <figure class="app-screen-view" id="screen-cleanup">
-              <img src="assets/screenshots/mactidy_cleanup_real.jpg" alt="MacTidy Ready to Clean screen with Time Machine & DS_Store toggles" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_cleanup_real.jpg" alt="MacPulse Ready to Clean screen with Time Machine & DS_Store toggles" class="app-screen-img" loading="lazy">
             </figure>
 
             <!-- 3. Real Duplicates View -->
             <figure class="app-screen-view" id="screen-duplicates">
-              <img src="assets/screenshots/mactidy_duplicates.jpg" alt="MacTidy Duplicate Finder screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_duplicates.jpg" alt="MacPulse Duplicate Finder screen" class="app-screen-img" loading="lazy">
             </figure>
 
             <!-- 4. Real Uninstaller View -->
             <figure class="app-screen-view" id="screen-uninstaller">
-              <img src="assets/screenshots/mactidy_uninstaller.jpg" alt="MacTidy Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_uninstaller.jpg" alt="MacPulse Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="lazy">
             </figure>
 
             <!-- 5. Real Startup View -->
             <figure class="app-screen-view" id="screen-startup">
-              <img src="assets/screenshots/mactidy_startup.jpg" alt="MacTidy Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
             </figure>
 
             <!-- 6. Real Monitor View -->
             <figure class="app-screen-view" id="screen-monitor">
-              <img src="assets/screenshots/mactidy_monitor.jpg" alt="MacTidy Live Resource Monitor and Processes screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_monitor.jpg" alt="MacPulse Live Resource Monitor and Processes screen" class="app-screen-img" loading="lazy">
             </figure>
           </div>
         </div>
@@ -286,9 +286,9 @@
       <div class="container">
         <div class="section-head">
           <p class="section-num">02 · Philosophy</p>
-          <h2 class="section-title">How does MacTidy compare to CleanMyMac?</h2>
+          <h2 class="section-title">How does MacPulse compare to CleanMyMac?</h2>
           <p class="section-lede">
-            Traditional commercial utilities lock you into yearly recurring payments and install heavy background processes. MacTidy is a transparent, developer-grade utility.
+            Traditional commercial utilities lock you into yearly recurring payments and install heavy background processes. MacPulse is a transparent, developer-grade utility.
           </p>
         </div>
 
@@ -297,14 +297,14 @@
             <thead>
               <tr>
                 <th style="width: 40%;">Capability</th>
-                <th style="width: 30%;">MacTidy</th>
+                <th style="width: 30%;">MacPulse</th>
                 <th style="width: 30%;">Typical Cleaner (CleanMyMac)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="compare-feature">License Model</td>
-                <td class="compare-val highlight">Free & Open Source (MIT)</td>
+                <td class="compare-val highlight">Free for Personal Use</td>
                 <td class="compare-val dim">$39.95 / year subscription</td>
               </tr>
               <tr>
@@ -329,7 +329,7 @@
               </tr>
               <tr>
                 <td class="compare-feature">CLI & Terminal Support</td>
-                <td class="compare-val highlight">First-class `mactidy` CLI included</td>
+                <td class="compare-val highlight">First-class `macpulse` CLI included</td>
                 <td class="compare-val dim">GUI only / limited CLI</td>
               </tr>
             </tbody>
@@ -350,57 +350,57 @@
         <div class="faq-list">
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>How does MacTidy find residual files that other tools miss?</span>
+              <span>How does MacPulse find residual files that other tools miss?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              When an app installs components on macOS, it registers sandboxed group containers, daemon launch plists, and bundle receipt IDs. Most tools search for folder names containing the app title. MacTidy parses the app's Info.plist, Mach-O load dependencies, and codesign entitlements to build an exact graph of every artifact created by that app.
+              When an app installs components on macOS, it registers sandboxed group containers, daemon launch plists, and bundle receipt IDs. Most tools search for folder names containing the app title. MacPulse parses the app's Info.plist, Mach-O load dependencies, and codesign entitlements to build an exact graph of every artifact created by that app.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Can MacTidy accidentally delete my personal documents?</span>
+              <span>Can MacPulse accidentally delete my personal documents?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              No. MacTidy enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacTidy records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
+              No. MacPulse enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacPulse records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Which permissions does MacTidy require on macOS?</span>
+              <span>Which permissions does MacPulse require on macOS?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              MacTidy requests Full Disk Access so it can inspect user Caches and sandboxed Application Support folders. It does not require kernel extensions or system extension entitlements. All scanning and deletion execution occurs locally on your machine.
+              MacPulse requests Full Disk Access so it can inspect user Caches and sandboxed Application Support folders. It does not require kernel extensions or system extension entitlements. All scanning and deletion execution occurs locally on your machine.
             </div>
           </div>
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Why doesn't MacTidy run in the background 24/7?</span>
+              <span>Why doesn't MacPulse run in the background 24/7?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacTidy does its work when you open it, and when you quit it, it exits completely.
+              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacPulse does its work when you open it, and when you quit it, it exits completely.
             </div>
           </div>
         </div>
 
         <!-- Download Card (Centered) -->
         <div class="download-card" id="download">
-          <h3 class="download-title">Download MacTidy for macOS</h3>
+          <h3 class="download-title">Download MacPulse for macOS</h3>
           <p style="color: var(--color-ink-olive); max-width: 44ch;">
             Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later.
           </p>
 
           <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center;">
-            <a href="https://github.com/princepal/MacTidy/releases/latest" class="btn-primary" style="height: 44px; padding-inline: 28px;">
-              Download MacTidy .dmg (14.2 MB)
+            <a href="https://github.com/princepal/MacPulse/releases/latest" class="btn-primary" style="height: 44px; padding-inline: 28px;">
+              Download MacPulse .dmg (14.2 MB)
             </a>
-            <a href="https://github.com/princepal/MacTidy" class="btn-primary" style="background-color: var(--color-paper-ivory); color: var(--color-ink); border: 1px solid var(--color-line);">
+            <a href="https://github.com/princepal/MacPulse" class="btn-primary" style="background-color: var(--color-paper-ivory); color: var(--color-ink); border: 1px solid var(--color-line);">
               View Source on GitHub
             </a>
           </div>
@@ -419,16 +419,16 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <strong style="color: var(--color-ink); font-family: var(--font-display);">MacTidy</strong>
-        <span>· v1.4.2 · Pure Swift & SwiftUI · Free & Open Source</span>
+        <strong style="color: var(--color-ink); font-family: var(--font-display);">MacPulse</strong>
+        <span>· v1.4.2 · Pure Swift & SwiftUI · Free for Personal Use</span>
       </div>
 
       <div class="footer-links">
         <a href="#overview" class="footer-link">Overview</a>
         <a href="#features" class="footer-link">Features</a>
         <a href="#comparison" class="footer-link">Comparison</a>
-        <a href="https://github.com/princepal/MacTidy" class="footer-link">GitHub</a>
-        <a href="https://github.com/princepal/MacTidy/blob/main/LICENSE" class="footer-link">MIT License</a>
+        <a href="https://github.com/princepal/MacPulse" class="footer-link">GitHub</a>
+        <a href="https://github.com/princepal/MacPulse/blob/main/LICENSE" class="footer-link">Personal Use License</a>
       </div>
     </div>
   </footer>
@@ -436,10 +436,10 @@
   <!-- ⌘K COMMAND SEARCH MODAL -->
   <div class="cmd-modal" id="cmdModal" role="dialog" aria-modal="true" aria-label="Command Search">
     <div class="cmd-box">
-      <input type="text" class="cmd-input" id="cmdSearchInput" placeholder="Search MacTidy tools or actions..." autocomplete="off">
+      <input type="text" class="cmd-input" id="cmdSearchInput" placeholder="Search MacPulse tools or actions..." autocomplete="off">
       <ul class="cmd-menu" id="cmdMenuList">
         <li class="cmd-row" data-action="download">
-          <span>Download MacTidy .dmg release</span>
+          <span>Download MacPulse .dmg release</span>
           <span class="cmd-kbd">Enter</span>
         </li>
         <li class="cmd-row" data-action="brew">
@@ -485,7 +485,7 @@
     const checkSvg = document.getElementById('checkSvg');
 
     function copyBrew() {
-      navigator.clipboard.writeText('brew install --cask mactidy').then(() => {
+      navigator.clipboard.writeText('brew install --cask macpulse').then(() => {
         copySvg.style.display = 'none';
         checkSvg.style.display = 'inline-block';
         setTimeout(() => {
@@ -516,32 +516,32 @@
       dashboard: {
         title: "Live System Telemetry",
         options: "Disk Breakdown · Memory Pressure · System Specifications",
-        name: "MacTidy — Dashboard"
+        name: "MacPulse — Dashboard"
       },
       cleanup: {
         title: "Caches & Junk Cleaner",
         options: "Clean .DS_Store · Time Machine Snapshots · Extended Clean",
-        name: "MacTidy — Cleanup"
+        name: "MacPulse — Cleanup"
       },
       duplicates: {
         title: "Duplicate Finder",
         options: "Binary Hash Comparison · Fast Directory Select · Reclaim Space",
-        name: "MacTidy — Duplicate Finder"
+        name: "MacPulse — Duplicate Finder"
       },
       uninstaller: {
         title: "Deep Application Uninstaller",
         options: "Applications · Leftovers · Mach-O Link Discovery",
-        name: "MacTidy — Uninstaller"
+        name: "MacPulse — Uninstaller"
       },
       startup: {
         title: "Startup Services Manager",
         options: "LaunchAgents · LaunchDaemons · Login Items · Disable Toggles",
-        name: "MacTidy — Startup Services"
+        name: "MacPulse — Startup Services"
       },
       monitor: {
         title: "Real-time Resource Monitor",
         options: "Process Allocation · CPU Sampling · Zombie Process Killer",
-        name: "MacTidy — Monitor"
+        name: "MacPulse — Monitor"
       }
     };
 
@@ -635,7 +635,7 @@
           switchScreen(screen);
           document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
         } else if (action === 'github') {
-          window.open('https://github.com/princepal/MacTidy', '_blank');
+          window.open('https://github.com/princepal/MacPulse', '_blank');
         }
       });
     });

@@ -21,7 +21,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RESOURCES = ROOT / "MacTidy" / "Resources"
+RESOURCES = ROOT / "MacPulse" / "Resources"
 ENGINE = RESOURCES / "engine_paths.json"
 UI = RESOURCES / "ui_metadata.json"
 

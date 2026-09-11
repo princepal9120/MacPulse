@@ -1,5 +1,5 @@
 schemaVersion: 1
 sessionDefaults:
-  projectPath: /Users/princepal/Downloads/MacTidy/MacTidy/MacTidy.xcodeproj
-  scheme: MacTidy
+  projectPath: /Users/princepal/Downloads/MacPulse/MacPulse/MacPulse.xcodeproj
+  scheme: MacPulse
   platform: macos

@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-UI = ROOT / "MacTidy" / "Resources" / "ui_metadata.json"
+UI = ROOT / "MacPulse" / "Resources" / "ui_metadata.json"
 
 TOOLCHAIN_SUITES: dict[str, str] = {
     "mysql": "Homebrew",

@@ -6,7 +6,7 @@
 //   swift scripts/generate_cleanup_paths.swift --check
 //
 // Output (gitignored):
-//   MacTidy/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset/
+//   MacPulse/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset/
 
 import CryptoKit
 import Foundation
@@ -16,10 +16,10 @@ import Foundation
 let repoRoot = URL(fileURLWithPath: #filePath)
     .deletingLastPathComponent()
     .deletingLastPathComponent()
-let engineJSON = repoRoot.appendingPathComponent("MacTidy/Resources/engine_paths.json")
-let uiJSON = repoRoot.appendingPathComponent("MacTidy/Resources/ui_metadata.json")
+let engineJSON = repoRoot.appendingPathComponent("MacPulse/Resources/engine_paths.json")
+let uiJSON = repoRoot.appendingPathComponent("MacPulse/Resources/ui_metadata.json")
 let datasetDir = repoRoot.appendingPathComponent(
-    "MacTidy/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset"
+    "MacPulse/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset"
 )
 let catalogBin = datasetDir.appendingPathComponent("catalog.bin")
 let contentsJSON = datasetDir.appendingPathComponent("Contents.json")
@@ -28,18 +28,18 @@ let validator = repoRoot.appendingPathComponent("scripts/validate_engine_paths.p
 let formatVersion = 1
 let magic = Data("MCC1".utf8)
 let assetWatermarks: [String] = [
-    "com.mactidy.provenance.canary.alpha",
-    "com.mactidy.provenance.canary.beta",
-    "com.mactidy.provenance.canary.gamma",
-    "com.mactidy.provenance.canary.delta",
-    "com.mactidy.provenance.canary.epsilon",
-    "com.mactidy.provenance.canary.zeta",
-    "com.mactidy.provenance.canary.eta",
-    "com.mactidy.provenance.canary.theta",
-    "com.mactidy.provenance.canary.iota",
-    "com.mactidy.provenance.canary.kappa",
-    "com.mactidy.provenance.canary.lambda",
-    "com.mactidy.provenance.canary.mu",
+    "com.macpulse.provenance.canary.alpha",
+    "com.macpulse.provenance.canary.beta",
+    "com.macpulse.provenance.canary.gamma",
+    "com.macpulse.provenance.canary.delta",
+    "com.macpulse.provenance.canary.epsilon",
+    "com.macpulse.provenance.canary.zeta",
+    "com.macpulse.provenance.canary.eta",
+    "com.macpulse.provenance.canary.theta",
+    "com.macpulse.provenance.canary.iota",
+    "com.macpulse.provenance.canary.kappa",
+    "com.macpulse.provenance.canary.lambda",
+    "com.macpulse.provenance.canary.mu",
 ]
 
 // MARK: - Category mapping (JSON category → CleanupCategory.rawValue)
