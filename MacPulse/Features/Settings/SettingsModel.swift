@@ -8,6 +8,15 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     case advanced
     case about
 
+    /// Categories currently ready for users. Keep Automation compiled so the
+    /// feature can be restored without losing its implementation or settings.
+    static let visibleCases: [SettingsCategory] = [
+        .general,
+        // .automation, // Temporarily hidden while Siri & AI is being completed.
+        .advanced,
+        .about,
+    ]
+
     var id: String { rawValue }
 
     var displayName: String {
@@ -82,10 +91,8 @@ struct SettingsSearchRegistry {
         SettingsItem(id: "emptyTrash", category: .advanced, titleKey: "settings_empty_trash_during_cleanup", subtitleKey: "settings_empty_trash_cleanup_sub", keywords: ["empty", "trash", "очистка", "корзина"], iconName: "trash"),
         SettingsItem(id: "bypassTrash", category: .advanced, titleKey: "settings_bypass_trash_on_uninstall", subtitleKey: "settings_bypass_trash_sub", keywords: ["bypass", "direct", "delete", "обход корзины", "удаление"], iconName: "xmark.bin"),
 
-        // Automation & AI
-        SettingsItem(id: "siri", category: .automation, titleKey: "settings_siri_toggle_title", subtitleKey: "settings_enable_siri_sub", keywords: ["siri", "voice", "сири", "голос", "команды"], iconName: "waveform"),
-        SettingsItem(id: "shortcuts", category: .automation, titleKey: "settings_automator_toggle_title", subtitleKey: "settings_enable_shortcuts_sub", keywords: ["shortcuts", "automator", "быстрые команды", "автоматизация"], iconName: "square.stack.3d.up"),
-        SettingsItem(id: "enableAI", category: .automation, titleKey: "settings_enable_ai", subtitleKey: "settings_enable_ai_sub", keywords: ["ai", "apple intelligence", "smart", "искусственный интеллект", "модель"], iconName: "sparkles"),
+        // Automation & AI is intentionally omitted while the feature is hidden.
+        // Restore these entries with `.automation` in `visibleCases`.
 
         // Processes (in Advanced)
         SettingsItem(id: "refreshInterval", category: .advanced, titleKey: "settings_refresh_interval", subtitleKey: "settings_refresh_interval_sub", keywords: ["refresh", "interval", "processes", "процессы", "интервал"], iconName: "timer"),

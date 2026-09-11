@@ -4,6 +4,19 @@ import OSLog
 
 private let crashLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "input.MacPulse", category: "Crash")
 
+/// One source of truth for MacPulse branding across the menu bar and app UI.
+struct MacPulseLogo: View {
+    var size: CGFloat
+
+    var body: some View {
+        Image(nsImage: NSApplication.shared.applicationIconImage)
+            .resizable()
+            .interpolation(.high)
+            .aspectRatio(contentMode: .fit)
+            .frame(width: size, height: size)
+    }
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false // stay resident in menu bar (Monitor keeps running)
@@ -102,7 +115,7 @@ struct MacPulseApp: App {
         .defaultSize(width: 1200, height: 760)
         .defaultPosition(.center)
 
-        MenuBarExtra("MacPulse", systemImage: "waveform.path.ecg") {
+        MenuBarExtra("MacPulse", image: "MenuBarIcon") {
             MonitorHUDView(viewModel: monitorViewModel, privacyMonitor: privacyMonitorViewModel)
         }
         .menuBarExtraStyle(.window)

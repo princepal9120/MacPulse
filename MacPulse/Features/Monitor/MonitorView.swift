@@ -1060,11 +1060,7 @@ public struct MonitorHUDView: View {
     // MARK: - Header Row
     private var headerRow: some View {
         HStack {
-            Image(systemName: "sparkles")
-                .foregroundStyle(Color.accentColor)
-                .font(.system(size: 14, weight: .bold))
-                .frame(width: 26, height: 26)
-                .background(Color.accentColor.opacity(0.14), in: Circle())
+            MacPulseLogo(size: 26)
             Text("MacPulse Monitor")
                 .font(.system(size: 13, weight: .bold))
 

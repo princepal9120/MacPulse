@@ -3,11 +3,12 @@ import SwiftUI
 struct SettingsAboutView: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 18) {
+                SettingsPageHeader(category: .about)
                 linksCard
                 privacySafetyCard
             }
-            .padding(20)
+            .padding(24)
         }
     }
 
@@ -18,8 +19,6 @@ struct SettingsAboutView: View {
             },
             content: {
                 VStack(spacing: 8) {
-                    linkRow("settings_about_star_github".localized, subtitle: "https://github.com/princepal9120/MacPulse", icon: "star.fill", iconColor: .yellow, url: "https://github.com/princepal9120/MacPulse")
-                    SettingsDivider()
                     linkRow("settings_about_github".localized, subtitle: "https://github.com/princepal9120/MacPulse", icon: "curlybraces.square.fill", iconColor: .blue, url: "https://github.com/princepal9120/MacPulse")
                     SettingsDivider()
                     linkRow("settings_about_github_releases".localized, subtitle: "https://github.com/princepal9120/MacPulse/releases", icon: "arrow.down.app.fill", iconColor: .green, url: "https://github.com/princepal9120/MacPulse/releases")
@@ -72,7 +71,10 @@ struct SettingsAboutView: View {
                 SettingsSectionHeader("settings_privacy_safety_title".localized, subtitle: "settings_privacy_safety_sub".localized, iconName: "shield.fill", iconColor: .green)
             },
             content: {
-                VStack(alignment: .leading, spacing: 10) {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 12, alignment: .top),
+                    GridItem(.flexible(), spacing: 12, alignment: .top),
+                ], alignment: .leading, spacing: 12) {
                     privacyItem("lock.shield.fill", color: .green, title: "settings_privacy_item_1_title".localized, desc: "settings_privacy_item_1_desc".localized)
                     privacyItem("network", color: .blue, title: "settings_privacy_item_2_title".localized, desc: "settings_privacy_item_2_desc".localized)
                     privacyItem("trash.fill", color: .teal, title: "settings_privacy_item_3_title".localized, desc: "settings_privacy_item_3_desc".localized)
@@ -90,14 +92,14 @@ struct SettingsAboutView: View {
     private func privacyItem(_ icon: String, color: Color, title: String, desc: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon)
-                .font(.body)
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(color)
-                .frame(width: 18)
-                .padding(.top, 2)
+                .frame(width: 30, height: 30)
+                .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.body.weight(.medium))
+                    .font(.callout.weight(.semibold))
                 Text(desc)
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -105,6 +107,8 @@ struct SettingsAboutView: View {
             }
             Spacer(minLength: 0)
         }
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

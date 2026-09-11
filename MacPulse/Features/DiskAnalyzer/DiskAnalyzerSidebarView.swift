@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Left sidebar for Disk Analyzer matching the DiskBuddy layout in the screenshots.
+/// Scan controls and context for the current Disk Analyzer workspace.
 public struct DiskAnalyzerSidebarView: View {
     @Bindable var viewModel: DiskAnalyzerViewModel
 
@@ -41,9 +41,9 @@ public struct DiskAnalyzerSidebarView: View {
                 .padding(.vertical, 4)
             }
         }
-        .padding(14)
-        .frame(width: 230)
-        .background(Color.primary.opacity(0.025))
+        .padding(16)
+        .frame(width: 250)
+        .background(.thinMaterial)
     }
 
     // MARK: - Scan Buttons
@@ -59,15 +59,16 @@ public struct DiskAnalyzerSidebarView: View {
                     Text("Scan Full Mac")
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                 }
-                .foregroundStyle(Color.white)
+                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
+                .padding(.vertical, 9)
                 .background(
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color.primary.opacity(0.90))
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(Color.accentColor)
                 )
             }
             .buttonStyle(.plain)
+            .disabled(viewModel.isScanning)
 
             HStack(spacing: 6) {
                 Button(action: {
@@ -108,6 +109,7 @@ public struct DiskAnalyzerSidebarView: View {
                 }
                 .buttonStyle(.plain)
             }
+            .disabled(viewModel.isScanning)
         }
     }
 
@@ -116,8 +118,8 @@ public struct DiskAnalyzerSidebarView: View {
     private var recentScansSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("RECENT")
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.secondary)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
 
             ForEach(viewModel.recentScans, id: \.self) { url in
                 Button(action: {
@@ -128,8 +130,8 @@ public struct DiskAnalyzerSidebarView: View {
                             .font(.system(size: 10))
                             .foregroundStyle(Color.secondary)
                         Text(url.lastPathComponent.isEmpty ? "Macintosh HD" : url.lastPathComponent)
-                            .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundStyle(Color.primary.opacity(0.85))
+                            .font(.callout.weight(.medium))
+                            .foregroundStyle(.primary)
                             .lineLimit(1)
                     }
                 }
@@ -148,8 +150,8 @@ public struct DiskAnalyzerSidebarView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("DISK STORAGE")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Spacer()
                 Text("Macintosh HD")
                     .font(.system(size: 10))
@@ -212,8 +214,8 @@ public struct DiskAnalyzerSidebarView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("CURRENT VIEW")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Spacer()
                 if viewModel.scanDurationSeconds > 0 {
                     Text(String(format: "%.1fs scan", viewModel.scanDurationSeconds))
@@ -223,7 +225,7 @@ public struct DiskAnalyzerSidebarView: View {
             }
 
             Text(viewModel.currentItem?.name ?? "Home")
-                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .font(.callout.weight(.semibold))
                 .lineLimit(1)
 
             Text(viewModel.currentItem?.url.path ?? "")
@@ -273,8 +275,8 @@ public struct DiskAnalyzerSidebarView: View {
             let totalWins = viewModel.quickWins.reduce(0) { $0 + $1.bytes }
             HStack {
                 Text("QUICK WINS")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.secondary)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Spacer()
                 Text(FileManager.formatSize(totalWins))
                     .font(.system(size: 10, weight: .semibold, design: .rounded))
@@ -325,8 +327,8 @@ public struct DiskAnalyzerSidebarView: View {
     private var fileTypesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("FILE TYPES")
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.secondary)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
 
             let totalBytes = max(1, viewModel.fileTypesBreakdown.reduce(0) { $0 + $1.bytes })
 

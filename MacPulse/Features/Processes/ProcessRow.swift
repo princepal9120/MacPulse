@@ -14,7 +14,6 @@ struct ProcessRow: View {
     @State private var aiExplanation = ""
     @State private var isGenerating = false
     @State private var errorMessage: String? = nil
-    @State private var showForceKill = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -39,8 +38,7 @@ struct ProcessRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
                     Text(process.name)
-                        .font(.system(.body, design: .monospaced))
-                        .fontWeight(.medium)
+                        .font(.body.weight(.medium))
 
                     if case .blocked = permission {
                         Text("processes_protected".localized)
@@ -251,34 +249,25 @@ struct ProcessSplitButton: View {
     let onTerminate: () -> Void
     let onForceKill: () -> Void
 
-    @State private var isHoveredMain = false
-    @State private var isHoveredChevron = false
-
     var body: some View {
         HStack(spacing: 0) {
             Button(action: onTerminate) {
                 HStack(spacing: 4) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.caption.weight(.semibold))
                     Text(title)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.caption.weight(.medium))
                 }
-                .foregroundColor((isHoveredMain || isHoveredChevron) ? .white : .red.opacity(0.85))
                 .padding(.leading, 10)
                 .padding(.trailing, 8)
                 .padding(.vertical, 5)
-                .background(
-                    isHoveredMain ? Color.red.opacity(0.3) : Color.clear
-                )
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .help("processes_terminate".localized)
-            .onHover { hovering in
-                isHoveredMain = hovering
-            }
 
             Rectangle()
-                .fill(Color.red.opacity(0.25))
+                .fill(Color.primary.opacity(0.12))
                 .frame(width: 1, height: 14)
 
             Menu {
@@ -290,39 +279,18 @@ struct ProcessSplitButton: View {
                 }
             } label: {
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundColor((isHoveredMain || isHoveredChevron) ? .white : .red.opacity(0.85))
+                    .font(.system(size: 9, weight: .semibold))
                     .frame(width: 22, height: 24)
-                    .background(
-                        isHoveredChevron ? Color.red.opacity(0.3) : Color.clear
-                    )
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .fixedSize()
-            .onHover { hovering in
-                isHoveredChevron = hovering
-            }
         }
-        .background(
-            ZStack {
-                if #available(macOS 26.0, *) {
-                    Color.clear.background(.ultraThinMaterial)
-                } else {
-                    Color(nsColor: .controlBackgroundColor).opacity(0.5)
-                }
-                Color.red.opacity(0.12)
-            }
-        )
-        .clipShape(Capsule())
+        .foregroundStyle(.primary)
+        .background(.quaternary.opacity(0.65), in: Capsule())
         .overlay(
             Capsule()
-                .strokeBorder(
-                    (isHoveredMain || isHoveredChevron) ? Color.red.opacity(0.5) : Color.red.opacity(0.25),
-                    lineWidth: 1
-                )
+                .strokeBorder(Color.primary.opacity(0.10), lineWidth: 1)
         )
-        .animation(.easeInOut(duration: 0.12), value: isHoveredMain)
-        .animation(.easeInOut(duration: 0.12), value: isHoveredChevron)
     }
 }

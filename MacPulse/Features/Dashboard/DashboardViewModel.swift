@@ -14,36 +14,67 @@ class DashboardViewModel: ObservableObject {
     @Published var cleanupCount: Int = 0
     @Published var recentTransactions: [CleanupTransaction] = []
     @Published var systemInfo: SystemInfo = .current
-    
-    // Disk Categories (Donut Chart)
+
     @Published var isCategoriesLoading: Bool = true
     @Published var diskCategories: [DiskCategoryItem] = []
-    
+
     private let journal: TransactionJournal
-    
+    private static let categoryCacheKey = "com.macpulse.dashboard.categorySizes"
+    // Skip ~/Pictures — deep walk triggers Photos Library TCC on launch.
+    private static let categoryRoots: [(key: String, paths: [String])] = {
+        let home = NSHomeDirectory()
+        return [
+            ("caches", ["\(home)/Library/Caches", "/Library/Caches"]),
+            ("logs",   ["\(home)/Library/Logs", "/Library/Logs"]),
+            ("dev",    ["\(home)/Library/Developer"]),
+            ("apps",   ["/Applications", "\(home)/Applications", "/System/Applications"]),
+            ("media",  ["\(home)/Music", "\(home)/Movies"]),
+        ]
+    }()
+
     init(journal: TransactionJournal) {
         self.journal = journal
+        // Instant paint from last scan while fresh sizes compute in background.
+        if let cached = Self.loadCachedSizes() {
+            diskCategories = Self.buildItems(
+                caches: cached["caches", default: 0],
+                logs: cached["logs", default: 0],
+                dev: cached["dev", default: 0],
+                apps: cached["apps", default: 0],
+                media: cached["media", default: 0],
+                usedDiskSpace: max(0, totalDiskSpace - freeDiskSpace)
+            )
+            isCategoriesLoading = diskCategories.isEmpty
+        }
     }
-    
+
     func refresh() async {
         await fetchDiskUsage()
         await fetchHistory()
         await fetchCategoryData()
     }
-    
+
     private func fetchDiskUsage() async {
         let fileManager = FileManager.default
         let url = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        
+
         do {
-            let values = try url.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityKey])
+            let values = try url.resourceValues(forKeys: [
+                .volumeTotalCapacityKey,
+                .volumeAvailableCapacityForImportantUsageKey,
+                .volumeAvailableCapacityKey,
+            ])
             totalDiskSpace = Int64(values.volumeTotalCapacity ?? 0)
-            freeDiskSpace = Int64(values.volumeAvailableCapacity ?? 0)
+            if let important = values.volumeAvailableCapacityForImportantUsage {
+                freeDiskSpace = important
+            } else {
+                freeDiskSpace = Int64(values.volumeAvailableCapacity ?? 0)
+            }
         } catch {
             Logger.dashboard.error("Failed to fetch disk usage: \(error.localizedDescription, privacy: .public)")
         }
     }
-    
+
     private func fetchHistory() async {
         do {
             let allTransactions = try await journal.loadAll()
@@ -56,88 +87,104 @@ class DashboardViewModel: ObservableObject {
             Logger.dashboard.error("Failed to load history: \(error.localizedDescription, privacy: .public)")
         }
     }
-    
-    private func fetchCategoryData() async {
-        isCategoriesLoading = true
-        let home = NSHomeDirectory()
 
-        // Skip ~/Pictures — enumerating it triggers the Photos Library TCC prompt on launch.
-        let categoryPaths: [(key: String, paths: [String], skipPackages: Bool)] = [
-            ("caches", ["\(home)/Library/Caches", "/Library/Caches"], false),
-            ("logs",   ["\(home)/Library/Logs", "/Library/Logs"], false),
-            ("dev",    ["\(home)/Library/Developer"], false),
-            ("apps",   ["/Applications", "\(home)/Applications", "/System/Applications"], false),
-            ("media",  ["\(home)/Music", "\(home)/Movies"], true),
-        ]
+    private func fetchCategoryData() async {
+        if diskCategories.isEmpty {
+            isCategoriesLoading = true
+        }
 
         var calculatedSizes: [String: Int64] = [:]
-
+        // One task per root path — du is C-fast; fan out hard.
         await withTaskGroup(of: (String, Int64).self) { group in
-            for entry in categoryPaths {
-                group.addTask {
-                    var total: Int64 = 0
-                    for path in entry.paths {
-                        total += await self.calculatePathSize(path, skipPackageDescendants: entry.skipPackages)
+            for entry in Self.categoryRoots {
+                for path in entry.paths {
+                    group.addTask {
+                        (entry.key, Self.duBytes(path))
                     }
-                    return (entry.key, total)
                 }
             }
             for await (key, size) in group {
-                calculatedSizes[key] = size
+                calculatedSizes[key, default: 0] += size
             }
         }
-        
+
         let cachesSize = calculatedSizes["caches", default: 0]
-        let logsSize   = calculatedSizes["logs",   default: 0]
-        let devSize    = calculatedSizes["dev",    default: 0]
-        let appsSize   = calculatedSizes["apps",   default: 0]
-        let mediaSize  = calculatedSizes["media",  default: 0]
-        let identifiedSum = cachesSize + logsSize + devSize + appsSize + mediaSize
-        // "Other" = used space not accounted for by the 5 categories
-        // Free space is shown as a separate explicit segment
+        let logsSize = calculatedSizes["logs", default: 0]
+        let devSize = calculatedSizes["dev", default: 0]
+        let appsSize = calculatedSizes["apps", default: 0]
+        let mediaSize = calculatedSizes["media", default: 0]
+
+        Self.saveCachedSizes([
+            "caches": cachesSize,
+            "logs": logsSize,
+            "dev": devSize,
+            "apps": appsSize,
+            "media": mediaSize,
+        ])
+
+        diskCategories = Self.buildItems(
+            caches: cachesSize,
+            logs: logsSize,
+            dev: devSize,
+            apps: appsSize,
+            media: mediaSize,
+            usedDiskSpace: usedDiskSpace
+        )
+        isCategoriesLoading = false
+    }
+
+    private static func buildItems(
+        caches: Int64,
+        logs: Int64,
+        dev: Int64,
+        apps: Int64,
+        media: Int64,
+        usedDiskSpace: Int64
+    ) -> [DiskCategoryItem] {
+        let identifiedSum = caches + logs + dev + apps + media
         let otherUsed = max(0, usedDiskSpace - identifiedSum)
-        
+
         var items: [DiskCategoryItem] = []
-        if cachesSize > 0 {
+        if caches > 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_caches".localized,
-                bytes: cachesSize,
+                bytes: caches,
                 color: Color(red: 0.0, green: 0.75, blue: 0.95),
                 gradientColors: [Color(red: 0.0, green: 0.75, blue: 0.95), Color(red: 0.0, green: 0.55, blue: 0.85)],
                 iconName: "archivebox.fill"
             ))
         }
-        if logsSize > 0 {
+        if logs > 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_logs".localized,
-                bytes: logsSize,
+                bytes: logs,
                 color: Color(red: 1.0, green: 0.6, blue: 0.0),
                 gradientColors: [Color(red: 1.0, green: 0.6, blue: 0.0), Color(red: 0.95, green: 0.45, blue: 0.0)],
                 iconName: "doc.text.fill"
             ))
         }
-        if devSize > 0 {
+        if dev > 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_dev".localized,
-                bytes: devSize,
+                bytes: dev,
                 color: Color(red: 0.15, green: 0.55, blue: 1.0),
                 gradientColors: [Color(red: 0.15, green: 0.55, blue: 1.0), Color(red: 0.35, green: 0.35, blue: 0.95)],
                 iconName: "hammer.fill"
             ))
         }
-        if appsSize > 0 {
+        if apps > 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_apps".localized,
-                bytes: appsSize,
+                bytes: apps,
                 color: Color(red: 0.65, green: 0.35, blue: 0.95),
                 gradientColors: [Color(red: 0.65, green: 0.35, blue: 0.95), Color(red: 0.45, green: 0.2, blue: 0.85)],
                 iconName: "app.badge.fill"
             ))
         }
-        if mediaSize > 0 {
+        if media > 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_media".localized,
-                bytes: mediaSize,
+                bytes: media,
                 color: Color(red: 0.95, green: 0.3, blue: 0.55),
                 gradientColors: [Color(red: 0.95, green: 0.3, blue: 0.55), Color(red: 0.9, green: 0.2, blue: 0.35)],
                 iconName: "photo.stack.fill"
@@ -152,57 +199,55 @@ class DashboardViewModel: ObservableObject {
                 iconName: "square.grid.2x2.fill"
             ))
         }
-        
-        self.diskCategories = items
-        self.isCategoriesLoading = false
+        return items
     }
-    
-    // ponytail: nonisolated to avoid blocking main thread on directory enumeration
-    private nonisolated func calculatePathSize(_ path: String, skipPackageDescendants: Bool = false) async -> Int64 {
+
+    /// Native `du -sk` — far faster than Swift FileManager walks for dashboard overview.
+    private nonisolated static func duBytes(_ path: String) -> Int64 {
         let fm = FileManager.default
-        let url = URL(fileURLWithPath: path)
-        var isDirectory: ObjCBool = false
+        var isDir: ObjCBool = false
+        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return 0 }
 
-        guard fm.fileExists(atPath: path, isDirectory: &isDirectory) else { return 0 }
-        if !isDirectory.boolValue {
-            let attribs = try? fm.attributesOfItem(atPath: path)
-            return (attribs?[.size] as? Int64) ?? 0
-        }
-
-        let keys: [URLResourceKey] = [.fileSizeKey, .isDirectoryKey]
-        var options: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
-        // Media libs (.musiclibrary, etc.) are packages — entering them can trip TCC.
-        if skipPackageDescendants {
-            options.insert(.skipsPackageDescendants)
-        }
-        guard let enumerator = fm.enumerator(
-            at: url,
-            includingPropertiesForKeys: keys,
-            options: options
-        ) else { return 0 }
-
-        var totalSize: Int64 = 0
-        var yieldCount = 0
-
-        while let fileURL = enumerator.nextObject() as? URL {
-            guard let values = try? fileURL.resourceValues(forKeys: Set(keys)) else { continue }
-            if let isDir = values.isDirectory, isDir {
-                continue
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/du")
+        process.arguments = ["-sk", path]
+        let out = Pipe()
+        process.standardOutput = out
+        process.standardError = FileHandle.nullDevice
+        do {
+            try process.run()
+            process.waitUntilExit()
+            guard process.terminationStatus == 0 else {
+                return FileManager.default.getDirectorySize(url: URL(fileURLWithPath: path))
             }
-            totalSize += Int64(values.fileSize ?? 0)
-            yieldCount += 1
-            if yieldCount % 1000 == 0 {
-                await Task.yield()
+            let data = out.fileHandleForReading.readDataToEndOfFile()
+            guard let raw = String(data: data, encoding: .utf8) else { return 0 }
+            let token = raw.split(whereSeparator: { $0 == "\t" || $0 == " " || $0 == "\n" }).first
+            guard let token, let kb = Int64(token) else {
+                return FileManager.default.getDirectorySize(url: URL(fileURLWithPath: path))
             }
+            return kb * 1024
+        } catch {
+            return FileManager.default.getDirectorySize(url: URL(fileURLWithPath: path))
         }
-
-        return totalSize
     }
-    
+
+    private static func loadCachedSizes() -> [String: Int64]? {
+        guard let dict = UserDefaults.standard.dictionary(forKey: categoryCacheKey) as? [String: Int] else {
+            return nil
+        }
+        return dict.mapValues { Int64($0) }
+    }
+
+    private static func saveCachedSizes(_ sizes: [String: Int64]) {
+        let boxed = sizes.mapValues { Int(clamping: $0) }
+        UserDefaults.standard.set(boxed, forKey: categoryCacheKey)
+    }
+
     var usedDiskSpace: Int64 {
         totalDiskSpace - freeDiskSpace
     }
-    
+
     var usedDiskPercentage: Double {
         guard totalDiskSpace > 0 else { return 0 }
         return Double(usedDiskSpace) / Double(totalDiskSpace)

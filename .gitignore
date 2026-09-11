@@ -134,3 +134,5 @@ MacPulse/Resources/Assets.xcassets/PrivateCleanupCatalog.dataset/
 MacPulse/.require-private-catalog
 ./derived_data 
 derived_data/
+# graphify skill output
+graphify-out/

@@ -2,8 +2,10 @@
 "welcome_msg" = "Welcome back!";
 "app_title" = "Cleaner";
 "sidebar_select_item" = "Select an item from the sidebar";
-"sidebar_section_tools" = "Cleaning";
-"sidebar_section_system" = "System";
+"sidebar_section_tools" = "Actions";
+"sidebar_section_system" = "Insights";
+"sidebar_section_actions" = "Actions";
+"sidebar_section_insights" = "Insights";
 "close" = "Close";
 "cancel_description" = "The operation was cancelled by user.";
 "reset" = "Reset";
@@ -130,7 +132,7 @@
 "about_linkedin" = "LinkedIn Profile";
 "about_website" = "Website";
 "about_star_github" = "Star on GitHub ⭐";
-"settings_about_star_github" = "Star on GitHub ⭐";
+"settings_about_star_github" = "Star on GitHub";
 "about_copyright" = "© 2026 PrincePal. All rights reserved.";
 
 /* Dashboard View */
@@ -954,7 +956,7 @@
 "settings_about_website" = "Website";
 
 /* Privacy & Safety (About) */
-"settings_privacy_safety_title" = "Privacy & Safety 🛡️";
+"settings_privacy_safety_title" = "Privacy & Safety";
 "settings_privacy_safety_sub" = "Core system protection and data privacy guarantees";
 "settings_privacy_item_1_title" = "100% Private";
 "settings_privacy_item_1_desc" = "No telemetry, no analytics, no usage tracking, and no remote logging. All operations run fully offline on your device.";

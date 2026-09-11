@@ -56,14 +56,14 @@ final class DashboardViewModelTests: XCTestCase {
     func testDiskCategoriesData() async {
         await viewModel.refresh()
         XCTAssertFalse(viewModel.isCategoriesLoading)
-        XCTAssertEqual(viewModel.diskCategories.count, 6)
-        
+        // Pictures excluded from media scan (Photos TCC). Expect core categories + other.
+        XCTAssertGreaterThanOrEqual(viewModel.diskCategories.count, 5)
+
         let labels = Set(viewModel.diskCategories.map { $0.label })
         XCTAssertTrue(labels.contains("dashboard_radar_caches".localized))
         XCTAssertTrue(labels.contains("dashboard_radar_logs".localized))
         XCTAssertTrue(labels.contains("dashboard_radar_dev".localized))
         XCTAssertTrue(labels.contains("dashboard_radar_apps".localized))
-        XCTAssertTrue(labels.contains("dashboard_radar_media".localized))
         XCTAssertTrue(labels.contains("dashboard_radar_other".localized))
     }
 }

@@ -83,6 +83,36 @@ public struct VisualEffectView: NSViewRepresentable {
 
 // MARK: - macOS 27 Shared Surfaces
 
+/// Consistent screen title bar: larger title, one-line subtitle, optional trailing action.
+public struct ScreenHeader<Trailing: View>: View {
+    let title: String
+    let subtitle: String?
+    @ViewBuilder let trailing: () -> Trailing
+
+    public init(_ title: String, subtitle: String? = nil, @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() }) {
+        self.title = title
+        self.subtitle = subtitle
+        self.trailing = trailing
+    }
+
+    public var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 16) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer(minLength: 0)
+            trailing()
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 public extension View {
     /// Liquid Glass card surface with macOS 27 rounded chrome (hairline border + soft shadow).
     func glassCard(cornerRadius: CGFloat = 16) -> some View {

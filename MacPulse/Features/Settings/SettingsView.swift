@@ -13,7 +13,7 @@ struct SettingsDetailView: View {
     @State private var searchText: String = ""
 
     /// Settings read as a column, not a wall — cards stop growing on wide windows.
-    private let contentMaxWidth: CGFloat = 860
+    private let contentMaxWidth: CGFloat = 880
 
     var body: some View {
         HStack(spacing: 0) {
@@ -77,7 +77,7 @@ struct SettingsDetailView: View {
                     }
                 }
             }
-            .padding(20)
+            .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }

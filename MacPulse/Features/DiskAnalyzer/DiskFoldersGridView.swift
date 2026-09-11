@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Folder cards grid matching DiskBuddy Folders mode (Screenshot 1).
+/// Responsive folder grid for the primary Disk Analyzer browsing mode.
 public struct DiskFoldersGridView: View {
     let items: [DiskItem]
     let selectedItem: DiskItem?
@@ -9,7 +9,7 @@ public struct DiskFoldersGridView: View {
     let onOpen: (DiskItem) -> Void
 
     private let columns = [
-        GridItem(.adaptive(minimum: 180, maximum: 240), spacing: 14)
+        GridItem(.adaptive(minimum: 210, maximum: 280), spacing: 16)
     ]
 
     public init(
@@ -28,12 +28,12 @@ public struct DiskFoldersGridView: View {
 
     public var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 14) {
+            LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(items) { item in
                     folderCard(for: item)
                 }
             }
-            .padding(16)
+            .padding(20)
         }
     }
 
@@ -55,8 +55,8 @@ public struct DiskFoldersGridView: View {
                             .offset(y: -4)
 
                         Image(systemName: item.isDirectory ? "folder.fill" : "doc.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color.primary.opacity(0.75))
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(baseColor)
                     }
 
                     Spacer()
@@ -70,7 +70,7 @@ public struct DiskFoldersGridView: View {
 
                 // Folder Name
                 Text(item.name)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(.headline)
                     .foregroundStyle(Color.primary)
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -97,17 +97,16 @@ public struct DiskFoldersGridView: View {
                         .foregroundStyle(Color.primary.opacity(0.85))
                 }
             }
-            .padding(14)
-            .frame(height: 110)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(baseColor.opacity(0.35))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(isSelected ? Color.accentColor : baseColor.opacity(0.6), lineWidth: isSelected ? 2 : 1)
-                    )
+            .padding(16)
+            .frame(height: 136)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(baseColor.opacity(0.10), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .glassCard(cornerRadius: 16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(isSelected ? Color.accentColor : baseColor.opacity(0.35), lineWidth: isSelected ? 2 : 1)
             )
-            .contentShape(RoundedRectangle(cornerRadius: 12))
+            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
         .simultaneousGesture(

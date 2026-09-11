@@ -5,6 +5,7 @@ struct DashboardView: View {
     @StateObject private var viewModel: DashboardViewModel
     let monitorViewModel: MonitorViewModel?
     let privacyMonitor: PrivacyMonitorViewModel?
+    @Environment(\.onboardingActive) private var onboardingActive
 
     init(
         journal: TransactionJournal,
@@ -20,15 +21,23 @@ struct DashboardView: View {
         GlassEffectContainer {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
+                    ScreenHeader(
+                        "menu_dashboard".localized,
+                        subtitle: "dashboard_subtitle".localized
+                    )
+
+                    // Layer 1 — hero: disk usage + stat tiles.
                     HStack(spacing: 20) {
                         diskUsageCard
                         rightColumn
                     }
 
+                    // Layer 2 — live performance sparklines.
                     if let monitorVM = monitorViewModel {
                         DashboardLiveMonitorSection(viewModel: monitorVM)
                     }
 
+                    // Layer 3 — detail: processes, privacy, recent ops.
                     HStack(alignment: .top, spacing: 20) {
                         if let monitorVM = monitorViewModel {
                             DashboardTopProcessesCard(viewModel: monitorVM)
@@ -49,13 +58,15 @@ struct DashboardView: View {
                 .padding(.top, 8)
             }
         }
-        .task {
+        // Defer disk walks until onboarding sheet is gone (smooth first launch).
+        .task(id: onboardingActive) {
+            guard !onboardingActive else { return }
             await viewModel.refresh()
             monitorViewModel?.start()
             privacyMonitor?.start()
         }
     }
-    
+
     // Right column: Stats + System Info stacked (Compact width to give diskUsageCard maximum space)
     private var rightColumn: some View {
         VStack(alignment: .leading, spacing: 16) {

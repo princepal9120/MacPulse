@@ -5,10 +5,17 @@ import AppKit
 final class OnboardingController {
     var isPresented = false
 
-    private let completedKey = "com.macpulse.onboardingCompleted"
+    static let completedKey = "com.macpulse.onboardingCompleted"
 
     var isCompleted: Bool {
-        UserDefaults.standard.bool(forKey: completedKey)
+        UserDefaults.standard.bool(forKey: Self.completedKey)
+    }
+
+    init() {
+        // Eager so first frame already defers heavy dashboard scan under the sheet.
+        if !isCompleted {
+            isPresented = true
+        }
     }
 
     @discardableResult
@@ -19,13 +26,24 @@ final class OnboardingController {
     }
 
     func complete() {
-        UserDefaults.standard.set(true, forKey: completedKey)
+        UserDefaults.standard.set(true, forKey: Self.completedKey)
         isPresented = false
     }
 
     func replay() {
-        UserDefaults.standard.set(false, forKey: completedKey)
+        UserDefaults.standard.set(false, forKey: Self.completedKey)
         isPresented = true
+    }
+}
+
+private struct OnboardingActiveKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var onboardingActive: Bool {
+        get { self[OnboardingActiveKey.self] }
+        set { self[OnboardingActiveKey.self] = newValue }
     }
 }
 

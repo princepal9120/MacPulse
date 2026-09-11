@@ -33,6 +33,16 @@ final class AppSettingsTests: XCTestCase {
 
     // MARK: - Defaults
 
+    func testVisibleSettingsCategoriesExcludeAutomation() {
+        XCTAssertEqual(SettingsCategory.visibleCases, [.general, .advanced, .about])
+        XCTAssertFalse(SettingsCategory.visibleCases.contains(.automation))
+    }
+
+    func testSettingsSearchExcludesHiddenAutomationItems() {
+        XCTAssertTrue(SettingsSearchRegistry.search("Siri").isEmpty)
+        XCTAssertTrue(SettingsSearchRegistry.search("Apple Intelligence").isEmpty)
+    }
+
     func testDefaultValues() {
         let settings = AppSettings()
         XCTAssertEqual(settings.language, .english)

@@ -192,23 +192,50 @@ struct GlassCard<Header: View, Content: View, Footer: View>: View {
                 footer
             }
         }
-        .padding(16)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     var body: some View {
         if isDestructive {
             stack.background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Color.red.opacity(0.08))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .stroke(Color.red.opacity(0.2), lineWidth: 1)
                     )
             }
         } else {
-            stack.glassCard(cornerRadius: 14)
+            stack.glassCard(cornerRadius: 18)
         }
+    }
+}
+
+// MARK: - Pane Header
+
+struct SettingsPageHeader: View {
+    let category: SettingsCategory
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 16) {
+            Image(systemName: category.iconName)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(category.iconColor)
+                .frame(width: 48, height: 48)
+                .background(category.iconColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(category.displayName)
+                    .font(.title2.weight(.semibold))
+                Text("settings_subtitle".localized)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -293,23 +320,29 @@ struct SettingsSectionHeader: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                if let iconName {
-                    Image(systemName: iconName)
-                        .foregroundStyle(iconColor)
-                        .font(.headline)
-                }
+        HStack(alignment: .center, spacing: 11) {
+            if let iconName {
+                Image(systemName: iconName)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(iconColor)
+                    .frame(width: 30, height: 30)
+                    .background(iconColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.headline)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
-            if let subtitle {
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+
+            Spacer(minLength: 0)
         }
-        .padding(.bottom, 4)
+        .padding(.bottom, 3)
     }
 }
 
@@ -412,7 +445,7 @@ struct SettingsInfoRow: View {
 struct SettingsDivider: View {
     var body: some View {
         Divider()
-            .opacity(0.5)
-            .padding(.vertical, 2)
+            .opacity(0.35)
+            .padding(.vertical, 3)
     }
 }

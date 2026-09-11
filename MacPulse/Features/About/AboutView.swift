@@ -17,9 +17,7 @@ struct AboutView: View {
 
     private var header: some View {
         VStack(spacing: 12) {
-            Image(nsImage: NSApplication.shared.applicationIconImage)
-                .resizable()
-                .frame(width: 88, height: 88)
+            MacPulseLogo(size: 88)
                 .shadow(color: .accentColor.opacity(0.3), radius: 12, y: 6)
 
             VStack(spacing: 4) {

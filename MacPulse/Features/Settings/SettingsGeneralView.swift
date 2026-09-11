@@ -19,7 +19,8 @@ struct SettingsGeneralView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 18) {
+                SettingsPageHeader(category: .general)
                 fullDiskAccessCard
                 appearanceCard
                 systemMaintenanceCard
@@ -27,7 +28,7 @@ struct SettingsGeneralView: View {
                 updatesCard
                 resetCard
             }
-            .padding(20)
+            .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear {

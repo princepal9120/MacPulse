@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Right inspector panel for Disk Analyzer matching the DiskBuddy screenshots.
+/// Details and actions for the current Disk Analyzer selection.
 public struct DiskAnalyzerInspectorView: View {
     @Bindable var viewModel: DiskAnalyzerViewModel
 
@@ -48,21 +48,26 @@ public struct DiskAnalyzerInspectorView: View {
                 emptyState
             }
         }
-        .padding(14)
-        .frame(width: 270)
-        .background(Color.primary.opacity(0.025))
+        .padding(16)
+        .frame(width: 300)
+        .background(.thinMaterial)
     }
 
     private var emptyState: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             Spacer()
-            Image(systemName: "hand.tap.fill")
-                .font(.system(size: 28))
-                .foregroundStyle(Color.secondary.opacity(0.5))
-            Text("Select any file or folder to view details")
-                .font(.system(size: 12))
-                .foregroundStyle(Color.secondary)
+            Image(systemName: "sidebar.right")
+                .font(.system(size: 24, weight: .medium))
+                .foregroundStyle(.secondary)
+                .frame(width: 52, height: 52)
+                .background(.quaternary.opacity(0.6), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            Text("Nothing selected")
+                .font(.headline)
+            Text("Select a file or folder to see its size, location, and available actions.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .frame(maxWidth: 220)
             Spacer()
         }
         .frame(maxWidth: .infinity)
@@ -79,7 +84,7 @@ public struct DiskAnalyzerInspectorView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.name)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .font(.headline)
                         .foregroundStyle(Color.primary)
                         .lineLimit(2)
                         .truncationMode(.middle)
@@ -91,7 +96,7 @@ public struct DiskAnalyzerInspectorView: View {
             }
 
             Text(item.url.path)
-                .font(.system(size: 9, design: .monospaced))
+                .font(.caption2.monospaced())
                 .foregroundStyle(Color.secondary)
                 .lineLimit(2)
                 .truncationMode(.middle)
@@ -106,11 +111,11 @@ public struct DiskAnalyzerInspectorView: View {
 
         return HStack(alignment: .lastTextBaseline, spacing: 6) {
             Text(FileManager.formatSize(item.size))
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.title2.weight(.bold).monospacedDigit())
                 .foregroundStyle(Color.primary)
 
             Text(String(format: "%.1f%% of scan", scanPercent))
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                .font(.caption.monospacedDigit())
                 .foregroundStyle(Color.secondary)
         }
     }
@@ -288,8 +293,8 @@ public struct DiskAnalyzerInspectorView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
                 .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.primary.opacity(0.88))
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .fill(Color.accentColor)
                 )
             }
             .buttonStyle(.plain)

@@ -128,16 +128,16 @@ struct SidebarSection: Identifiable {
     static let all: [SidebarSection] = [
         SidebarSection(titleKey: nil, items: [.feature(.dashboard)]),
         SidebarSection(
-            titleKey: "sidebar_section_tools",
+            titleKey: "sidebar_section_actions",
             items: [.feature(.cleanup), .feature(.diskSpace), .feature(.duplicates), .feature(.uninstaller)]
         ),
         SidebarSection(
-            titleKey: "sidebar_section_system",
+            titleKey: "sidebar_section_insights",
             items: [.feature(.monitor), .feature(.privacy), .feature(.processes), .feature(.startupServices)]
         ),
         SidebarSection(
             titleKey: "menu_settings",
-            items: SettingsCategory.allCases.map(SidebarDestination.setting)
+            items: SettingsCategory.visibleCases.map(SidebarDestination.setting)
         ),
     ]
 }

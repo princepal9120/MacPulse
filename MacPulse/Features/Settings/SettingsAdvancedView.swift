@@ -6,14 +6,15 @@ struct SettingsAdvancedView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 18) {
+                SettingsPageHeader(category: .advanced)
                 scanSection
                 deletionSection
                 processesCard
                 developerCard
                 startupVendorsCard
             }
-            .padding(20)
+            .padding(24)
         }
     }
 

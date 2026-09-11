@@ -27,6 +27,7 @@ struct RootView: View {
         }
         .frame(minWidth: 1080, minHeight: 700)
         .environment(\.locale, appSettings.language.locale)
+        .environment(\.onboardingActive, onboarding.isPresented)
         .sheet(isPresented: $onboarding.isPresented) {
             OnboardingView(permissionsManager: permissionsManager, onboarding: onboarding)
         }
@@ -93,7 +94,14 @@ struct RootView: View {
         List(selection: $selection) {
             ForEach(SidebarSection.all) { section in
                 if let titleKey = section.titleKey {
-                    Section(titleKey.localized) { rows(for: section) }
+                    Section {
+                        rows(for: section)
+                    } header: {
+                        Text(titleKey.localized)
+                            .font(.system(size: 11, weight: .semibold))
+                            .textCase(.uppercase)
+                            .foregroundStyle(.secondary)
+                    }
                 } else {
                     Section { rows(for: section) }
                 }
@@ -101,9 +109,11 @@ struct RootView: View {
         }
         .listStyle(.sidebar)
         .padding(.leading, 8)
+        .scrollContentBackground(.hidden)
         // Keep labels readable when macOS restores a narrow previous window.
         .navigationSplitViewColumnWidth(min: 240, ideal: 252, max: 300)
         .safeAreaInset(edge: .top, spacing: 0) { brandLockup }
+        .safeAreaInset(edge: .bottom, spacing: 0) { sidebarStatusStrip }
         // Rebuild so every `.localized` row matches the selected language.
         .id(appSettings.language)
     }
@@ -119,16 +129,71 @@ struct RootView: View {
             }
             .padding(.leading, 18)
             .tag(destination)
+            .listRowBackground(rowBackground(for: destination))
         }
+    }
+
+    @ViewBuilder
+    private func rowBackground(for destination: SidebarDestination) -> some View {
+        if selection == destination {
+            // Selected row: soft accent pill instead of the default tint wash.
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(destination.tint.opacity(0.14))
+                .padding(.vertical, 1)
+        }
+    }
+
+    private var sidebarStatusStrip: some View {
+        let total = Int64(monitorViewModel.metrics.totalDisk)
+        let free = Int64(monitorViewModel.metrics.freeDisk)
+        let usedPercent: Double = total > 0 ? Double(total - free) / Double(total) * 100 : 0
+        return HStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .stroke(Color.primary.opacity(0.10), lineWidth: 4)
+                Circle()
+                    .trim(from: 0, to: usedPercent / 100)
+                    .stroke(
+                        AngularGradient(colors: [.teal, .blue], center: .center),
+                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                Text("\(Int(usedPercent))%")
+                    .font(.system(size: 9, weight: .bold, design: .rounded))
+            }
+            .frame(width: 34, height: 34)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text("dashboard_disk_usage".localized)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.secondary)
+                Text("\(free.formattedByteCount()) free")
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+
+            Spacer(minLength: 0)
+
+            HStack(spacing: 5) {
+                Circle()
+                    .fill(Color.green)
+                    .frame(width: 7, height: 7)
+                Text("dashboard_healthy".localized)
+                    .font(.caption2.weight(.semibold))
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Color.green.opacity(0.12), in: Capsule())
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.bar)
     }
 
     private var brandLockup: some View {
         HStack(spacing: 9) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 28, height: 28)
-                .background(Color.accentColor.opacity(0.12), in: Circle())
+            MacPulseLogo(size: 28)
 
             Text("MacPulse")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))

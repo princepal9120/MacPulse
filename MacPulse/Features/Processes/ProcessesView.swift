@@ -34,6 +34,7 @@ public struct ProcessesView: View {
                 } else if viewModel.processes.isEmpty {
                     emptyView
                 } else {
+                    processSummaryHeader
                     if viewModel.viewMode == .grouped {
                         groupedProcessList
                     } else {
@@ -58,58 +59,6 @@ public struct ProcessesView: View {
 
     @ToolbarContentBuilder
     private func toolbarContent() -> some ToolbarContent {
-        ToolbarItem(placement: .automatic) {
-            if !viewModel.memoryHogs.isEmpty {
-                HStack(spacing: 4) {
-                    Image(systemName: "memorychip")
-                    Text(viewModel.totalMemoryFormatted)
-                        .monospacedDigit()
-                }
-                .font(.caption)
-                .fontWeight(.medium)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-                .foregroundStyle(Color.red)
-                .background(
-                    Capsule().fill(Color.red.opacity(0.1))
-                )
-                .overlay(
-                    Capsule().strokeBorder(Color.red.opacity(0.3), lineWidth: 1)
-                )
-                .padding(.horizontal, 6)
-            }
-        }
-
-        ToolbarItem(placement: .automatic) {
-            Menu {
-                Picker("view_mode".localized, selection: $viewModel.viewMode) {
-                    ForEach(ProcessesViewModel.ViewMode.allCases) { mode in
-                        Text(mode.localizedName).tag(mode)
-                    }
-                }
-                Divider()
-                Picker("sort_by".localized, selection: $viewModel.sortOption) {
-                    ForEach(ProcessSortOption.allCases) { option in
-                        Text(option.localizedName).tag(option)
-                    }
-                }
-                Divider()
-                Button(action: {
-                    isEditMode.toggle()
-                    if !isEditMode {
-                        viewModel.deselectAll()
-                    }
-                }) {
-                    Label(
-                        isEditMode ? "cancel_selection".localized : "select_multiple".localized,
-                        systemImage: isEditMode ? "xmark.circle" : "checkmark.circle"
-                    )
-                }
-            } label: {
-                Image(systemName: "ellipsis.circle")
-            }
-        }
-
         ToolbarItem(placement: .automatic) {
             Button(action: { viewModel.showBlacklistAlert = true }) {
                 HStack(spacing: 4) {
@@ -142,6 +91,53 @@ public struct ProcessesView: View {
             }
             .help("processes_tooltip_refresh".localized)
         }
+    }
+
+    private var processSummaryHeader: some View {
+        HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("System Activity")
+                    .font(.title3.weight(.semibold))
+                Text("\(viewModel.processes.count.formatted()) processes · \(viewModel.totalMemoryFormatted) in memory")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 16)
+
+            Picker("view_mode".localized, selection: $viewModel.viewMode) {
+                ForEach(ProcessesViewModel.ViewMode.allCases) { mode in
+                    Text(mode.localizedName).tag(mode)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.segmented)
+            .frame(width: 150)
+
+            Picker("sort_by".localized, selection: $viewModel.sortOption) {
+                ForEach(ProcessSortOption.allCases) { option in
+                    Text(option.localizedName).tag(option)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .controlSize(.small)
+
+            Button {
+                isEditMode.toggle()
+                if !isEditMode { viewModel.deselectAll() }
+            } label: {
+                Label(
+                    isEditMode ? "cancel_selection".localized : "select_multiple".localized,
+                    systemImage: isEditMode ? "xmark.circle" : "checkmark.circle"
+                )
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 8)
     }
 
     private var selectionToolbar: some View {
@@ -188,8 +184,9 @@ public struct ProcessesView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .glassCard()
-            .padding()
+            .glassCard(cornerRadius: 18)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
     }
 
@@ -203,8 +200,9 @@ public struct ProcessesView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .glassCard()
-            .padding()
+            .glassCard(cornerRadius: 18)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
     }
 
@@ -236,10 +234,9 @@ public struct ProcessesView: View {
                             .frame(width: 24)
                     }
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: 3) {
                         Text(group.displayName)
-                            .font(.system(.body, design: .monospaced))
-                            .fontWeight(.medium)
+                            .font(.body.weight(.semibold))
 
                         HStack(spacing: 8) {
                             Text(String(format: "processes_process_count".localized, group.processCount))
@@ -281,7 +278,7 @@ public struct ProcessesView: View {
                     onForceKill: { Task { await viewModel.forceKillGroup(group) } }
                 )
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 12)
         }
     }
 
