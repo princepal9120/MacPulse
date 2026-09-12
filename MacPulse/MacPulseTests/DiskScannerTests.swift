@@ -95,10 +95,15 @@ final class DiskScannerTests: XCTestCase {
     }
 
     func testFullDiskScanSkipsVolatileSystemTrees() {
-        XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/private/var/folders")))
-        XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/dev")))
+        XCTAssertTrue(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/private/var/folders"), duringFullDiskScan: true))
+        XCTAssertTrue(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/var/folders"), duringFullDiskScan: true))
+        XCTAssertTrue(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/tmp/session"), duringFullDiskScan: true))
+        XCTAssertTrue(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/dev"), duringFullDiskScan: true))
+        XCTAssertFalse(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/tmp/session"), duringFullDiskScan: false))
         XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/System/Library")))
-        XCTAssertFalse(FileManager.shouldExclude(url: URL(fileURLWithPath: "/Users/example/Documents")))
+        XCTAssertFalse(DiskScanner.shouldSkipVolatileSystemPath(URL(fileURLWithPath: "/Users/example/Documents"), duringFullDiskScan: true))
+        // Analyzer-only exclusions must not suppress explicit cleanup targets.
+        XCTAssertFalse(FileManager.shouldExclude(url: URL(fileURLWithPath: "/var/vm/sleepimage")))
     }
     
     @MainActor

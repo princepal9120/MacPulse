@@ -15,6 +15,30 @@ public actor DiskScanner {
         ".cargo", "vendor", ".venv", "venv", ".next", ".nuxt", ".svelte-kit", ".bundle"
     ]
 
+    /// Volatile OS trees are excluded only from the visual full-disk analyzer.
+    /// Cleanup scanners use `FileManager.shouldExclude` and must retain access to
+    /// explicit targets such as `/var/vm/sleepimage`.
+    nonisolated static let volatileSystemPathPrefixes: [String] = [
+        "/private/var", "/var",
+        "/private/tmp", "/tmp",
+        "/dev", "/proc",
+        "/Volumes/.timemachine",
+        "/.Spotlight-V100",
+        "/.DocumentRevisions-V100",
+        "/.PKInstallSandboxManager",
+    ]
+
+    nonisolated static func shouldSkipVolatileSystemPath(
+        _ url: URL,
+        duringFullDiskScan: Bool
+    ) -> Bool {
+        guard duringFullDiskScan else { return false }
+        let path = url.path
+        return volatileSystemPathPrefixes.contains {
+            path == $0 || path.hasPrefix($0 + "/")
+        }
+    }
+
     public init() {}
 
     /// Scans a directory and returns its hierarchical tree rooted at `directoryURL`.
@@ -23,6 +47,7 @@ public actor DiskScanner {
         onProgress: @Sendable @escaping (String) -> Void
     ) async throws -> DiskItem {
         let rootURL = directoryURL.standardizedFileURL
+        let isFullDiskScan = rootURL.path == "/"
         let fm = FileManager.default
         let keys: [URLResourceKey] = [
             .isDirectoryKey,
@@ -53,7 +78,10 @@ public actor DiskScanner {
             if Task.isCancelled { break }
             let standardURL = fileURL.standardizedFileURL
 
-            if FileManager.shouldExclude(url: standardURL) {
+            if Self.shouldSkipVolatileSystemPath(
+                standardURL,
+                duringFullDiskScan: isFullDiskScan
+            ) || FileManager.shouldExclude(url: standardURL) {
                 if (try? standardURL.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
                     enumerator.skipDescendants()
                 }
@@ -199,7 +227,7 @@ public actor DiskScanner {
         var totalFiles = 0
 
         while let entry = fts_read(tree) {
-            if totalFiles.isMultiple(of: 512), Task.isCancelled { break }
+            if Task.isCancelled { break }
             let info = Int32(entry.pointee.fts_info)
             if info == FTS_F || info == FTS_NSOK {
                 totalFiles += 1
