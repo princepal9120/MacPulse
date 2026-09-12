@@ -126,9 +126,10 @@ struct RootView: View {
             } icon: {
                 Image(systemName: destination.systemImage)
                     .foregroundStyle(destination.tint)
+                    .frame(width: 18, alignment: .center)
             }
-            .padding(.leading, 18)
             .tag(destination)
+            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 12))
             .listRowBackground(rowBackground(for: destination))
         }
     }
@@ -200,7 +201,8 @@ struct RootView: View {
 
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, 30)
+        // Matches the leading edge used by every sidebar row.
+        .padding(.horizontal, 22)
         .padding(.top, 6)
         .padding(.bottom, 10)
         .accessibilityElement(children: .combine)

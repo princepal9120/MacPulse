@@ -6,7 +6,7 @@ MacPulse is a macOS system utility for deep cache cleaning, residual app
 uninstallation, startup service inspection, APFS disk analysis, duplicate
 finding, and live resource monitoring — built entirely in Swift & SwiftUI.
 
-**Free for personal use. Not open source.** See [LICENSE](LICENSE).
+**Open source under the MIT license.** See [LICENSE](LICENSE).
 
 ---
 
@@ -29,19 +29,27 @@ finding, and live resource monitoring — built entirely in Swift & SwiftUI.
 
 ## Requirements
 
-- macOS 14 or later
+- macOS 26.0 or later
 - Full Disk Access is required for complete scan coverage
 
 ## Getting MacPulse
 
 Download the latest `.dmg` from the
-[Releases](https://github.com/princepal/MacPulse/releases/latest) page.
+[Releases](https://github.com/princepal9120/MacPulse/releases/latest) page, or
+build one locally with `scripts/release_dmg.sh`.
 
 ## Build
 
 ```sh
-xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build
+xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Debug build
+xcodebuild test -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -destination 'platform=macOS'
+./scripts/release_dmg.sh
 ```
+
+The release script performs a clean Release build, creates an unsigned DMG for
+local testing, and writes SHA-256 checksums beside the artifact. Developer ID
+signing/notarization can be added through `CODESIGN_IDENTITY` and
+`NOTARY_PROFILE` in a private CI environment.
 
 ## Rooms
 
@@ -52,10 +60,8 @@ xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration 
 
 ## License
 
-**Personal Use License.** You may use MacPulse on your own computer for
-personal, non-commercial purposes. You may **not** modify, redistribute,
-sublicense, or reverse-engineer the Software. No open source license applies.
-See the full terms in [LICENSE](LICENSE).
+MacPulse is released under the [MIT License](LICENSE). Contributions are
+welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Author
 

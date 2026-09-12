@@ -49,7 +49,7 @@ public struct DiskAnalyzerInspectorView: View {
             }
         }
         .padding(16)
-        .frame(width: 300)
+        .frame(width: 272)
         .background(.thinMaterial)
     }
 

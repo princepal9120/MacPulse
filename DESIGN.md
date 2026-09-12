@@ -42,6 +42,8 @@ MacPulse should feel calm, capable, local-first, and unmistakably native to macO
 - Color: semantic system colors with the app accent used sparingly; content remains legible in light and dark appearances.
 - Typography: system title for pane identity, headline for card names, body/caption for labels and supporting copy.
 - Spacing: 20–24 pt pane margins, 16–18 pt card padding, 12–16 pt between groups.
+- Alignment: fixed-width icon columns, equal-height tiles, balanced side panes, and
+  complete grid rows without visually orphaned cards.
 - Shape/elevation: continuous rounded rectangles and the existing Liquid Glass compatibility layer; subtle hairlines and restrained shadows.
 - Motion: short system animations only for selection or state changes; honor reduced motion.
 - Iconography: SF Symbols in small tinted containers for pane and group identity.

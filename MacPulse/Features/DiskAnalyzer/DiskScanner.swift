@@ -139,8 +139,10 @@ public actor DiskScanner {
             }
 
             count += 1
-            if count % 200 == 0 {
-                onProgress(lastComp)
+            if count % 1_000 == 0 {
+                // Report the containing folder, not an opaque file identifier;
+                // this keeps progress useful and avoids excessive MainActor hops.
+                onProgress(standardURL.deletingLastPathComponent().lastPathComponent)
                 await Task.yield()
             }
         }
@@ -197,7 +199,7 @@ public actor DiskScanner {
         var totalFiles = 0
 
         while let entry = fts_read(tree) {
-            if Task.isCancelled { break }
+            if totalFiles.isMultiple(of: 512), Task.isCancelled { break }
             let info = Int32(entry.pointee.fts_info)
             if info == FTS_F || info == FTS_NSOK {
                 totalFiles += 1
@@ -209,7 +211,7 @@ public actor DiskScanner {
             // Package directories can contain hundreds of thousands of files.
             // Yield periodically so cancellation and UI work are serviced
             // promptly instead of monopolising the cooperative executor.
-            if totalFiles.isMultiple(of: 256) {
+            if totalFiles.isMultiple(of: 4_096) {
                 await Task.yield()
             }
         }

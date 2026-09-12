@@ -74,6 +74,7 @@ struct SettingsAboutView: View {
                 LazyVGrid(columns: [
                     GridItem(.flexible(), spacing: 12, alignment: .top),
                     GridItem(.flexible(), spacing: 12, alignment: .top),
+                    GridItem(.flexible(), spacing: 12, alignment: .top),
                 ], alignment: .leading, spacing: 12) {
                     privacyItem("lock.shield.fill", color: .green, title: "settings_privacy_item_1_title".localized, desc: "settings_privacy_item_1_desc".localized)
                     privacyItem("network", color: .blue, title: "settings_privacy_item_2_title".localized, desc: "settings_privacy_item_2_desc".localized)
@@ -108,7 +109,7 @@ struct SettingsAboutView: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
         .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

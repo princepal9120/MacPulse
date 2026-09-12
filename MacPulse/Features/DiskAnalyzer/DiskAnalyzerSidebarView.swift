@@ -42,7 +42,7 @@ public struct DiskAnalyzerSidebarView: View {
             }
         }
         .padding(16)
-        .frame(width: 250)
+        .frame(width: 272)
         .background(.thinMaterial)
     }
 

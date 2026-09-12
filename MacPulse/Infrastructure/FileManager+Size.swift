@@ -13,6 +13,20 @@ extension FileManager {
         "rancher-desktop",
     ]
 
+    /// Volatile operating-system trees are either inaccessible, constantly changing,
+    /// or contain millions of short-lived files. Traversing them makes a full-disk
+    /// scan appear frozen without improving the user's storage view.
+    public static let excludedPathPrefixes: [String] = [
+        "/private/var",
+        "/private/tmp",
+        "/dev",
+        "/proc",
+        "/Volumes/.timemachine",
+        "/.Spotlight-V100",
+        "/.DocumentRevisions-V100",
+        "/.PKInstallSandboxManager",
+    ]
+
     /// Known large sparse file names to exclude (by exact filename, not extension).
     public static let excludedFileNames: Set<String> = [
         "Docker.raw",
@@ -72,16 +86,20 @@ extension FileManager {
         let path = url.path
         if path.hasPrefix("/System") { return true }
 
+        if excludedPathPrefixes.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) {
+            return true
+        }
+
         let ext = url.pathExtension.lowercased()
         if excludedExtensions.contains(ext) { return true }
 
         let lastPath = url.lastPathComponent
         if excludedFileNames.contains(lastPath) { return true }
 
-        for dirName in excludedDirectoryNames {
-            if path.contains("/" + dirName + "/") || path.hasSuffix("/" + dirName) {
-                return true
-            }
+        // Match complete path components (rather than substring matches) so a
+        // folder such as `my-node_modules-backup` is not accidentally skipped.
+        if url.pathComponents.contains(where: { excludedDirectoryNames.contains($0) }) {
+            return true
         }
 
         return false

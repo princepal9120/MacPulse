@@ -34,6 +34,8 @@ Package.resolved
 
 *.app
 *.dmg
+*.dmg.sha256
+.release-build/
 *.pkg
 
 # ============================================================

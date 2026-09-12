@@ -93,6 +93,13 @@ final class DiskScannerTests: XCTestCase {
         XCTAssertEqual(FileCategory.from(url: URL(fileURLWithPath: "/test/archive.zip")), .archives)
         XCTAssertEqual(FileCategory.from(url: URL(fileURLWithPath: "/test/unknown.xyz")), .all)
     }
+
+    func testFullDiskScanSkipsVolatileSystemTrees() {
+        XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/private/var/folders")))
+        XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/dev")))
+        XCTAssertTrue(FileManager.shouldExclude(url: URL(fileURLWithPath: "/System/Library")))
+        XCTAssertFalse(FileManager.shouldExclude(url: URL(fileURLWithPath: "/Users/example/Documents")))
+    }
     
     @MainActor
     func testDiskAnalyzerViewModel_treeNavigation() async throws {
