@@ -1338,7 +1338,7 @@ extension CleanupEngine {
                             progress?(.log("  ⊘ Would delete iOS runtime: \(runtime)"))
                         } else {
                             progress?(.log("  Deleting iOS runtime: \(runtime)"))
-                            _ = try? await commandRunner.run(command: "/bin/bash", arguments: ["-c", "xcrun simctl runtime delete \(runtime) 2>/dev/null"])
+                            _ = try? await commandRunner.run(command: "/usr/bin/xcrun", arguments: ["simctl", "runtime", "delete", runtime])
                         }
                     }
                     
