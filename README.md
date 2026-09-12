@@ -51,6 +51,13 @@ local testing, and writes SHA-256 checksums beside the artifact. Developer ID
 signing/notarization can be added through `CODESIGN_IDENTITY` and
 `NOTARY_PROFILE` in a private CI environment.
 
+If macOS says the downloaded app is “damaged” (Gatekeeper quarantine on an
+unsigned build), install to Applications then run:
+
+```sh
+xattr -cr /Applications/MacPulse.app
+```
+
 ## Rooms
 
 - Pure Swift & SwiftUI
