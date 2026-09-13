@@ -1,0 +1,68 @@
+name: Build & Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag (e.g. v1.0.0)'
+        required: false
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    runs-on: macos-14
+    name: Build, Package & Publish DMG
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app || true
+
+      - name: Build and Package Release DMG
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x scripts/release_dmg.sh
+          ./scripts/release_dmg.sh
+
+      - name: Publish to GitHub Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == "main" || -z "$TAG" ]]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+          fi
+          if [[ -z "$TAG" ]]; then
+            TAG="v1.0.0"
+          fi
+
+          DMG_FILE=$(ls MacPulse-*.dmg | head -n 1)
+          SHA_FILE="${DMG_FILE}.sha256"
+
+          echo "Publishing $DMG_FILE and $SHA_FILE to GitHub Releases under $TAG..."
+
+          if gh release view "$TAG" &>/dev/null; then
+            gh release upload "$TAG" "$DMG_FILE" "$SHA_FILE" --clobber
+          else
+            gh release create "$TAG" "$DMG_FILE" "$SHA_FILE"               --title "MacPulse $TAG"               --notes "Native macOS system cleaner and deep uninstaller for Apple Silicon and Intel Macs."
+          fi
+          echo "Successfully published release $TAG!"
+

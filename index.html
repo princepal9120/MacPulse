@@ -444,39 +444,128 @@
           </div>
         </div>
 
-        <!-- Download Card (Centered) -->
-        <div class="download-card" id="download">
-          <h3 class="download-title">Install MacPulse for macOS</h3>
-          <p style="color: var(--color-ink-olive); max-width: 50ch;">
-            Universal native binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later. Free &amp; open-source under MIT.
+            </div>
+    </section>
+
+    <!-- 04 · PACKAGING & DOWNLOADS (skillsmanager.dev style) -->
+    <section class="packaging-section" id="download">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-num">04 · PACKAGING &amp; DOWNLOADS</p>
+          <h2 class="section-title">Get MacPulse for macOS</h2>
+          <p class="section-lede">
+            Universal native binary compiled for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Free and open-source under the MIT license. Published directly through GitHub Releases.
           </p>
-
-          <div class="download-install-box">
-            <code>curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
-            <button type="button" id="copyInstallBtn" aria-label="Copy install command" style="background:none; border:none; color:var(--color-brand); cursor:pointer; display:flex; align-items:center; padding:4px;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            </button>
-          </div>
-
-          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center; margin-top: var(--space-xs);">
-            <a href="https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg" class="btn-primary" style="height: 44px; padding-inline: 28px;">
-              Download MacPulse .dmg (8.1 MB)
+          <div class="pkg-header-meta">
+            <span class="font-mono">Latest release v1.0.0</span>
+            <span>·</span>
+            <a href="https://github.com/princepal9120/MacPulse/releases" target="_blank" rel="noreferrer">
+              All releases and checksums
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
             </a>
-            <a href="https://github.com/princepal9120/MacPulse" class="btn-primary" style="background-color: var(--color-paper-sand); color: var(--color-ink); border: 1px solid var(--color-line);">
-              View Source on GitHub
-            </a>
-          </div>
-
-          <p style="color: var(--color-ink-stone); max-width: 54ch; font-size: 0.84rem; line-height: 1.45;">
-            Tip: If dragging the DMG manually, clear the unsigned macOS Gatekeeper quarantine tag with:
-            <code style="display:inline-block; font-family: var(--font-mono); color: var(--color-brand);">xattr -cr /Applications/MacPulse.app</code>
-          </p>
-
-          <div class="download-checksum">
-            SHA256: 19d8403a71451aa5ba34aec2510478cb6e14640119f78073f2f73d2aff85fe86
           </div>
         </div>
 
+        <div class="pkg-grid">
+          <!-- Card 1: Direct macOS DMG -->
+          <div class="pkg-card">
+            <div class="pkg-card-head">
+              <h3 class="pkg-card-title">macOS</h3>
+              <p class="pkg-card-subtitle">macOS 14.0 Sonoma or later</p>
+            </div>
+            <ul class="pkg-list">
+              <li>
+                <a href="https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg" class="pkg-download-btn">
+                  <span class="pkg-btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </span>
+                  <span class="pkg-btn-text">Universal DMG</span>
+                  <span class="pkg-pill-badge">Recommended</span>
+                  <span class="pkg-size-meta">8.1 MB</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/princepal9120/MacPulse/releases/tag/v1.0.0" target="_blank" class="pkg-download-btn">
+                  <span class="pkg-btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  </span>
+                  <span class="pkg-btn-text">Release v1.0.0 Assets</span>
+                  <span class="pkg-size-meta">GitHub</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/princepal9120/MacPulse/releases/download/v1.0.0/MacPulse-1.0.0.dmg.sha256" target="_blank" class="pkg-download-btn">
+                  <span class="pkg-btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </span>
+                  <span class="pkg-btn-text">SHA256 Checksum</span>
+                  <span class="pkg-size-meta">.sha256</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 2: Terminal & Automated Installer -->
+          <div class="pkg-card">
+            <div class="pkg-card-head">
+              <h3 class="pkg-card-title">Terminal</h3>
+              <p class="pkg-card-subtitle">Fastest automated install</p>
+            </div>
+            <div class="pkg-snippet-block">
+              <span class="pkg-snippet-label">One-line script (clears quarantine)</span>
+              <div class="pkg-snippet-row">
+                <code>curl -fsSL .../install.sh | bash</code>
+                <button type="button" class="pkg-copy-mini" onclick="copyInstallCommand()" aria-label="Copy install script" title="Copy command">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="pkg-snippet-block">
+              <span class="pkg-snippet-label">Homebrew Cask</span>
+              <div class="pkg-snippet-row">
+                <code>brew install --cask macpulse</code>
+                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('brew install --cask macpulse')" aria-label="Copy brew command" title="Copy command">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Security & Build from Source -->
+          <div class="pkg-card">
+            <div class="pkg-card-head">
+              <h3 class="pkg-card-title">Security &amp; Source</h3>
+              <p class="pkg-card-subtitle">Community build without Apple notarization fee</p>
+            </div>
+            <div class="pkg-snippet-block">
+              <span class="pkg-snippet-label">Unsigned DMG Gatekeeper fix</span>
+              <div class="pkg-snippet-row">
+                <code>xattr -cr /Applications/MacPulse.app</code>
+                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('xattr -cr /Applications/MacPulse.app')" aria-label="Copy xattr command" title="Copy command">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="pkg-snippet-block">
+              <span class="pkg-snippet-label">Build from source via Xcode</span>
+              <div class="pkg-snippet-row">
+                <code>xcodebuild -scheme MacPulse build</code>
+                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('git clone https://github.com/princepal9120/MacPulse.git && cd MacPulse && xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build')" aria-label="Copy build command" title="Copy command">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pkg-bottom-bar">
+          <div class="pkg-checksum-pill">
+            SHA256: 19d8403a71451aa5ba34aec2510478cb6e14640119f78073f2f73d2aff85fe86
+          </div>
+          <p class="meta" style="font-size: 11.5px; color: var(--color-ink-stone); margin-top: 4px;">
+            Pure Swift 5.10 &amp; SwiftUI · 0MB Background Daemons · Zero Telemetry · MIT Licensed
+          </p>
+        </div>
       </div>
     </section>
 
