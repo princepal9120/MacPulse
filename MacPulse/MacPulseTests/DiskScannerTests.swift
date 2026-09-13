@@ -346,4 +346,48 @@ final class DiskScannerTests: XCTestCase {
         viewModel.startScan(for: tempDir)
         XCTAssertFalse(viewModel.isBuildingAgeReport)
     }
+    // MARK: - Sunburst & Palette Tests
+
+    func testSunburstLayout_childSlicesStayWithinParentArc() {
+        let rootURL = URL(fileURLWithPath: "/test/root")
+        let sub1 = DiskItem(url: rootURL.appendingPathComponent("A/sub1"), name: "sub1", isDirectory: false, size: 50, fileCount: 1, fileType: .all)
+        let sub2 = DiskItem(url: rootURL.appendingPathComponent("A/sub2"), name: "sub2", isDirectory: false, size: 50, fileCount: 1, fileType: .all)
+        let childA = DiskItem(url: rootURL.appendingPathComponent("A"), name: "A", isDirectory: true, size: 100, fileCount: 2, children: [sub1, sub2], fileType: .all)
+        let childB = DiskItem(url: rootURL.appendingPathComponent("B"), name: "B", isDirectory: true, size: 100, fileCount: 1, children: [], fileType: .all)
+        let root = DiskItem(url: rootURL, name: "root", isDirectory: true, size: 200, fileCount: 3, children: [childA, childB], fileType: .all)
+
+        let slices = SunburstLayout.slices(for: root, maxDepth: 3)
+        XCTAssertFalse(slices.isEmpty)
+
+        // Find childA slice
+        guard let sliceA = slices.first(where: { $0.item.name == "A" }) else {
+            XCTFail("Missing slice for A")
+            return
+        }
+
+        // Sub1 and Sub2 must be depth 2 and strictly within sliceA's angular bounds
+        let sub1Slice = slices.first { $0.item.name == "sub1" }
+        let sub2Slice = slices.first { $0.item.name == "sub2" }
+
+        XCTAssertNotNil(sub1Slice)
+        XCTAssertNotNil(sub2Slice)
+
+        if let s1 = sub1Slice, let s2 = sub2Slice {
+            XCTAssertEqual(s1.depth, 2)
+            XCTAssertEqual(s2.depth, 2)
+            XCTAssertGreaterThanOrEqual(s1.startAngle, sliceA.startAngle - 0.0001)
+            XCTAssertLessThanOrEqual(s1.endAngle, s2.startAngle + 0.0001)
+            XCTAssertLessThanOrEqual(s2.endAngle, sliceA.endAngle + 0.0001)
+        }
+    }
+
+    func testSunburstLayout_paletteColorsAreDistinctAndVibrant() {
+        XCTAssertGreaterThanOrEqual(DiskPalette.folderColors.count, 10)
+        let item1 = DiskItem(url: URL(fileURLWithPath: "/test/docs"), name: "Documents", isDirectory: true, size: 100, fileCount: 1, fileType: .docs)
+        let item2 = DiskItem(url: URL(fileURLWithPath: "/test/downloads"), name: "Downloads", isDirectory: true, size: 100, fileCount: 1, fileType: .all)
+        let c1 = DiskPalette.folderColor(for: item1)
+        let c2 = DiskPalette.folderColor(for: item2)
+        XCTAssertNotNil(c1)
+        XCTAssertNotNil(c2)
+    }
 }

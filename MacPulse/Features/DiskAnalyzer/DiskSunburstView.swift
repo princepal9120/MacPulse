@@ -12,40 +12,65 @@ struct SunburstLayout {
         var sweep: Double { endAngle - startAngle }
     }
 
-    /// Below this a wedge is a hairline nobody can hit — drop it and its subtree.
-    private static let minimumSweep: Double = .pi / 180 * 1.0
+    /// Below this angle (~1.5 degrees) a wedge is too narrow to be visible or interactive
+    private static let minimumSweep: Double = .pi / 180 * 1.5
 
     static func slices(for root: DiskItem, maxDepth: Int = 4) -> [Slice] {
         var result: [Slice] = []
-        appendRing(children: root.children ?? [], parentSize: root.size, depth: 1, from: -.pi / 2, maxDepth: maxDepth, into: &result)
+        guard root.size > 0, let children = root.children, !children.isEmpty else { return result }
+
+        appendRing(
+            children: children,
+            depth: 1,
+            startAngle: -.pi / 2,
+            availableSweep: 2 * .pi,
+            parentAllocatedSize: root.size,
+            maxDepth: maxDepth,
+            into: &result
+        )
         return result
     }
 
     private static func appendRing(
         children: [DiskItem],
-        parentSize: Int64,
         depth: Int,
-        from startAngle: Double,
+        startAngle: Double,
+        availableSweep: Double,
+        parentAllocatedSize: Int64,
         maxDepth: Int,
         into result: inout [Slice]
     ) {
-        guard depth <= maxDepth, parentSize > 0 else { return }
+        guard depth <= maxDepth, parentAllocatedSize > 0, availableSweep >= minimumSweep else { return }
 
-        var angle = startAngle
-        for child in children where child.size > 0 {
-            let sweep = 2 * .pi * Double(child.size) / Double(parentSize)
+        // Sort children by size descending for clean, readable hierarchy
+        let sortedChildren = children.filter { $0.size > 0 }.sorted { $0.size > $1.size }
+        let totalChildSize = sortedChildren.reduce(0) { $0 + $1.size }
+        guard totalChildSize > 0 else { return }
+
+        // The parent allocated size is used as the denominator so children proportionally fill the parent's wedge
+        let denominator = Double(max(totalChildSize, parentAllocatedSize))
+
+        var currentAngle = startAngle
+        for child in sortedChildren {
+            let fraction = Double(child.size) / denominator
+            let sweep = availableSweep * fraction
             guard sweep >= minimumSweep else { continue }
 
-            result.append(Slice(item: child, depth: depth, startAngle: angle, endAngle: angle + sweep))
-            appendRing(
-                children: child.children ?? [],
-                parentSize: child.size,
-                depth: depth + 1,
-                from: angle,
-                maxDepth: maxDepth,
-                into: &result
-            )
-            angle += sweep
+            let endAngle = currentAngle + sweep
+            result.append(Slice(item: child, depth: depth, startAngle: currentAngle, endAngle: endAngle))
+
+            if let subChildren = child.children, !subChildren.isEmpty {
+                appendRing(
+                    children: subChildren,
+                    depth: depth + 1,
+                    startAngle: currentAngle,
+                    availableSweep: sweep,
+                    parentAllocatedSize: child.size,
+                    maxDepth: maxDepth,
+                    into: &result
+                )
+            }
+            currentAngle = endAngle
         }
     }
 }
@@ -120,23 +145,31 @@ public struct DiskSunburstView: View {
         let focus = hovered ?? selectedItem ?? root
         return ZStack {
             Circle()
-                .fill(Color(nsColor: .windowBackgroundColor))
+                .fill(Color(nsColor: .windowBackgroundColor).opacity(0.94))
                 .overlay(
-                    Circle().stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                    Circle().stroke(Color.white.opacity(0.16), lineWidth: 1.5)
                 )
+                .shadow(color: Color.black.opacity(0.55), radius: 14, x: 0, y: 4)
 
             VStack(spacing: 3) {
                 Text(focus.name.isEmpty ? "/" : focus.name)
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.primary)
                     .lineLimit(1)
                     .truncationMode(.middle)
 
                 Text(FileManager.formatSize(focus.size))
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .foregroundStyle(Color.secondary)
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color.accentColor)
+
+                if focus.id != root.id {
+                    let percent = root.size > 0 ? Double(focus.size) / Double(root.size) * 100 : 0
+                    Text(String(format: "%.1f%%", percent))
+                        .font(.system(size: 9.5, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color.secondary)
+                }
             }
-            .padding(6)
+            .padding(8)
         }
         .frame(width: metrics.innerRadius * 1.9, height: metrics.innerRadius * 1.9)
         .position(metrics.center)
@@ -171,24 +204,48 @@ public struct DiskSunburstView: View {
         let isHovered = hovered?.id == slice.item.id
         let isSelected = selectedItem?.id == slice.item.id
 
-        context.fill(path, with: .color(base.opacity(isHovered ? 0.95 : 0.70)))
-        context.stroke(path, with: .color(Color.black.opacity(0.15)), lineWidth: 0.5)
+        let depthOpacity: Double = {
+            switch slice.depth {
+            case 1: return 0.90
+            case 2: return 0.82
+            case 3: return 0.74
+            default: return 0.65
+            }
+        }()
+
+        context.fill(path, with: .color(base.opacity(isHovered ? 1.0 : depthOpacity)))
+        context.stroke(path, with: .color(Color.black.opacity(0.40)), lineWidth: 1.0)
+
         if isSelected {
-            context.stroke(path, with: .color(Color.accentColor), lineWidth: 2.5)
+            context.stroke(path, with: .color(Color.white), lineWidth: 2.5)
+        } else if isHovered {
+            context.stroke(path, with: .color(Color.white.opacity(0.85)), lineWidth: 1.5)
         }
 
-        // Draw text label on sufficiently large wedges
-        if slice.sweep > .pi / 8, (radii.outer - radii.inner) > 16 {
-            let mid = (slice.startAngle + slice.endAngle) / 2
-            let radius = (radii.inner + radii.outer) / 2
+        // Draw text label on sufficiently large wedges without colliding
+        let midRadius = (radii.inner + radii.outer) / 2
+        let arcLength = midRadius * slice.sweep
+        let ringThickness = radii.outer - radii.inner
+
+        if slice.sweep >= (.pi / 180 * 15), arcLength >= 48, ringThickness >= 16 {
+            let midAngle = (slice.startAngle + slice.endAngle) / 2
             let point = CGPoint(
-                x: metrics.center.x + cos(mid) * radius,
-                y: metrics.center.y + sin(mid) * radius
+                x: metrics.center.x + cos(midAngle) * midRadius,
+                y: metrics.center.y + sin(midAngle) * midRadius
             )
+
+            let charLimit = max(3, Int(arcLength / 7.0) - 2)
+            let displayName: String
+            if slice.item.name.count > charLimit {
+                displayName = String(slice.item.name.prefix(charLimit)) + "…"
+            } else {
+                displayName = slice.item.name
+            }
+
             let label = context.resolve(
-                Text(slice.item.name)
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundStyle(Color.primary.opacity(0.85))
+                Text(displayName)
+                    .font(.system(size: 9.5, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color.white.opacity(0.95))
             )
             context.draw(label, at: point, anchor: .center)
         }

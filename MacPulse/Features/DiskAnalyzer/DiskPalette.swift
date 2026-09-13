@@ -25,22 +25,31 @@ public enum ColoringMode: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-/// Disk visualization palette providing pastel and categorized hues
-/// that match the DiskBuddy paper / warm UI style.
+/// Disk visualization palette providing vibrant, high-contrast, dark-mode native hues
+/// tuned for modern macOS Liquid Glass and dark backgrounds.
 public enum DiskPalette {
-    // Pastel folder tones (soft sage, sky, lavender, peach, sand, rose, mint, wheat)
-    public static let pastelFolderColors: [Color] = [
-        Color(red: 0.93, green: 0.82, blue: 0.76), // Peach / Sand
-        Color(red: 0.80, green: 0.87, blue: 0.94), // Soft Sky
-        Color(red: 0.82, green: 0.88, blue: 0.82), // Soft Sage
-        Color(red: 0.94, green: 0.83, blue: 0.88), // Blush / Rose
-        Color(red: 0.88, green: 0.85, blue: 0.93), // Lavender
-        Color(red: 0.95, green: 0.90, blue: 0.78), // Wheat
-        Color(red: 0.78, green: 0.90, blue: 0.88), // Mint
-        Color(red: 0.90, green: 0.86, blue: 0.80), // Warm Khaki
-        Color(red: 0.85, green: 0.88, blue: 0.95), // Periwinkle
-        Color(red: 0.95, green: 0.86, blue: 0.82)  // Coral Pastel
+    // 16 rich, vibrant, high-contrast hues with distinct chromatic separation
+    public static let folderColors: [Color] = [
+        Color(red: 0.17, green: 0.50, blue: 1.00), // Sapphire Blue
+        Color(red: 0.00, green: 0.78, blue: 0.68), // Bright Teal
+        Color(red: 0.62, green: 0.38, blue: 0.98), // Electric Violet
+        Color(red: 0.98, green: 0.64, blue: 0.12), // Warm Amber
+        Color(red: 0.94, green: 0.28, blue: 0.52), // Neon Rose
+        Color(red: 0.12, green: 0.74, blue: 0.96), // Vivid Cyan
+        Color(red: 0.48, green: 0.80, blue: 0.18), // Crisp Lime
+        Color(red: 0.98, green: 0.46, blue: 0.20), // Sunset Orange
+        Color(red: 0.42, green: 0.44, blue: 0.98), // Royal Indigo
+        Color(red: 0.86, green: 0.28, blue: 0.92), // Radiant Magenta
+        Color(red: 0.16, green: 0.84, blue: 0.56), // Emerald Mint
+        Color(red: 0.88, green: 0.56, blue: 0.30), // Warm Ochre
+        Color(red: 0.28, green: 0.62, blue: 0.96), // Sky Azure
+        Color(red: 0.92, green: 0.22, blue: 0.38), // Crimson Ruby
+        Color(red: 0.94, green: 0.76, blue: 0.14), // Golden Topaz
+        Color(red: 0.74, green: 0.46, blue: 0.96)  // Lavender Flame
     ]
+
+    // Backwards-compatible alias for existing references
+    public static var pastelFolderColors: [Color] { folderColors }
 
     public static func color(for item: DiskItem, mode: ColoringMode = .byFolder) -> Color {
         switch mode {
@@ -55,8 +64,13 @@ public enum DiskPalette {
 
     public static func folderColor(for item: DiskItem) -> Color {
         let key = item.isDirectory ? item.name : item.url.deletingLastPathComponent().lastPathComponent
-        let index = abs(key.hashValue) % pastelFolderColors.count
-        return pastelFolderColors[index]
+        // djb2 hash distribution ensures adjacent directories receive diverse hues
+        var hash: UInt = 5381
+        for byte in key.utf8 {
+            hash = ((hash << 5) &+ hash) &+ UInt(byte)
+        }
+        let index = Int(hash % UInt(folderColors.count))
+        return folderColors[index]
     }
 
     public static func typeColor(for item: DiskItem) -> Color {
@@ -68,13 +82,13 @@ public enum DiskPalette {
 
     public static func typeColor(for category: FileCategory) -> Color {
         switch category {
-        case .video: return Color(red: 0.92, green: 0.45, blue: 0.60) // Rose / Video
-        case .audio: return Color(red: 0.60, green: 0.50, blue: 0.88) // Purple / Audio
-        case .photo: return Color(red: 0.45, green: 0.75, blue: 0.95) // Cyan / Image
-        case .docs: return Color(red: 0.95, green: 0.68, blue: 0.35)  // Amber / Doc
-        case .apps: return Color(red: 0.40, green: 0.78, blue: 0.65)  // Green / Dev & Apps
-        case .archives: return Color(red: 0.75, green: 0.60, blue: 0.45)// Brown / Archive
-        case .all: return Color.gray.opacity(0.6)
+        case .video: return Color(red: 0.94, green: 0.28, blue: 0.55) // Vibrant Rose / Video
+        case .audio: return Color(red: 0.62, green: 0.40, blue: 0.98) // Electric Purple / Audio
+        case .photo: return Color(red: 0.12, green: 0.74, blue: 0.98) // Cyan Blue / Photo
+        case .docs: return Color(red: 0.98, green: 0.66, blue: 0.14)  // Amber Gold / Docs
+        case .apps: return Color(red: 0.16, green: 0.82, blue: 0.58)  // Emerald / Apps
+        case .archives: return Color(red: 0.88, green: 0.54, blue: 0.30)// Ochre / Archives
+        case .all: return Color(white: 0.55)
         }
     }
 
@@ -83,15 +97,15 @@ public enum DiskPalette {
         let days = Calendar.current.dateComponents([.day], from: date, to: Date()).day ?? 0
         switch days {
         case 0...7:
-            return Color(red: 0.40, green: 0.72, blue: 0.55) // Fresh green
+            return Color(red: 0.16, green: 0.82, blue: 0.56) // Recent (< 1 week): Fresh Mint
         case 8...30:
-            return Color(red: 0.55, green: 0.75, blue: 0.85) // Cool blue
+            return Color(red: 0.14, green: 0.72, blue: 0.96) // 1 Month: Vivid Cyan
         case 31...90:
-            return Color(red: 0.95, green: 0.75, blue: 0.45) // Tan / yellow
+            return Color(red: 0.98, green: 0.74, blue: 0.14) // 3 Months: Amber Gold
         case 91...365:
-            return Color(red: 0.92, green: 0.58, blue: 0.38) // Warm orange
+            return Color(red: 0.98, green: 0.46, blue: 0.20) // 1 Year: Sunset Orange
         default:
-            return Color(red: 0.88, green: 0.42, blue: 0.42) // Old rust / red
+            return Color(red: 0.92, green: 0.26, blue: 0.36) // Older: Ruby Red
         }
     }
 }

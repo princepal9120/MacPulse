@@ -108,7 +108,11 @@ public final class DiskAnalyzerViewModel {
     public var depth: Int = 4
     public var topSizesTab: TopSizesTab = .inThisFolder
     public var scanDurationSeconds: Double = 0
-    public var recentScans: [URL] = [FileManager.default.homeDirectoryForCurrentUser]
+    public var recentScans: [URL] = [
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop"),
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Downloads"),
+        FileManager.default.homeDirectoryForCurrentUser
+    ]
     public var stageNotificationMessage: String?
     public private(set) var scanErrorMessage: String?
 
