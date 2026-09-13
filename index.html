@@ -4,15 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacPulse · Native macOS System Cleaner & Deep Uninstaller</title>
-  <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free for personal use.">
+  <meta name="description" content="Fast, native macOS system cleaner and evidence-based uninstaller. Reclaim gigabytes from Xcode, developer caches, and orphaned leftovers. Zero background daemons, zero telemetry, pure Swift.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="MacPulse · Native macOS System Cleaner & Deep Uninstaller">
-  <meta property="og:description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring.">
-  <meta property="og:image" content="assets/screenshots/macpulse_dashboard.png">
+  <meta property="og:description" content="Reclaim gigabytes from Xcode, developer caches, and orphaned leftovers. Zero background daemons, zero telemetry, 100% pure Swift & SwiftUI.">
+  <meta property="og:image" content="assets/screenshots/macpulse_dashboard.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MacPulse · Native macOS System Cleaner & Deep Uninstaller">
-  <meta name="twitter:description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring.">
-  <meta name="twitter:image" content="assets/screenshots/macpulse_dashboard.png">
+  <meta name="twitter:description" content="Reclaim gigabytes from Xcode, developer caches, and orphaned leftovers. Zero background daemons, zero telemetry, 100% pure Swift & SwiftUI.">
+  <meta name="twitter:image" content="assets/screenshots/macpulse_dashboard.jpg">
+
+  <!-- Preload Critical Screenshots -->
+  <link rel="preload" as="image" href="assets/screenshots/macpulse_dashboard.jpg">
+  <link rel="preload" as="image" href="assets/screenshots/macpulse_cleanup_real.jpg">
 
   <!-- Google Fonts: Fraunces (Tactile Editorial Serif), Geist (Clean Modern Sans), JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,13 +31,15 @@
   <div class="nav-wrap">
     <nav class="site-nav" aria-label="Main Navigation">
       <a href="#" class="nav-brand" aria-label="MacPulse Home">
-        <div class="nav-brand-icon" aria-hidden="true" style="padding:2px; display:flex; align-items:center; justify-content:center;"><img src="assets/macpulse-logo.svg" alt="MacPulse" width="20" height="20"></div>
+        <div class="nav-brand-icon" aria-hidden="true" style="padding:2px; display:flex; align-items:center; justify-content:center;">
+          <img src="assets/macpulse-logo.svg" alt="MacPulse" width="20" height="20">
+        </div>
         <span>MacPulse</span>
       </a>
 
       <ul class="nav-links">
         <li><a href="#overview" class="nav-link">Overview</a></li>
-        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#features" class="nav-link">Tools</a></li>
         <li><a href="#comparison" class="nav-link">Comparison</a></li>
         <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
@@ -54,23 +60,23 @@
       <div class="container hero-content">
         <h1 class="hero-title">The quiet, native Mac cleaner that leaves no trace.</h1>
         <p class="hero-tagline">
-          Clean caches, completely remove apps and their hidden leftovers, inspect startup daemons, analyze heavy folders, and monitor your Mac.
+          Reclaim tens of gigabytes trapped in developer caches, runaway logs, and abandoned app containers. Zero background daemons. Zero telemetry. 100% pure Swift &amp; SwiftUI.
         </p>
 
         <div class="hero-trust-bar">
-          <span>Free for Personal Use</span>
-          <span>Pure Swift & SwiftUI</span>
-          <span>Zero Background Daemons</span>
-          <span>Zero Telemetry</span>
-          <span>macOS 14+</span>
+          <span>0 MB Idle Background RAM</span>
+          <span>Pure Swift &amp; SwiftUI</span>
+          <span>Zero Telemetry or Phone-Home</span>
+          <span>Evidence Graph Engine</span>
           <span>Local Pre-Deletion Snapshots</span>
+          <span>Apple Silicon &amp; Intel</span>
         </div>
 
         <div class="hero-cta">
-          <a href="#download" class="btn-primary">Download for Mac</a>
+          <a href="#download" class="btn-primary">Download for Mac (v1.0.0)</a>
 
-          <div class="terminal-pill" id="copyPill" role="button" tabindex="0" aria-label="Copy brew install command">
-            <code>brew install --cask macpulse</code>
+          <div class="terminal-pill" id="copyPill" role="button" tabindex="0" aria-label="Copy curl install command" title="Click to copy install command">
+            <code>curl -fsSL .../install.sh | bash</code>
             <span id="copyFeedback" style="color: var(--color-ink-stone); margin-left: 4px;" aria-hidden="true">
               <svg id="copySvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               <svg id="checkSvg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
@@ -80,11 +86,11 @@
       </div>
     </header>
 
-    <!-- 00 · SEE IT (Image #3 Exact Toolbar Capsule + Real Live App Showcase) -->
+    <!-- 00 · SEE IT (Interactive Native Toolbar Capsule + Live App Showcase) -->
     <section class="gallery-section" id="overview">
       <div class="container gallery-container">
 
-        <!-- Top Navigation Toolbar Capsule matching Image #3 -->
+        <!-- Top Navigation Toolbar Capsule -->
         <div class="app-toolbar-capsule" role="tablist" aria-label="Choose a MacPulse Tool">
           <!-- 1. Dashboard -->
           <button type="button" class="tool-btn is-active" role="tab" aria-selected="true" data-screen="dashboard" title="Dashboard">
@@ -93,9 +99,6 @@
             </span>
             <span class="btn-label">Dashboard</span>
           </button>
-
-          <!-- Divider -->
-          <div class="tool-divider" aria-hidden="true"></div>
 
           <!-- 2. Cleanup -->
           <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="cleanup" title="Cleanup">
@@ -140,7 +143,15 @@
             <span class="btn-label">Monitor</span>
           </button>
 
-          <!-- 7. Processes -->
+          <!-- 7. Privacy Alerts -->
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="privacy" title="Privacy Alerts">
+            <span class="btn-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+            <span class="btn-label">Privacy</span>
+          </button>
+
+          <!-- 8. Processes -->
           <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="processes" title="Processes">
             <span class="btn-icon">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
@@ -148,20 +159,12 @@
             <span class="btn-label">Processes</span>
           </button>
 
-          <!-- 8. Startup Services (As shown in Image #3) -->
+          <!-- 9. Startup Services -->
           <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="startup" title="Startup Services">
             <span class="btn-icon">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             </span>
-            <span class="btn-label">Startup Services</span>
-          </button>
-
-          <!-- 9. Settings -->
-          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="dashboard" title="Settings">
-            <span class="btn-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </span>
-            <span class="btn-label">Settings</span>
+            <span class="btn-label">Startup</span>
           </button>
         </div>
 
@@ -172,7 +175,7 @@
           <span id="subnavOptions">Disk Breakdown · Memory Pressure · System Specifications</span>
         </div>
 
-        <!-- Real Native macOS Window Displaying Real Screenshots -->
+        <!-- Real Native macOS Window Displaying Live Screenshots -->
         <div class="app-window" aria-label="Live MacPulse Application Preview">
           <div class="app-titlebar">
             <div class="traffic-dots" aria-hidden="true">
@@ -181,48 +184,53 @@
               <div class="traffic-dot dot-green"></div>
             </div>
             <div class="app-window-title" id="windowTitle">MacPulse — Dashboard</div>
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-success);">● Live App</div>
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-success); font-weight: 500;">● Live Native App</div>
           </div>
 
           <div class="app-viewport">
             <!-- 1. Real Dashboard View -->
             <figure class="app-screen-view is-active" id="screen-dashboard">
-              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with Storage, Health, and Real-time Telemetry" class="app-screen-img" loading="eager">
+              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with Storage, Health, and Real-time Telemetry" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_dashboard.png';}">
             </figure>
 
             <!-- 2. Real Cleanup View -->
             <figure class="app-screen-view" id="screen-cleanup">
-              <img src="assets/screenshots/macpulse_cleanup_real.jpg" alt="MacPulse Ready to Clean screen with Time Machine & DS_Store toggles" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_cleanup_real.jpg" alt="MacPulse Ready to Clean screen with Time Machine &amp; DS_Store toggles" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_cleanup_real.png';}">
             </figure>
 
             <!-- 3. Real Disk Space View -->
             <figure class="app-screen-view" id="screen-diskspace">
-              <img src="assets/screenshots/macpulse_diskspace.jpg" alt="MacPulse APFS Disk Space Analyzer screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_diskspace.jpg" alt="MacPulse APFS Disk Space Analyzer screen" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_diskspace.png';}">
             </figure>
 
             <!-- 4. Real Duplicates View -->
             <figure class="app-screen-view" id="screen-duplicates">
-              <img src="assets/screenshots/macpulse_duplicates.jpg" alt="MacPulse Duplicate Finder screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_duplicates.jpg" alt="MacPulse Duplicate Finder screen" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_duplicates.png';}">
             </figure>
 
             <!-- 5. Real Uninstaller View -->
             <figure class="app-screen-view" id="screen-uninstaller">
-              <img src="assets/screenshots/macpulse_uninstaller.jpg" alt="MacPulse Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_uninstaller.jpg" alt="MacPulse Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_uninstaller.png';}">
             </figure>
 
             <!-- 6. Real Monitor View -->
             <figure class="app-screen-view" id="screen-monitor">
-              <img src="assets/screenshots/macpulse_monitor.jpg" alt="MacPulse Live Resource Monitor and Processes screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_monitor.jpg" alt="MacPulse Live Resource Monitor and Processes screen" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_monitor.png';}">
             </figure>
 
-            <!-- 7. Real Processes View -->
+            <!-- 7. Real Privacy Alerts View -->
+            <figure class="app-screen-view" id="screen-privacy">
+              <img src="assets/screenshots/macpulse_privacy.jpg" alt="MacPulse Hardware Privacy Alerts monitoring camera and microphone state" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_privacy.png';}">
+            </figure>
+
+            <!-- 8. Real Processes View -->
             <figure class="app-screen-view" id="screen-processes">
-              <img src="assets/screenshots/macpulse_processes.jpg" alt="MacPulse Process Manager and System Activity screen" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_processes.jpg" alt="MacPulse Process Manager and System Activity screen" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_processes.png';}">
             </figure>
 
-            <!-- 8. Real Startup View -->
+            <!-- 9. Real Startup View -->
             <figure class="app-screen-view" id="screen-startup">
-              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
+              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents &amp; Daemons manager" class="app-screen-img" loading="eager" decoding="async" onerror="if(!this.dataset.triedPng){this.dataset.triedPng=1;this.src='assets/screenshots/macpulse_startup.png';}">
             </figure>
           </div>
         </div>
@@ -230,14 +238,14 @@
       </div>
     </section>
 
-    <!-- 01 · FEATURES (Centered Header & Balanced Grid) -->
+    <!-- 01 · FEATURES (Architecture & Specialized Tools) -->
     <section class="features-section" id="features">
       <div class="container">
         <div class="section-head">
-          <p class="section-num">01 · Tools</p>
-          <h2 class="section-title">Seven tools, one native binary.</h2>
+          <p class="section-num">01 · ARCHITECTURE &amp; TOOLS</p>
+          <h2 class="section-title">Seven dedicated tools. One fast, native binary.</h2>
           <p class="section-lede">
-            Every feature is hand-crafted in pure Swift and SwiftUI. No cross-platform Electron wrappers, no memory hogging, no background services.
+            Every module is hand-crafted in pure Swift and SwiftUI. No cross-platform Electron wrappers, no memory hogging, and zero background services eating your battery.
           </p>
         </div>
 
@@ -246,34 +254,34 @@
             <div class="fcard-header">
               <span class="fcard-num">TOOL 01</span>
               <h3 class="fcard-title">Evidence Uninstaller</h3>
-              <p class="fcard-body">Traces codesign entitlements, Mach-O headers, and receipt plists to find true leftovers, not just matching folder names.</p>
+              <p class="fcard-body">Traces Mach-O binary dependencies, codesign entitlements, and receipt plists to remove real application leftovers, not just matching folder names.</p>
             </div>
-            <span class="fcard-tag">Evidence Graph Engine</span>
+            <span class="fcard-tag">Mach-O Dependency Graph</span>
           </article>
 
           <article class="fcard">
             <div class="fcard-header">
               <span class="fcard-num">TOOL 02</span>
               <h3 class="fcard-title">Orphaned Residuals</h3>
-              <p class="fcard-body">Finds containers and configuration directories from apps you uninstalled years ago and forgot were still consuming space.</p>
+              <p class="fcard-body">Finds configuration directories, sandboxed group containers, and preferences from applications you uninstalled months or years ago.</p>
             </div>
-            <span class="fcard-tag">Signature Matching</span>
+            <span class="fcard-tag">Signature &amp; Bundle Matching</span>
           </article>
 
           <article class="fcard">
             <div class="fcard-header">
               <span class="fcard-num">TOOL 03</span>
-              <h3 class="fcard-title">Startup Services</h3>
-              <p class="fcard-body">Tames runaway login items, background LaunchAgents, and LaunchDaemons that slow down your Mac's boot time.</p>
+              <h3 class="fcard-title">Developer &amp; System Junk</h3>
+              <p class="fcard-body">Reclaims gigabytes from Xcode DerivedData, iOS Simulator runtimes, package managers (npm, pip, Homebrew, Cargo, Gradle), and obsolete crash logs.</p>
             </div>
-            <span class="fcard-tag">SMAppService Native</span>
+            <span class="fcard-tag">Zero User Data Risk</span>
           </article>
 
           <article class="fcard">
             <div class="fcard-header">
               <span class="fcard-num">TOOL 04</span>
-              <h3 class="fcard-title">APFS Disk Tree</h3>
-              <p class="fcard-body">Fast visual breakdown of your drive. Drill down into deep directories without waiting for slow file indexes.</p>
+              <h3 class="fcard-title">APFS Disk Space Tree</h3>
+              <p class="fcard-body">Visual breakdown of your storage with concentric sunburst and treemap modes. Zero indexing wait—traverses raw APFS directory blocks directly.</p>
             </div>
             <span class="fcard-tag">Raw Directory Traversal</span>
           </article>
@@ -281,32 +289,41 @@
           <article class="fcard">
             <div class="fcard-header">
               <span class="fcard-num">TOOL 05</span>
-              <h3 class="fcard-title">Caches & System Junk</h3>
-              <p class="fcard-body">Reclaims space from developer caches (Xcode DerivedData, Gradle, npm), browser caches, and obsolete crash logs.</p>
+              <h3 class="fcard-title">Cryptographic Duplicates</h3>
+              <p class="fcard-body">Detects true duplicate files through cryptographic hash verification. APFS clone and hardlink aware to protect shared storage blocks.</p>
             </div>
-            <span class="fcard-tag">Zero User Data Risk</span>
+            <span class="fcard-tag">APFS Clone &amp; Hardlink Aware</span>
           </article>
 
           <article class="fcard">
             <div class="fcard-header">
               <span class="fcard-num">TOOL 06</span>
-              <h3 class="fcard-title">Duplicate Finder</h3>
-              <p class="fcard-body">Detects true duplicate files by binary hash and content inspection, not just filename and extension matching.</p>
+              <h3 class="fcard-title">Startup Services</h3>
+              <p class="fcard-body">Inspects and manages runaway login items, background LaunchAgents, and LaunchDaemons using modern macOS SMAppService APIs.</p>
             </div>
-            <span class="fcard-tag">APFS Hardlink Aware</span>
+            <span class="fcard-tag">SMAppService Native</span>
+          </article>
+
+          <article class="fcard">
+            <div class="fcard-header">
+              <span class="fcard-num">TOOL 07</span>
+              <h3 class="fcard-title">Hardware Privacy &amp; Monitor</h3>
+              <p class="fcard-body">Real-time CPU/GPU load rails, memory pressure gradient, and hardware sensor surveillance for camera &amp; microphone activity.</p>
+            </div>
+            <span class="fcard-tag">Hardware Sensor Watch</span>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- 02 · COMPARISON (Centered Table Layout) -->
+    <!-- 02 · COMPARISON (MacPulse vs Commercial Cleaners) -->
     <section class="comparison-section" id="comparison">
       <div class="container">
         <div class="section-head">
-          <p class="section-num">02 · Philosophy</p>
-          <h2 class="section-title">How does MacPulse compare to CleanMyMac?</h2>
+          <p class="section-num">02 · TRANSPARENCY</p>
+          <h2 class="section-title">How does MacPulse compare to commercial cleaners?</h2>
           <p class="section-lede">
-            Traditional commercial utilities lock you into yearly recurring payments and install heavy background processes. MacPulse is a transparent, developer-grade utility.
+            Commercial utilities lock you into $40/year recurring subscriptions and install 200MB background daemons in your menu bar. MacPulse is a transparent, developer-grade utility.
           </p>
         </div>
 
@@ -314,41 +331,51 @@
           <table class="compare-table">
             <thead>
               <tr>
-                <th style="width: 40%;">Capability</th>
-                <th style="width: 30%;">MacPulse</th>
-                <th style="width: 30%;">Typical Cleaner (CleanMyMac)</th>
+                <th style="width: 38%;">Capability</th>
+                <th style="width: 31%;">MacPulse</th>
+                <th style="width: 31%;">Typical Cleaner (CleanMyMac)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="compare-feature">License Model</td>
-                <td class="compare-val highlight">Free for Personal Use</td>
+                <td class="compare-val highlight">Free &amp; Open Source (MIT)</td>
                 <td class="compare-val dim">$39.95 / year subscription</td>
               </tr>
               <tr>
-                <td class="compare-feature">Background Daemons</td>
-                <td class="compare-val highlight">Zero background processes</td>
+                <td class="compare-feature">Background RAM Footprint</td>
+                <td class="compare-val highlight">0 MB when closed (clean exit)</td>
                 <td class="compare-val dim">Always-running helper (200MB+ RAM)</td>
               </tr>
               <tr>
-                <td class="compare-feature">Telemetry & Cloud Tracking</td>
-                <td class="compare-val highlight">Zero. All computation is local</td>
-                <td class="compare-val dim">Analytics & license heartbeats</td>
+                <td class="compare-feature">Telemetry &amp; Cloud Tracking</td>
+                <td class="compare-val highlight">Zero network calls. 100% local</td>
+                <td class="compare-val dim">Analytics trackers &amp; license checks</td>
               </tr>
               <tr>
-                <td class="compare-feature">Uninstall Verification</td>
-                <td class="compare-val highlight">Evidence Graph & Mach-O Link</td>
-                <td class="compare-val dim">Filename regex keyword matching</td>
+                <td class="compare-feature">Uninstaller Mechanism</td>
+                <td class="compare-val highlight">Mach-O dependency graph &amp; receipts</td>
+                <td class="compare-val dim">Simple keyword regex folder search</td>
               </tr>
               <tr>
-                <td class="compare-feature">Accidental Deletion Protection</td>
-                <td class="compare-val highlight">Local snapshot restore catalog</td>
+                <td class="compare-feature">Safety &amp; Rollback</td>
+                <td class="compare-val highlight">SQLite atomic snapshot journal (undo)</td>
                 <td class="compare-val dim">Direct delete to system Trash</td>
               </tr>
               <tr>
-                <td class="compare-feature">CLI & Terminal Support</td>
-                <td class="compare-val highlight">First-class `macpulse` CLI included</td>
-                <td class="compare-val dim">GUI only / limited CLI</td>
+                <td class="compare-feature">Developer Tool Caches</td>
+                <td class="compare-val highlight">Xcode DerivedData, Simulators, npm, pip</td>
+                <td class="compare-val dim">Generic system cache cleaning only</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Native Architecture</td>
+                <td class="compare-val highlight">100% Native Swift &amp; SwiftUI</td>
+                <td class="compare-val dim">Heavy proprietary framework bundle</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Terminal &amp; CLI Support</td>
+                <td class="compare-val highlight">First-class macpulse CLI included</td>
+                <td class="compare-val dim">GUI only / No scriptable CLI</td>
               </tr>
             </tbody>
           </table>
@@ -356,13 +383,13 @@
       </div>
     </section>
 
-    <!-- 03 · STRAIGHT ANSWERS (FAQ Center Aligned — Image #1 Fix) -->
+    <!-- 03 · STRAIGHT ANSWERS (FAQ) -->
     <section class="faq-section" id="faq">
       <div class="container">
         <div class="section-head">
-          <p class="section-num">03 · Straight answers</p>
+          <p class="section-num">03 · STRAIGHT ANSWERS</p>
           <h2 class="section-title">Questions. Answered honestly.</h2>
-          <p class="section-lede">Clear explanations about system safety, permissions, and architecture.</p>
+          <p class="section-lede">Clear explanations about system safety, permissions, and open-source architecture.</p>
         </div>
 
         <div class="faq-list">
@@ -378,11 +405,11 @@
 
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span>Can MacPulse accidentally delete my personal documents?</span>
+              <span>Can MacPulse accidentally delete my personal documents or project files?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              No. MacPulse enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacPulse records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
+              No. MacPulse enforces strict safety boundary rules. Personal directories (Documents, Desktop, Photos, iCloud Drive, Git repositories) are hard-coded as non-targetable. Furthermore, before any files are cleared, MacPulse records an atomic local snapshot in a SQLite catalog so you can restore items immediately if needed.
             </div>
           </div>
 
@@ -398,39 +425,52 @@
 
           <div class="faq-item">
             <button type="button" class="faq-question">
+              <span>Why does macOS say “damaged” when opening the unsigned DMG?</span>
+              <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              Apple charges $99/year for Developer ID notarization certificates. Because MacPulse is free and open-source software under the MIT license, we do not pay Apple for a corporate certificate. macOS automatically sets a quarantine attribute on internet-downloaded unsigned apps. You can either use our 1-line curl installer (which clears it for you), or run <code>xattr -cr /Applications/MacPulse.app</code> once.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-question">
               <span>Why doesn't MacPulse run in the background 24/7?</span>
               <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
-              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacPulse does its work when you open it, and when you quit it, it exits completely.
+              A cleaner tool should not be part of the problem it claims to solve. Running an idle background daemon wastes CPU cycles and battery life. MacPulse does its work when you open it, and when you quit it, it exits completely with 0 MB memory footprint.
             </div>
           </div>
         </div>
 
         <!-- Download Card (Centered) -->
         <div class="download-card" id="download">
-          <h3 class="download-title">Download MacPulse for macOS</h3>
-          <p style="color: var(--color-ink-olive); max-width: 44ch;">
-            Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later. Free open-source build (no Apple notarization fee).
-          </p>
-          <p style="color: var(--color-ink-olive); max-width: 56ch; font-size: 0.95rem;">
-            Easiest install (clears Gatekeeper quarantine for you):
-            <code style="display:block; margin-top:0.5rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:0.85rem;">curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
-          </p>
-          <p style="color: var(--color-ink-olive); max-width: 52ch; font-size: 0.9rem;">
-            Or download the DMG, drag to Applications, then if macOS says “damaged” run
-            <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">xattr -cr ~/Applications/MacPulse.app</code>
-            — normal for unsigned OSS, not a corrupt file.
+          <h3 class="download-title">Install MacPulse for macOS</h3>
+          <p style="color: var(--color-ink-olive); max-width: 50ch;">
+            Universal native binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later. Free &amp; open-source under MIT.
           </p>
 
-          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center;">
-            <a href="https://github.com/princepal9120/MacPulse/releases/latest" class="btn-primary" style="height: 44px; padding-inline: 28px;">
+          <div class="download-install-box">
+            <code>curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
+            <button type="button" id="copyInstallBtn" aria-label="Copy install command" style="background:none; border:none; color:var(--color-brand); cursor:pointer; display:flex; align-items:center; padding:4px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+
+          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center; margin-top: var(--space-xs);">
+            <a href="https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg" class="btn-primary" style="height: 44px; padding-inline: 28px;">
               Download MacPulse .dmg (8.1 MB)
             </a>
-            <a href="https://github.com/princepal9120/MacPulse" class="btn-primary" style="background-color: var(--color-paper-ivory); color: var(--color-ink); border: 1px solid var(--color-line);">
+            <a href="https://github.com/princepal9120/MacPulse" class="btn-primary" style="background-color: var(--color-paper-sand); color: var(--color-ink); border: 1px solid var(--color-line);">
               View Source on GitHub
             </a>
           </div>
+
+          <p style="color: var(--color-ink-stone); max-width: 54ch; font-size: 0.84rem; line-height: 1.45;">
+            Tip: If dragging the DMG manually, clear the unsigned macOS Gatekeeper quarantine tag with:
+            <code style="display:inline-block; font-family: var(--font-mono); color: var(--color-brand);">xattr -cr /Applications/MacPulse.app</code>
+          </p>
 
           <div class="download-checksum">
             SHA256: 19d8403a71451aa5ba34aec2510478cb6e14640119f78073f2f73d2aff85fe86
@@ -447,105 +487,122 @@
     <div class="container footer-inner">
       <div>
         <strong style="color: var(--color-ink); font-family: var(--font-display);">MacPulse</strong>
-        <span>· v1.0.0 · Pure Swift & SwiftUI · Free for Personal Use</span>
+        <span>· v1.0.0 · Pure Swift &amp; SwiftUI · Free &amp; Open Source (MIT)</span>
       </div>
-
       <div class="footer-links">
-        <a href="#overview" class="footer-link">Overview</a>
-        <a href="#features" class="footer-link">Features</a>
-        <a href="#comparison" class="footer-link">Comparison</a>
         <a href="https://github.com/princepal9120/MacPulse" class="footer-link">GitHub</a>
-        <a href="https://github.com/princepal9120/MacPulse/blob/main/LICENSE" class="footer-link">Personal Use License</a>
+        <a href="https://github.com/princepal9120/MacPulse/releases" class="footer-link">Releases</a>
+        <a href="https://github.com/princepal9120/MacPulse/blob/main/LICENSE" class="footer-link">License (MIT)</a>
+        <a href="https://github.com/princepal9120/MacPulse/issues" class="footer-link">Report Issue</a>
+        <a href="#overview" class="footer-link">Back to Top ↑</a>
       </div>
     </div>
   </footer>
 
-  <!-- ⌘K COMMAND SEARCH MODAL -->
+  <!-- Quick Command Modal (⌘K) -->
   <div class="cmd-modal" id="cmdModal" role="dialog" aria-modal="true" aria-label="Command Search">
     <div class="cmd-box">
       <input type="text" class="cmd-input" id="cmdSearchInput" placeholder="Search MacPulse tools or actions..." autocomplete="off">
       <ul class="cmd-menu" id="cmdMenuList">
+        <li class="cmd-row" data-action="screen" data-screen="dashboard">
+          <span>Go to Live Dashboard</span>
+          <span class="cmd-kbd">Overview</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="cleanup">
+          <span>Go to Caches &amp; Junk Cleaner</span>
+          <span class="cmd-kbd">Cleanup</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="diskspace">
+          <span>Go to APFS Disk Space Tree</span>
+          <span class="cmd-kbd">Disk Space</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="duplicates">
+          <span>Go to Cryptographic Duplicate Finder</span>
+          <span class="cmd-kbd">Duplicates</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="uninstaller">
+          <span>Go to Evidence Deep Uninstaller</span>
+          <span class="cmd-kbd">Uninstaller</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="monitor">
+          <span>Go to Live Resource Monitor</span>
+          <span class="cmd-kbd">Monitor</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="privacy">
+          <span>Go to Hardware Privacy Alerts</span>
+          <span class="cmd-kbd">Privacy</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="processes">
+          <span>Go to Process Activity &amp; CPU</span>
+          <span class="cmd-kbd">Processes</span>
+        </li>
+        <li class="cmd-row" data-action="screen" data-screen="startup">
+          <span>Go to Startup Services Manager</span>
+          <span class="cmd-kbd">Startup</span>
+        </li>
         <li class="cmd-row" data-action="download">
-          <span>Download MacPulse .dmg release</span>
-          <span class="cmd-kbd">Enter</span>
+          <span>Download MacPulse .dmg</span>
+          <span class="cmd-kbd">v1.0.0</span>
         </li>
-        <li class="cmd-row" data-action="brew">
-          <span>Copy Homebrew install command</span>
-          <span class="cmd-kbd">⌘C</span>
-        </li>
-        <li class="cmd-row" data-screen="dashboard">
-          <span>Open Dashboard view</span>
-          <span class="cmd-kbd">1</span>
-        </li>
-        <li class="cmd-row" data-screen="cleanup">
-          <span>Open System Cleanup view</span>
-          <span class="cmd-kbd">2</span>
-        </li>
-        <li class="cmd-row" data-screen="uninstaller">
-          <span>Open Uninstaller & Leftovers view</span>
-          <span class="cmd-kbd">3</span>
-        </li>
-        <li class="cmd-row" data-screen="startup">
-          <span>Open Startup Services manager</span>
-          <span class="cmd-kbd">4</span>
-        </li>
-        <li class="cmd-row" data-screen="duplicates">
-          <span>Open Duplicate Finder</span>
-          <span class="cmd-kbd">5</span>
-        </li>
-        <li class="cmd-row" data-screen="monitor">
-          <span>Open Process & Resource Monitor</span>
-          <span class="cmd-kbd">6</span>
-        </li>
-        <li class="cmd-row" data-screen="diskspace">
-          <span>Open Disk Space Analyzer</span>
-          <span class="cmd-kbd">7</span>
-        </li>
-        <li class="cmd-row" data-screen="processes">
-          <span>Open Process Manager</span>
-          <span class="cmd-kbd">8</span>
+        <li class="cmd-row" data-action="install">
+          <span>Copy curl install command</span>
+          <span class="cmd-kbd">Terminal</span>
         </li>
         <li class="cmd-row" data-action="github">
-          <span>Open GitHub repository</span>
-          <span class="cmd-kbd">G H</span>
+          <span>Open GitHub Repository</span>
+          <span class="cmd-kbd">Source</span>
         </li>
       </ul>
     </div>
   </div>
 
   <script>
-    // 1. One-click Brew command copy
+    // Preload all 9 screenshots into browser memory immediately
+    const previewAssets = [
+      'assets/screenshots/macpulse_dashboard.jpg',
+      'assets/screenshots/macpulse_cleanup_real.jpg',
+      'assets/screenshots/macpulse_diskspace.jpg',
+      'assets/screenshots/macpulse_duplicates.jpg',
+      'assets/screenshots/macpulse_uninstaller.jpg',
+      'assets/screenshots/macpulse_monitor.jpg',
+      'assets/screenshots/macpulse_privacy.jpg',
+      'assets/screenshots/macpulse_processes.jpg',
+      'assets/screenshots/macpulse_startup.jpg'
+    ];
+    previewAssets.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
+    // 1. Interactive Terminal / Install Copy
     const copyPill = document.getElementById('copyPill');
+    const copyInstallBtn = document.getElementById('copyInstallBtn');
     const copySvg = document.getElementById('copySvg');
     const checkSvg = document.getElementById('checkSvg');
 
-    function copyBrew() {
-      navigator.clipboard.writeText('brew install --cask macpulse').then(() => {
-        copySvg.style.display = 'none';
-        checkSvg.style.display = 'inline-block';
-        setTimeout(() => {
-          copySvg.style.display = 'inline-block';
-          checkSvg.style.display = 'none';
-        }, 1800);
-      }).catch(() => {});
-    }
-
-    if (copyPill) {
-      copyPill.addEventListener('click', copyBrew);
-      copyPill.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          copyBrew();
+    function copyInstallCommand() {
+      const cmd = "curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash";
+      navigator.clipboard.writeText(cmd).then(() => {
+        if (copySvg && checkSvg) {
+          copySvg.style.display = 'none';
+          checkSvg.style.display = 'inline';
+          setTimeout(() => {
+            copySvg.style.display = 'inline';
+            checkSvg.style.display = 'none';
+          }, 2000);
         }
       });
     }
 
-    // 2. Interactive App Toolbar Capsule (Image #3 exact behavior)
+    if (copyPill) copyPill.addEventListener('click', copyInstallCommand);
+    if (copyInstallBtn) copyInstallBtn.addEventListener('click', copyInstallCommand);
+
+    // 2. Interactive Tool Switcher (All 9 Tools)
     const toolBtns = document.querySelectorAll('.tool-btn');
     const screenViews = document.querySelectorAll('.app-screen-view');
-    const windowTitle = document.getElementById('windowTitle');
     const subnavTitle = document.getElementById('subnavTitle');
     const subnavOptions = document.getElementById('subnavOptions');
+    const windowTitle = document.getElementById('windowTitle');
 
     const subnavConfig = {
       dashboard: {
@@ -555,37 +612,42 @@
       },
       cleanup: {
         title: "Caches & Junk Cleaner",
-        options: "Clean .DS_Store · Time Machine Snapshots · Extended Clean",
+        options: "Clean .DS_Store · Time Machine Snapshots · Extended Clean · Developer Caches",
         name: "MacPulse — Cleanup"
       },
       diskspace: {
-        title: "APFS Disk Space Analyzer",
-        options: "Sunburst · Treemap · Age Map · File Size Distribution",
+        title: "APFS Disk Analyzer",
+        options: "Concentric Sunburst · Treemap Blocks · Directory Drilldown · Heavy Files",
         name: "MacPulse — Disk Space"
       },
       duplicates: {
-        title: "Duplicate Finder",
-        options: "Binary Hash Comparison · Fast Directory Select · Reclaim Space",
-        name: "MacPulse — Duplicate Finder"
+        title: "Cryptographic Duplicate Finder",
+        options: "Binary Content Hash · APFS Hardlink & Clone Aware · Zero False Positives",
+        name: "MacPulse — Duplicates"
       },
       uninstaller: {
-        title: "Deep Application Uninstaller",
-        options: "Applications · Leftovers · Mach-O Link Discovery",
+        title: "Evidence Deep Uninstaller",
+        options: "Mach-O Binary Linkage · Sandboxed Containers · LaunchDaemons · 1-Click Undo",
         name: "MacPulse — Uninstaller"
       },
       monitor: {
-        title: "Real-time Resource Monitor",
-        options: "Live CPU & GPU Graphs · Memory Pressure · Battery Rails",
+        title: "Real-Time Resource Monitor",
+        options: "Live CPU & GPU Load Rails · Memory Pressure Gradient · Thermal & Battery Rails",
         name: "MacPulse — Monitor"
+      },
+      privacy: {
+        title: "Hardware Privacy Alerts",
+        options: "Microphone & Camera Sensor Monitoring · Public Indicator Tap · Zero Network Egress",
+        name: "MacPulse — Privacy Alerts"
       },
       processes: {
         title: "Process Activity & Allocation",
-        options: "Process Termination · Grouped & Flat Hierarchy · CPU & Memory",
+        options: "Process Termination · Grouped & Flat Hierarchy · Per-Thread CPU & Memory",
         name: "MacPulse — Processes"
       },
       startup: {
         title: "Startup Services Manager",
-        options: "LaunchAgents · LaunchDaemons · Login Items · Disable Toggles",
+        options: "Modern SMAppService · LaunchAgents · LaunchDaemons · Login Items Toggles",
         name: "MacPulse — Startup Services"
       }
     };
@@ -598,7 +660,8 @@
       });
 
       screenViews.forEach(v => {
-        v.classList.toggle('is-active', v.id === 'screen-' + screenKey);
+        const match = v.id === 'screen-' + screenKey;
+        v.classList.toggle('is-active', match);
       });
 
       if (subnavConfig[screenKey]) {
@@ -624,7 +687,7 @@
       });
     });
 
-    // 4. Command Palette Modal (⌘K)
+    // 4. Command Palette Modal (Cmd+K)
     const cmdModal = document.getElementById('cmdModal');
     const openSearchBtn = document.getElementById('openSearchBtn');
     const cmdSearchInput = document.getElementById('cmdSearchInput');
@@ -674,8 +737,8 @@
 
         if (action === 'download') {
           window.location.href = '#download';
-        } else if (action === 'brew') {
-          copyBrew();
+        } else if (action === 'install') {
+          copyInstallCommand();
         } else if (screen) {
           switchScreen(screen);
           document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
@@ -688,3 +751,4 @@
 
 </body>
 </html>
+

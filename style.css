@@ -62,7 +62,7 @@ code, kbd, samp, pre {
 }
 
 /* -------------------------------------------------------------
-   CENTER ALIGNMENT DISCIPLINE (Image #1 Feedback)
+   CENTER ALIGNMENT DISCIPLINE
 -------------------------------------------------------------- */
 .section-head {
   display: flex;
@@ -242,7 +242,7 @@ code, kbd, samp, pre {
   font-size: var(--text-display);
   line-height: var(--lh-tight);
   font-weight: 500;
-  max-width: 20ch;
+  max-width: 22ch;
   text-wrap: balance;
   color: var(--color-ink);
   letter-spacing: -0.025em;
@@ -251,7 +251,7 @@ code, kbd, samp, pre {
 .hero-tagline {
   font-size: var(--text-lg);
   color: var(--color-ink-olive);
-  max-width: 50ch;
+  max-width: 54ch;
   line-height: var(--lh-relaxed);
   text-wrap: balance;
 }
@@ -261,7 +261,8 @@ code, kbd, samp, pre {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-2xs) var(--space-md);
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--color-ink-stone);
   margin-top: var(--space-2xs);
@@ -275,7 +276,7 @@ code, kbd, samp, pre {
 
 .hero-trust-bar span::after {
   content: "·";
-  margin-left: var(--space-sm);
+  margin-left: var(--space-md);
   color: var(--color-line);
 }
 
@@ -334,12 +335,13 @@ code, kbd, samp, pre {
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 0 1px 3px oklch(0% 0 0 / 0.04);
-  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
 .terminal-pill:hover {
   background-color: var(--color-paper-sand);
   border-color: var(--color-border-card);
+  transform: translateY(-1px);
 }
 
 .terminal-pill code {
@@ -348,7 +350,7 @@ code, kbd, samp, pre {
 }
 
 /* -------------------------------------------------------------
-   IMAGE #3 EXACT TOOLBAR CAPSULE + INTERACTIVE SHOWCASE
+   INTERACTIVE TOOLBAR CAPSULE + LIVE SHOWCASE
 -------------------------------------------------------------- */
 .gallery-section {
   padding-bottom: var(--space-3xl);
@@ -361,18 +363,23 @@ code, kbd, samp, pre {
   gap: var(--space-sm);
 }
 
-/* Image #3 Exact Toolbar Capsule */
 .app-toolbar-capsule {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   padding: 4px 6px;
   background-color: var(--shot-surface);
   border: 1px solid var(--shot-rule);
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 16px -2px oklch(0% 0 0 / 0.35);
+  box-shadow: 0 4px 20px -2px oklch(0% 0 0 / 0.4);
   overflow-x: auto;
   max-width: 100%;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-toolbar-capsule::-webkit-scrollbar {
+  display: none;
 }
 
 .tool-btn {
@@ -382,7 +389,7 @@ code, kbd, samp, pre {
   gap: 6px;
   height: 32px;
   min-width: 32px;
-  padding: 0 8px;
+  padding: 0 10px;
   border-radius: var(--radius-full);
   background: transparent;
   border: none;
@@ -391,21 +398,21 @@ code, kbd, samp, pre {
   font-family: var(--font-body);
   font-size: 12px;
   white-space: nowrap;
-  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  transition: all var(--dur-fast) var(--ease-out);
+  user-select: none;
 }
 
 .tool-btn:hover {
   color: var(--shot-text);
-  background-color: oklch(100% 0 0 / 0.06);
+  background-color: oklch(100% 0 0 / 0.08);
 }
 
-/* Active Blue Pill (Exact match to Image #3 Startup Services / Dashboard) */
 .tool-btn.is-active {
   background-color: #007AFF;
   color: #ffffff;
   font-weight: 500;
   padding: 0 14px;
-  box-shadow: 0 2px 8px oklch(58% 0.20 256 / 0.4);
+  box-shadow: 0 2px 10px oklch(58% 0.20 256 / 0.45);
 }
 
 .tool-btn .btn-icon {
@@ -422,15 +429,14 @@ code, kbd, samp, pre {
   display: inline;
 }
 
-/* Divider inside the capsule */
 .tool-divider {
   width: 1px;
   height: 16px;
   background-color: var(--shot-rule);
   margin-inline: 2px;
+  flex-shrink: 0;
 }
 
-/* Sub-Options Bar (e.g. Applications / Leftovers in Uninstaller, etc.) */
 .tool-subnav {
   display: flex;
   align-items: center;
@@ -441,6 +447,8 @@ code, kbd, samp, pre {
   font-size: var(--text-xs);
   font-family: var(--font-mono);
   color: var(--color-ink-stone);
+  text-align: center;
+  flex-wrap: wrap;
 }
 
 .subnav-pill {
@@ -495,28 +503,38 @@ code, kbd, samp, pre {
   font-weight: 500;
 }
 
-/* Real Screenshot Showcase Stage */
+/* Real Screenshot Showcase Stage - Grid Stacking with Fade */
 .app-viewport {
   position: relative;
   width: 100%;
   background-color: var(--shot-bg);
   overflow: hidden;
-  min-height: 480px;
+  aspect-ratio: 1224 / 768;
+  display: grid;
+  place-items: center;
 }
 
 .app-screen-view {
-  display: none;
+  grid-area: 1 / 1;
   width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
 }
 
 .app-screen-view.is-active {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .app-screen-img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
@@ -556,12 +574,13 @@ code, kbd, samp, pre {
   justify-content: space-between;
   gap: var(--space-md);
   box-shadow: 0 1px 3px oklch(0% 0 0 / 0.03);
-  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 
 .fcard:hover {
   border-color: var(--color-line);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 0.06);
 }
 
 .fcard-header {
@@ -573,7 +592,9 @@ code, kbd, samp, pre {
 .fcard-num {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--color-ink-stone);
+  color: var(--color-brand);
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 .fcard-title {
@@ -591,9 +612,17 @@ code, kbd, samp, pre {
 .fcard-tag {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--color-brand);
+  color: var(--color-ink-stone);
   border-top: 1px solid var(--color-line-faint);
   padding-top: var(--space-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fcard-tag::before {
+  content: "⚡";
+  font-size: 10px;
 }
 
 /* -------------------------------------------------------------
@@ -607,12 +636,13 @@ code, kbd, samp, pre {
 
 .compare-table-wrap {
   width: 100%;
-  max-width: 860px;
+  max-width: 880px;
   margin-inline: auto;
   overflow-x: auto;
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-md);
   background-color: var(--color-paper);
+  box-shadow: 0 4px 16px -4px oklch(0% 0 0 / 0.05);
 }
 
 .compare-table {
@@ -655,7 +685,7 @@ code, kbd, samp, pre {
 }
 
 /* -------------------------------------------------------------
-   03 · STRAIGHT ANSWERS (FAQ) — Center Aligned (Image #1)
+   03 · STRAIGHT ANSWERS (FAQ)
 -------------------------------------------------------------- */
 .faq-section {
   padding-block: var(--space-3xl);
@@ -667,7 +697,7 @@ code, kbd, samp, pre {
   flex-direction: column;
   gap: var(--space-2xs);
   max-width: 780px;
-  margin-inline: auto; /* Centered in container */
+  margin-inline: auto;
 }
 
 .faq-item {
@@ -695,11 +725,13 @@ code, kbd, samp, pre {
   font-size: var(--text-lg);
   color: var(--color-ink);
   cursor: pointer;
+  gap: var(--space-sm);
 }
 
 .faq-chevron {
   transition: transform var(--dur-fast) var(--ease-out);
   color: var(--color-ink-stone);
+  flex-shrink: 0;
 }
 
 .faq-item.is-open .faq-chevron {
@@ -719,7 +751,7 @@ code, kbd, samp, pre {
 }
 
 /* -------------------------------------------------------------
-   DOWNLOAD CARD (Centered)
+   DOWNLOAD CARD
 -------------------------------------------------------------- */
 .download-card {
   margin-block: var(--space-2xl);
@@ -734,11 +766,33 @@ code, kbd, samp, pre {
   gap: var(--space-md);
   max-width: 860px;
   margin-inline: auto;
+  box-shadow: 0 4px 24px -4px oklch(0% 0 0 / 0.06);
 }
 
 .download-title {
   font-size: var(--text-3xl);
   letter-spacing: -0.02em;
+}
+
+.download-install-box {
+  background-color: var(--color-paper-sand);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  max-width: 620px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.download-install-box code {
+  font-size: 0.82rem;
+  color: var(--color-ink-darkwarm);
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .download-checksum {
@@ -799,7 +853,8 @@ code, kbd, samp, pre {
   inset: 0;
   z-index: var(--z-modal);
   background: oklch(0% 0 0 / 0.4);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -841,7 +896,7 @@ code, kbd, samp, pre {
 .cmd-menu {
   list-style: none;
   padding: 6px;
-  max-height: 260px;
+  max-height: 280px;
   overflow-y: auto;
 }
 
@@ -877,3 +932,4 @@ code, kbd, samp, pre {
     transition-duration: 0.01ms !important;
   }
 }
+
