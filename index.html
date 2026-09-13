@@ -393,12 +393,16 @@
         <div class="download-card" id="download">
           <h3 class="download-title">Download MacPulse for macOS</h3>
           <p style="color: var(--color-ink-olive); max-width: 44ch;">
-            Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later.
+            Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs. Requires macOS 14.0 Sonoma or later. Free open-source build (no Apple notarization fee).
           </p>
-          <p style="color: var(--color-ink-olive); max-width: 52ch; font-size: 0.95rem;">
-            First launch: if macOS says the app is “damaged”, open Terminal and run
-            <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">xattr -cr /Applications/MacPulse.app</code>
-            then open MacPulse again. This goes away after Apple Developer ID notarization is enabled.
+          <p style="color: var(--color-ink-olive); max-width: 56ch; font-size: 0.95rem;">
+            Easiest install (clears Gatekeeper quarantine for you):
+            <code style="display:block; margin-top:0.5rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:0.85rem;">curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
+          </p>
+          <p style="color: var(--color-ink-olive); max-width: 52ch; font-size: 0.9rem;">
+            Or download the DMG, drag to Applications, then if macOS says “damaged” run
+            <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">xattr -cr ~/Applications/MacPulse.app</code>
+            — normal for unsigned OSS, not a corrupt file.
           </p>
 
           <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center;">

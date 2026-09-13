@@ -38,40 +38,44 @@ Download the latest `.dmg` from the
 [Releases](https://github.com/princepal9120/MacPulse/releases/latest) page, or
 build one locally with `scripts/release_dmg.sh`.
 
-## Build
+## Install (free / open source — no Apple fee)
+
+Apple only skips Gatekeeper warnings for **paid** Developer ID + notarization
+($99/year). MacPulse ships as unsigned OSS like many Mac open-source apps.
+
+**One-liner (recommended):**
 
 ```sh
-xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Debug build
-xcodebuild test -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -destination 'platform=macOS'
+curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash
+```
+
+**Or manual DMG:**
+
+1. Download from [Releases](https://github.com/princepal9120/MacPulse/releases/latest)
+2. Drag MacPulse → Applications (or `~/Applications`)
+3. If macOS says “damaged”, run:
+
+```sh
+xattr -cr ~/Applications/MacPulse.app
+# or: xattr -cr /Applications/MacPulse.app
+```
+
+**Or build from source:**
+
+```sh
+git clone https://github.com/princepal9120/MacPulse.git
+cd MacPulse
+xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build
+```
+
+## Build release DMG
+
+```sh
 ./scripts/release_dmg.sh
 ```
 
-The release script builds a Release DMG and writes a SHA-256 checksum.
-With a Developer ID certificate + notary profile configured, it also signs
-and notarizes so Gatekeeper accepts GitHub downloads.
-
-### Sign + notarize (required for “Download → Open” without Terminal)
-
-1. Enroll in [Apple Developer Program](https://developer.apple.com/programs/) ($99/year)
-2. In Xcode → Settings → Accounts → your team → Manage Certificates → **Developer ID Application**
-3. Run once:
-
-```sh
-chmod +x scripts/setup_signing.sh scripts/release_dmg.sh
-./scripts/setup_signing.sh
-```
-
-4. Ship:
-
-```sh
-./scripts/release_dmg.sh
-```
-
-Until that is done, downloaded builds need:
-
-```sh
-xattr -cr /Applications/MacPulse.app
-```
+Optional paid signing (not required for OSS): `./scripts/setup_signing.sh` then
+re-run `./scripts/release_dmg.sh` if you later buy an Apple Developer membership.
 
 ## Rooms
 
