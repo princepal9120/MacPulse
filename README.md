@@ -8,6 +8,10 @@ finding, and live resource monitoring — built entirely in Swift & SwiftUI.
 
 **Open source under the MIT license.** See [LICENSE](LICENSE).
 
+<p align="center">
+  <img src="assets/screenshots/macpulse_dashboard.png" alt="MacPulse Dashboard Preview" width="850">
+</p>
+
 ---
 
 ## Features
@@ -26,6 +30,19 @@ finding, and live resource monitoring — built entirely in Swift & SwiftUI.
   background agents.
 - **Safety by default** — pre-deletion snapshots, atomic journaling, and an
   evidence-based safety boundary keep your data protected.
+
+### Feature Previews
+
+<p align="center">
+  <img src="assets/screenshots/macpulse_cleanup_real.png" alt="MacPulse System Cleanup" width="410">
+  <img src="assets/screenshots/macpulse_uninstaller.png" alt="MacPulse Deep Uninstaller" width="410">
+</p>
+<p align="center">
+  <img src="assets/screenshots/macpulse_monitor.png" alt="MacPulse Live Monitor" width="410">
+  <img src="assets/screenshots/macpulse_processes.png" alt="MacPulse Process Manager" width="410">
+</p>
+
+---
 
 ## Requirements
 

@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacPulse · Native macOS System Cleaner & Deep Uninstaller</title>
   <meta name="description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring. Free for personal use.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MacPulse · Native macOS System Cleaner & Deep Uninstaller">
+  <meta property="og:description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring.">
+  <meta property="og:image" content="assets/screenshots/macpulse_dashboard.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MacPulse · Native macOS System Cleaner & Deep Uninstaller">
+  <meta name="twitter:description" content="Native macOS utility for deep cache cleaning, residual app uninstallation, startup services management, APFS disk analysis, and memory monitoring.">
+  <meta name="twitter:image" content="assets/screenshots/macpulse_dashboard.png">
 
   <!-- Google Fonts: Fraunces (Tactile Editorial Serif), Geist (Clean Modern Sans), JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +27,7 @@
   <div class="nav-wrap">
     <nav class="site-nav" aria-label="Main Navigation">
       <a href="#" class="nav-brand" aria-label="MacPulse Home">
-        <div class="nav-brand-icon" aria-hidden="true">MT</div>
+        <div class="nav-brand-icon" aria-hidden="true" style="padding:2px; display:flex; align-items:center; justify-content:center;"><img src="assets/macpulse-logo.svg" alt="MacPulse" width="20" height="20"></div>
         <span>MacPulse</span>
       </a>
 
@@ -98,7 +106,7 @@
           </button>
 
           <!-- 3. Disk Space -->
-          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="dashboard" title="Disk Space">
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="diskspace" title="Disk Space">
             <span class="btn-icon">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             </span>
@@ -133,7 +141,7 @@
           </button>
 
           <!-- 7. Processes -->
-          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="monitor" title="Processes">
+          <button type="button" class="tool-btn" role="tab" aria-selected="false" data-screen="processes" title="Processes">
             <span class="btn-icon">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
             </span>
@@ -179,7 +187,7 @@
           <div class="app-viewport">
             <!-- 1. Real Dashboard View -->
             <figure class="app-screen-view is-active" id="screen-dashboard">
-              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with 71% Disk Usage concentric rings" class="app-screen-img" loading="eager">
+              <img src="assets/screenshots/macpulse_dashboard.jpg" alt="MacPulse Live Dashboard with Storage, Health, and Real-time Telemetry" class="app-screen-img" loading="eager">
             </figure>
 
             <!-- 2. Real Cleanup View -->
@@ -187,24 +195,34 @@
               <img src="assets/screenshots/macpulse_cleanup_real.jpg" alt="MacPulse Ready to Clean screen with Time Machine & DS_Store toggles" class="app-screen-img" loading="lazy">
             </figure>
 
-            <!-- 3. Real Duplicates View -->
+            <!-- 3. Real Disk Space View -->
+            <figure class="app-screen-view" id="screen-diskspace">
+              <img src="assets/screenshots/macpulse_diskspace.jpg" alt="MacPulse APFS Disk Space Analyzer screen" class="app-screen-img" loading="lazy">
+            </figure>
+
+            <!-- 4. Real Duplicates View -->
             <figure class="app-screen-view" id="screen-duplicates">
               <img src="assets/screenshots/macpulse_duplicates.jpg" alt="MacPulse Duplicate Finder screen" class="app-screen-img" loading="lazy">
             </figure>
 
-            <!-- 4. Real Uninstaller View -->
+            <!-- 5. Real Uninstaller View -->
             <figure class="app-screen-view" id="screen-uninstaller">
               <img src="assets/screenshots/macpulse_uninstaller.jpg" alt="MacPulse Deep Uninstaller with Applications and Leftovers scanner" class="app-screen-img" loading="lazy">
-            </figure>
-
-            <!-- 5. Real Startup View -->
-            <figure class="app-screen-view" id="screen-startup">
-              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
             </figure>
 
             <!-- 6. Real Monitor View -->
             <figure class="app-screen-view" id="screen-monitor">
               <img src="assets/screenshots/macpulse_monitor.jpg" alt="MacPulse Live Resource Monitor and Processes screen" class="app-screen-img" loading="lazy">
+            </figure>
+
+            <!-- 7. Real Processes View -->
+            <figure class="app-screen-view" id="screen-processes">
+              <img src="assets/screenshots/macpulse_processes.jpg" alt="MacPulse Process Manager and System Activity screen" class="app-screen-img" loading="lazy">
+            </figure>
+
+            <!-- 8. Real Startup View -->
+            <figure class="app-screen-view" id="screen-startup">
+              <img src="assets/screenshots/macpulse_startup.jpg" alt="MacPulse Startup Services LaunchAgents & Daemons manager" class="app-screen-img" loading="lazy">
             </figure>
           </div>
         </div>
@@ -479,6 +497,14 @@
           <span>Open Process & Resource Monitor</span>
           <span class="cmd-kbd">6</span>
         </li>
+        <li class="cmd-row" data-screen="diskspace">
+          <span>Open Disk Space Analyzer</span>
+          <span class="cmd-kbd">7</span>
+        </li>
+        <li class="cmd-row" data-screen="processes">
+          <span>Open Process Manager</span>
+          <span class="cmd-kbd">8</span>
+        </li>
         <li class="cmd-row" data-action="github">
           <span>Open GitHub repository</span>
           <span class="cmd-kbd">G H</span>
@@ -532,6 +558,11 @@
         options: "Clean .DS_Store · Time Machine Snapshots · Extended Clean",
         name: "MacPulse — Cleanup"
       },
+      diskspace: {
+        title: "APFS Disk Space Analyzer",
+        options: "Sunburst · Treemap · Age Map · File Size Distribution",
+        name: "MacPulse — Disk Space"
+      },
       duplicates: {
         title: "Duplicate Finder",
         options: "Binary Hash Comparison · Fast Directory Select · Reclaim Space",
@@ -542,15 +573,20 @@
         options: "Applications · Leftovers · Mach-O Link Discovery",
         name: "MacPulse — Uninstaller"
       },
+      monitor: {
+        title: "Real-time Resource Monitor",
+        options: "Live CPU & GPU Graphs · Memory Pressure · Battery Rails",
+        name: "MacPulse — Monitor"
+      },
+      processes: {
+        title: "Process Activity & Allocation",
+        options: "Process Termination · Grouped & Flat Hierarchy · CPU & Memory",
+        name: "MacPulse — Processes"
+      },
       startup: {
         title: "Startup Services Manager",
         options: "LaunchAgents · LaunchDaemons · Login Items · Disable Toggles",
         name: "MacPulse — Startup Services"
-      },
-      monitor: {
-        title: "Real-time Resource Monitor",
-        options: "Process Allocation · CPU Sampling · Zombie Process Killer",
-        name: "MacPulse — Monitor"
       }
     };
 

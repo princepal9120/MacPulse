@@ -139,3 +139,5 @@ MacPulse/.require-private-catalog
 derived_data/
 # graphify skill output
 graphify-out/
+
+.pages-dist/
