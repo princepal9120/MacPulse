@@ -2,6 +2,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck disable=SC1091
+[[ -f "$ROOT_DIR/.signing.env" ]] && source "$ROOT_DIR/.signing.env"
+
 PROJECT="$ROOT_DIR/MacPulse/MacPulse.xcodeproj"
 SCHEME="MacPulse"
 VERSION="$(xcodebuild -project "$PROJECT" -scheme "$SCHEME" -showBuildSettings 2>/dev/null | awk -F' = ' '/MARKETING_VERSION/{print $2; exit}')"
@@ -10,8 +13,13 @@ BUILD_DIR="$ROOT_DIR/.release-build"
 STAGING_DIR="$BUILD_DIR/staging"
 APP_PATH="$BUILD_DIR/Build/Products/Release/MacPulse.app"
 DMG_PATH="$ROOT_DIR/MacPulse-${VERSION}.dmg"
-CODESIGN_IDENTITY="${CODESIGN_IDENTITY:-}"
-NOTARY_PROFILE="${NOTARY_PROFILE:-}"
+ENTITLEMENTS="$ROOT_DIR/MacPulse/MacPulse.entitlements"
+NOTARY_PROFILE="${NOTARY_PROFILE:-MacPulse-Notary}"
+
+if [[ -z "${CODESIGN_IDENTITY:-}" ]]; then
+  CODESIGN_IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null \
+    | awk -F'"' '/Developer ID Application/{print $2; exit}')"
+fi
 
 rm -rf "$BUILD_DIR" "$DMG_PATH"
 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -configuration Release \
@@ -22,26 +30,32 @@ mkdir -p "$STAGING_DIR"
 cp -R "$APP_PATH" "$STAGING_DIR/MacPulse.app"
 ln -s /Applications "$STAGING_DIR/Applications"
 
-if [[ -n "$CODESIGN_IDENTITY" ]]; then
-  codesign --force --deep --options runtime --timestamp \
-    --entitlements "$ROOT_DIR/MacPulse/MacPulse.entitlements" \
+if [[ -n "${CODESIGN_IDENTITY:-}" ]]; then
+  echo "Signing app with: $CODESIGN_IDENTITY"
+  codesign --force --options runtime --timestamp \
+    --entitlements "$ENTITLEMENTS" \
     --sign "$CODESIGN_IDENTITY" "$STAGING_DIR/MacPulse.app"
   codesign --verify --deep --strict --verbose=2 "$STAGING_DIR/MacPulse.app"
-elif [[ -n "$NOTARY_PROFILE" ]]; then
-  echo "NOTARY_PROFILE requires CODESIGN_IDENTITY" >&2
-  exit 2
+else
+  echo "No Developer ID cert — unsigned DMG (Gatekeeper will block downloads)."
 fi
 
 hdiutil create -volname "MacPulse $VERSION" -srcfolder "$STAGING_DIR" \
   -ov -format UDZO "$DMG_PATH" >/dev/null
 
-if [[ -n "$NOTARY_PROFILE" ]]; then
+if [[ -n "${CODESIGN_IDENTITY:-}" ]]; then
+  codesign --force --timestamp --sign "$CODESIGN_IDENTITY" "$DMG_PATH"
+fi
+
+if [[ -n "${CODESIGN_IDENTITY:-}" ]] && xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" &>/dev/null; then
+  echo "Notarizing with profile: $NOTARY_PROFILE"
   xcrun notarytool submit "$DMG_PATH" --keychain-profile "$NOTARY_PROFILE" --wait
   xcrun stapler staple "$DMG_PATH"
   xcrun stapler validate "$DMG_PATH"
+elif [[ -n "${CODESIGN_IDENTITY:-}" ]]; then
+  echo "Signed but not notarized — run: ./scripts/setup_signing.sh"
 fi
 
 shasum -a 256 "$DMG_PATH" > "$DMG_PATH.sha256"
-
 echo "Created: $DMG_PATH"
 cat "$DMG_PATH.sha256"

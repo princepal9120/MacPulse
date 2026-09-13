@@ -46,13 +46,28 @@ xcodebuild test -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -destinati
 ./scripts/release_dmg.sh
 ```
 
-The release script performs a clean Release build, creates an unsigned DMG for
-local testing, and writes SHA-256 checksums beside the artifact. Developer ID
-signing/notarization can be added through `CODESIGN_IDENTITY` and
-`NOTARY_PROFILE` in a private CI environment.
+The release script builds a Release DMG and writes a SHA-256 checksum.
+With a Developer ID certificate + notary profile configured, it also signs
+and notarizes so Gatekeeper accepts GitHub downloads.
 
-If macOS says the downloaded app is “damaged” (Gatekeeper quarantine on an
-unsigned build), install to Applications then run:
+### Sign + notarize (required for “Download → Open” without Terminal)
+
+1. Enroll in [Apple Developer Program](https://developer.apple.com/programs/) ($99/year)
+2. In Xcode → Settings → Accounts → your team → Manage Certificates → **Developer ID Application**
+3. Run once:
+
+```sh
+chmod +x scripts/setup_signing.sh scripts/release_dmg.sh
+./scripts/setup_signing.sh
+```
+
+4. Ship:
+
+```sh
+./scripts/release_dmg.sh
+```
+
+Until that is done, downloaded builds need:
 
 ```sh
 xattr -cr /Applications/MacPulse.app
