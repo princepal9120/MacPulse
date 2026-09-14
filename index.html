@@ -13,6 +13,31 @@
   <meta name="twitter:title" content="MacPulse · Native macOS System Cleaner & Deep Uninstaller">
   <meta name="twitter:description" content="Reclaim gigabytes from Xcode, developer caches, and orphaned leftovers. Zero background daemons, zero telemetry, 100% pure Swift & SwiftUI.">
   <meta name="twitter:image" content="assets/screenshots/macpulse_dashboard.jpg">
+  <link rel="canonical" href="https://trymacpulse.pages.dev/">
+
+  <!-- Favicon & App Icons -->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+
+  <!-- Software Schema.org Metadata -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MacPulse",
+    "operatingSystem": "macOS 26.0 or later",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Fast, native macOS system cleaner and evidence-based uninstaller in pure Swift and SwiftUI.",
+    "softwareVersion": "1.0.0",
+    "downloadUrl": "https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg"
+  }
+  </script>
 
   <!-- Preload Critical Screenshots -->
   <link rel="preload" as="image" href="assets/screenshots/macpulse_dashboard.jpg">
@@ -471,7 +496,7 @@
           <div class="pkg-card">
             <div class="pkg-card-head">
               <h3 class="pkg-card-title">macOS</h3>
-              <p class="pkg-card-subtitle">macOS 14.0 Sonoma or later</p>
+              <p class="pkg-card-subtitle">macOS 26.0 Tahoe or later</p>
             </div>
             <ul class="pkg-list">
               <li>
@@ -481,7 +506,7 @@
                   </span>
                   <span class="pkg-btn-text">Universal DMG</span>
                   <span class="pkg-pill-badge">Recommended</span>
-                  <span class="pkg-size-meta">8.1 MB</span>
+                  <span class="pkg-size-meta">13.1 MB</span>
                 </a>
               </li>
               <li>
@@ -514,9 +539,10 @@
             <div class="pkg-snippet-block">
               <span class="pkg-snippet-label">One-line script (clears quarantine)</span>
               <div class="pkg-snippet-row">
-                <code>curl -fsSL .../install.sh | bash</code>
-                <button type="button" class="pkg-copy-mini" onclick="copyInstallCommand()" aria-label="Copy install script" title="Copy command">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <code>curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
+                <button type="button" class="pkg-copy-mini" data-copy="curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash" aria-label="Copy install script" title="Copy command">
+                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
                 </button>
               </div>
             </div>
@@ -524,8 +550,9 @@
               <span class="pkg-snippet-label">Homebrew Cask</span>
               <div class="pkg-snippet-row">
                 <code>brew install princepal9120/tap/macpulse</code>
-                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('brew install princepal9120/tap/macpulse')" aria-label="Copy brew command" title="Copy command">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <button type="button" class="pkg-copy-mini" data-copy="brew install princepal9120/tap/macpulse" aria-label="Copy brew command" title="Copy command">
+                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
                 </button>
               </div>
             </div>
@@ -541,8 +568,9 @@
               <span class="pkg-snippet-label">Unsigned DMG Gatekeeper fix</span>
               <div class="pkg-snippet-row">
                 <code>xattr -cr /Applications/MacPulse.app</code>
-                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('xattr -cr /Applications/MacPulse.app')" aria-label="Copy xattr command" title="Copy command">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <button type="button" class="pkg-copy-mini" data-copy="xattr -cr /Applications/MacPulse.app" aria-label="Copy xattr command" title="Copy command">
+                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
                 </button>
               </div>
             </div>
@@ -550,8 +578,9 @@
               <span class="pkg-snippet-label">Build from source via Xcode</span>
               <div class="pkg-snippet-row">
                 <code>xcodebuild -scheme MacPulse build</code>
-                <button type="button" class="pkg-copy-mini" onclick="navigator.clipboard.writeText('git clone https://github.com/princepal9120/MacPulse.git && cd MacPulse && xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build')" aria-label="Copy build command" title="Copy command">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <button type="button" class="pkg-copy-mini" data-copy="git clone https://github.com/princepal9120/MacPulse.git &amp;&amp; cd MacPulse &amp;&amp; xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build" aria-label="Copy build command" title="Copy command">
+                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
                 </button>
               </div>
             </div>
@@ -559,11 +588,15 @@
         </div>
 
         <div class="pkg-bottom-bar">
-          <div class="pkg-checksum-pill">
-            SHA256: 19d8403a71451aa5ba34aec2510478cb6e14640119f78073f2f73d2aff85fe86
-          </div>
+          <button type="button" class="pkg-checksum-pill" id="checksumPill" title="Click to copy SHA256 checksum" aria-label="Copy SHA256 checksum: 2b7501ebd369ec50b47e65a021c990bd1d4d2b56656e4b389af03067e7d8d1c5">
+            <span class="pkg-checksum-text">SHA256: 2b7501ebd369ec50b47e65a021c990bd1d4d2b56656e4b389af03067e7d8d1c5</span>
+            <span class="checksum-feedback" aria-hidden="true">
+              <svg class="icon-copy" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="icon-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </button>
           <p class="meta" style="font-size: 11.5px; color: var(--color-ink-stone); margin-top: 4px;">
-            Pure Swift 5.10 &amp; SwiftUI · 0MB Background Daemons · Zero Telemetry · MIT Licensed
+            Pure Swift 6 &amp; SwiftUI · 0MB Background Daemons · Zero Telemetry · MIT Licensed
           </p>
         </div>
       </div>
@@ -663,11 +696,31 @@
       img.src = src;
     });
 
-    // 1. Interactive Terminal / Install Copy
+    // 1. Interactive Terminal / Install Copy & Universal Copy Feedback
     const copyPill = document.getElementById('copyPill');
-    const copyInstallBtn = document.getElementById('copyInstallBtn');
     const copySvg = document.getElementById('copySvg');
     const checkSvg = document.getElementById('checkSvg');
+
+    function copyWithFeedback(buttonElement, textToCopy) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const copyIcon = buttonElement.querySelector('.icon-copy') || buttonElement.querySelector('svg:not(.icon-check)');
+        const checkIcon = buttonElement.querySelector('.icon-check');
+        buttonElement.classList.add('is-copied');
+        if (copyIcon && checkIcon) {
+          copyIcon.style.display = 'none';
+          checkIcon.style.display = 'inline';
+          setTimeout(() => {
+            copyIcon.style.display = 'inline';
+            checkIcon.style.display = 'none';
+            buttonElement.classList.remove('is-copied');
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            buttonElement.classList.remove('is-copied');
+          }, 2000);
+        }
+      });
+    }
 
     function copyInstallCommand() {
       const cmd = "curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash";
@@ -684,7 +737,21 @@
     }
 
     if (copyPill) copyPill.addEventListener('click', copyInstallCommand);
-    if (copyInstallBtn) copyInstallBtn.addEventListener('click', copyInstallCommand);
+
+    const checksumPill = document.getElementById('checksumPill');
+    if (checksumPill) {
+      checksumPill.addEventListener('click', () => {
+        const hash = "2b7501ebd369ec50b47e65a021c990bd1d4d2b56656e4b389af03067e7d8d1c5";
+        copyWithFeedback(checksumPill, hash);
+      });
+    }
+
+    document.querySelectorAll('.pkg-copy-mini').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (text) copyWithFeedback(btn, text);
+      });
+    });
 
     // 2. Interactive Tool Switcher (All 9 Tools)
     const toolBtns = document.querySelectorAll('.tool-btn');
@@ -741,7 +808,16 @@
       }
     };
 
-    function switchScreen(screenKey) {
+    const toolOrder = ['dashboard', 'cleanup', 'diskspace', 'duplicates', 'uninstaller', 'monitor', 'privacy', 'processes', 'startup'];
+    let currentScreenIndex = 0;
+    let autoPlayInterval = null;
+    let isAutoPlayPaused = false;
+    const AUTO_CYCLE_MS = 4200;
+
+    function switchScreen(screenKey, isManual = false) {
+      const idx = toolOrder.indexOf(screenKey);
+      if (idx !== -1) currentScreenIndex = idx;
+
       toolBtns.forEach(btn => {
         const match = btn.getAttribute('data-screen') === screenKey;
         btn.classList.toggle('is-active', match);
@@ -758,13 +834,42 @@
         subnavOptions.textContent = subnavConfig[screenKey].options;
         windowTitle.textContent = subnavConfig[screenKey].name;
       }
+
+      if (isManual) {
+        restartAutoPlay();
+      }
+    }
+
+    function advanceToNextScreen() {
+      if (!isAutoPlayPaused) {
+        currentScreenIndex = (currentScreenIndex + 1) % toolOrder.length;
+        switchScreen(toolOrder[currentScreenIndex]);
+      }
+    }
+
+    function startAutoPlay() {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+      autoPlayInterval = setInterval(advanceToNextScreen, AUTO_CYCLE_MS);
+    }
+
+    function restartAutoPlay() {
+      startAutoPlay();
+    }
+
+    // Pause auto-rotation on mouse hover so user can inspect screen
+    const galleryContainer = document.querySelector('.gallery-container');
+    if (galleryContainer) {
+      galleryContainer.addEventListener('mouseenter', () => { isAutoPlayPaused = true; });
+      galleryContainer.addEventListener('mouseleave', () => { isAutoPlayPaused = false; });
     }
 
     toolBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        switchScreen(btn.getAttribute('data-screen'));
+        switchScreen(btn.getAttribute('data-screen'), true);
       });
     });
+
+    startAutoPlay();
 
     // 3. FAQ Accordions
     document.querySelectorAll('.faq-item').forEach(item => {
@@ -829,7 +934,7 @@
         } else if (action === 'install') {
           copyInstallCommand();
         } else if (screen) {
-          switchScreen(screen);
+          switchScreen(screen, true);
           document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
         } else if (action === 'github') {
           window.open('https://github.com/princepal9120/MacPulse', '_blank');

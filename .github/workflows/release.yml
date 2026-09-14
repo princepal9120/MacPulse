@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   build-and-release:
-    runs-on: macos-14
+    # MacPulse targets macOS 26 and uses Swift 6, so it needs an Xcode 26
+    # toolchain. macos-26 is the runner that ships it (macos-14 + Xcode 15.4
+    # cannot compile this project).
+    runs-on: macos-26
     name: Build, Package & Publish DMG
     steps:
       - name: Checkout repository
@@ -30,8 +33,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app || true
+      - name: Select newest Xcode toolchain
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -n 1)"
+          [[ -n "$XCODE_APP" ]] && sudo xcode-select -s "$XCODE_APP"
+          xcodebuild -version
+
+      - name: Verify macOS 26 SDK is available
+        run: |
+          set -euo pipefail
+          SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
+          echo "macOS SDK: $SDK_VERSION"
+          if [[ "${SDK_VERSION%%.*}" -lt 26 ]]; then
+            echo "error: MacPulse requires the macOS 26 SDK (got $SDK_VERSION)" >&2
+            exit 1
+          fi
 
       - name: Build and Package Release DMG
         shell: bash

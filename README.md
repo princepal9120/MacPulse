@@ -70,12 +70,19 @@ curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts
 
 1. Download from [Releases](https://github.com/princepal9120/MacPulse/releases/latest)
 2. Drag MacPulse → Applications (or `~/Applications`)
-3. If macOS says “damaged”, run:
+3. macOS will warn because the build is not notarized. Pick one:
 
 ```sh
-xattr -cr ~/Applications/MacPulse.app
-# or: xattr -cr /Applications/MacPulse.app
+# Option A — clear the download quarantine flag (fastest)
+xattr -cr /Applications/MacPulse.app
+
+# Option B — GUI: right-click the app → Open → Open, or
+# System Settings → Privacy & Security → “Open Anyway”
 ```
+
+> Builds older than v1.0.0 (2026-09-14) are *unsigned* rather than ad-hoc
+> signed, so macOS reports “MacPulse is damaged” with no override. Re-download
+> the DMG or use the installer one-liner above.
 
 **Or build from source:**
 
