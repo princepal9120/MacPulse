@@ -53,6 +53,9 @@ public struct DiskFlameView: View {
                 .frame(minWidth: availableWidth, alignment: .topLeading)
                 .padding(8)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Flame chart for \(root.name.isEmpty ? "Root" : root.name)")
+            .accessibilityValue("Total \(FileManager.formatSize(root.size))")
         }
     }
 
@@ -101,6 +104,9 @@ public struct DiskFlameView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(item.name)
+        .accessibilityValue(FileManager.formatSize(item.size))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .simultaneousGesture(
             TapGesture(count: 2).onEnded {
                 onOpen(item)

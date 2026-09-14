@@ -131,6 +131,9 @@ struct DiskAgeMapView: View {
                 .font(.system(size: 9))
                 .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(month.start.formatted(.dateTime.month(.abbreviated).year()))
+        .accessibilityValue(month.bytes.formattedByteCount())
         .help("\(month.start.formatted(.dateTime.month(.abbreviated).year())) — \(month.bytes.formattedByteCount())")
     }
 

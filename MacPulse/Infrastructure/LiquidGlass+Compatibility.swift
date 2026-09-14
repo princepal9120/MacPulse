@@ -81,6 +81,22 @@ public struct VisualEffectView: NSViewRepresentable {
 }
 #endif
 
+// MARK: - Apple Design Motion Tokens (WWDC Fluid Interfaces)
+
+public extension Animation {
+    /// Critically damped spring (damping: 1.0, response: 0.32).
+    /// Apple default for sheets, tabs, cards, and state changes. Settles cleanly without bounce.
+    static var appleCriticallyDamped: Animation { .spring(response: 0.32, dampingFraction: 1.0) }
+
+    /// Momentum spring (damping: 0.8, response: 0.36).
+    /// Used for gesture releases, sliding indicators, and physical follow-through.
+    static var appleMomentum: Animation { .spring(response: 0.36, dampingFraction: 0.8) }
+
+    /// Snappy interactive spring (damping: 0.9, response: 0.22).
+    /// Used for button presses, toggles, and compact control state changes.
+    static var appleSnappy: Animation { .spring(response: 0.22, dampingFraction: 0.9) }
+}
+
 // MARK: - macOS 27 Shared Surfaces
 
 /// Consistent screen title bar: larger title, one-line subtitle, optional trailing action.
@@ -100,6 +116,7 @@ public struct ScreenHeader<Trailing: View>: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .tracking(-0.4)
                 if let subtitle {
                     Text(subtitle)
                         .font(.subheadline)
@@ -164,11 +181,27 @@ public extension View {
     func destructiveGlassButtonStyle() -> some View {
         self.buttonStyle(DestructiveGlassButtonStyle())
     }
+
+    /// Apple fluid interactive press feedback (immediate 0ms response on press)
+    func fluidPressFeedback() -> some View {
+        self.buttonStyle(AppleFluidPressButtonStyle())
+    }
+}
+
+public struct AppleFluidPressButtonStyle: ButtonStyle {
+    public init() {}
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .opacity(configuration.isPressed ? 0.88 : 1.0)
+            .animation(.appleSnappy, value: configuration.isPressed)
+    }
 }
 
 public struct DestructiveGlassButtonStyle: ButtonStyle {
     public init() {}
-    
+
     public func makeBody(configuration: Configuration) -> some View {
         DestructiveGlassButton(configuration: configuration)
     }
@@ -177,7 +210,7 @@ public struct DestructiveGlassButtonStyle: ButtonStyle {
 private struct DestructiveGlassButton: View {
     let configuration: ButtonStyle.Configuration
     @State private var isHovered = false
-    
+
     var body: some View {
         configuration.label
             .foregroundColor(.white)
@@ -194,7 +227,7 @@ private struct DestructiveGlassButton: View {
                     } else {
                         Color.clear.background(.ultraThinMaterial)
                     }
-                    
+
                     if isHovered {
                         Color.red.opacity(configuration.isPressed ? 0.35 : 0.2)
                     } else {
@@ -207,8 +240,9 @@ private struct DestructiveGlassButton: View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(isHovered ? Color.red.opacity(0.6) : Color.white.opacity(0.12), lineWidth: 1.5)
             )
-            .scaleEffect(isHovered ? 1.02 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: isHovered)
+            .scaleEffect(configuration.isPressed ? 0.97 : (isHovered ? 1.02 : 1.0))
+            .animation(.appleSnappy, value: configuration.isPressed)
+            .animation(.appleSnappy, value: isHovered)
             .onHover { hovering in
                 isHovered = hovering
             }

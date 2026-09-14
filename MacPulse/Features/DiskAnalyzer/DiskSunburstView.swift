@@ -138,6 +138,9 @@ public struct DiskSunburstView: View {
 
                 centerDisc(metrics: metrics)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Sunburst disk breakdown for \(root.name.isEmpty ? "root directory" : root.name)")
+            .accessibilityValue("\(FileManager.formatSize(root.size)), \(slices.count) sections visible")
         }
     }
 
@@ -174,6 +177,9 @@ public struct DiskSunburstView: View {
         .frame(width: metrics.innerRadius * 1.9, height: metrics.innerRadius * 1.9)
         .position(metrics.center)
         .allowsHitTesting(false)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Selected item: \(focus.name.isEmpty ? "Root" : focus.name)")
+        .accessibilityValue("\(FileManager.formatSize(focus.size))")
     }
 
     private struct Metrics {

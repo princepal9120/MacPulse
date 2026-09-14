@@ -3,10 +3,11 @@ import QuickLook
 
 public struct DiskAnalyzerView: View {
     let settings: AppSettings
-    @State private var viewModel = DiskAnalyzerViewModel()
+    @Bindable var viewModel: DiskAnalyzerViewModel
 
-    public init(settings: AppSettings) {
+    public init(settings: AppSettings, viewModel: DiskAnalyzerViewModel) {
         self.settings = settings
+        self.viewModel = viewModel
     }
 
     public var body: some View {
@@ -161,6 +162,10 @@ public struct DiskAnalyzerView: View {
                 .pickerStyle(.menu)
                 .controlSize(.small)
             }
+            // No scan data yet (scanning / error / prompt card is showing),
+            // so mode taps would silently do nothing. Dim + disable until then.
+            .disabled(viewModel.currentItem == nil)
+            .opacity(viewModel.currentItem == nil ? 0.45 : 1)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

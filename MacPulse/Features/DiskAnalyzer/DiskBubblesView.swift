@@ -94,6 +94,10 @@ public struct DiskBubblesView: View {
         }
         .position(bubble.center)
         .contentShape(Circle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(bubble.item.name)
+        .accessibilityValue(FileManager.formatSize(bubble.item.size))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .onTapGesture {
             onSelect(bubble.item)
         }

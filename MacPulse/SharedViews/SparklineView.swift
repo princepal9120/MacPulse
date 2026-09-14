@@ -23,5 +23,8 @@ struct SparklineView: View {
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
         .chartPlotStyle { $0.frame(minHeight: 24) }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("History sparkline")
+        .accessibilityValue(values.last.map { String(format: "%.1f", $0) } ?? "No data")
     }
 }

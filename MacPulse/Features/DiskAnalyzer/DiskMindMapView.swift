@@ -125,6 +125,10 @@ public struct DiskMindMapView: View {
         }
         .position(node.center)
         .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(node.item.name)
+        .accessibilityValue(FileManager.formatSize(node.item.size))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .onTapGesture {
             onSelect(node.item)
         }
