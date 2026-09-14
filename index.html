@@ -496,11 +496,11 @@
           <div class="pkg-card">
             <div class="pkg-card-head">
               <h3 class="pkg-card-title">macOS</h3>
-              <p class="pkg-card-subtitle">macOS 26.0 Tahoe or later</p>
+              <p class="pkg-card-subtitle">macOS 14.0 Sonoma or later</p>
             </div>
             <ul class="pkg-list">
               <li>
-                <a href="https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg" class="pkg-download-btn">
+                <a href="https://github.com/princepal9120/MacPulse/releases/latest/download/MacPulse-1.0.0.dmg" class="pkg-download-btn is-primary">
                   <span class="pkg-btn-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   </span>
@@ -536,24 +536,26 @@
               <h3 class="pkg-card-title">Terminal</h3>
               <p class="pkg-card-subtitle">Fastest automated install</p>
             </div>
-            <div class="pkg-snippet-block">
-              <span class="pkg-snippet-label">One-line script (clears quarantine)</span>
-              <div class="pkg-snippet-row">
-                <code>curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
-                <button type="button" class="pkg-copy-mini" data-copy="curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash" aria-label="Copy install script" title="Copy command">
-                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
+            <div class="pkg-snippet-list">
+              <div class="pkg-snippet-block">
+                <span class="pkg-snippet-label">One-line script (clears quarantine)</span>
+                <div class="pkg-snippet-row">
+                  <code>curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash</code>
+                  <button type="button" class="pkg-copy-mini" data-copy="curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash" aria-label="Copy install script" title="Copy command">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="pkg-snippet-block">
-              <span class="pkg-snippet-label">Homebrew Cask</span>
-              <div class="pkg-snippet-row">
-                <code>brew install princepal9120/tap/macpulse</code>
-                <button type="button" class="pkg-copy-mini" data-copy="brew install princepal9120/tap/macpulse" aria-label="Copy brew command" title="Copy command">
-                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
+              <div class="pkg-snippet-block">
+                <span class="pkg-snippet-label">Homebrew Cask</span>
+                <div class="pkg-snippet-row">
+                  <code>brew install princepal9120/tap/macpulse</code>
+                  <button type="button" class="pkg-copy-mini" data-copy="brew install princepal9120/tap/macpulse" aria-label="Copy brew command" title="Copy command">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -564,24 +566,26 @@
               <h3 class="pkg-card-title">Security &amp; Source</h3>
               <p class="pkg-card-subtitle">Community build without Apple notarization fee</p>
             </div>
-            <div class="pkg-snippet-block">
-              <span class="pkg-snippet-label">Unsigned DMG Gatekeeper fix</span>
-              <div class="pkg-snippet-row">
-                <code>xattr -cr /Applications/MacPulse.app</code>
-                <button type="button" class="pkg-copy-mini" data-copy="xattr -cr /Applications/MacPulse.app" aria-label="Copy xattr command" title="Copy command">
-                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
+            <div class="pkg-snippet-list">
+              <div class="pkg-snippet-block">
+                <span class="pkg-snippet-label">Unsigned DMG Gatekeeper fix</span>
+                <div class="pkg-snippet-row">
+                  <code>xattr -cr /Applications/MacPulse.app</code>
+                  <button type="button" class="pkg-copy-mini" data-copy="xattr -cr /Applications/MacPulse.app" aria-label="Copy xattr command" title="Copy command">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="pkg-snippet-block">
-              <span class="pkg-snippet-label">Build from source via Xcode</span>
-              <div class="pkg-snippet-row">
-                <code>xcodebuild -scheme MacPulse build</code>
-                <button type="button" class="pkg-copy-mini" data-copy="git clone https://github.com/princepal9120/MacPulse.git &amp;&amp; cd MacPulse &amp;&amp; xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build" aria-label="Copy build command" title="Copy command">
-                  <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
+              <div class="pkg-snippet-block">
+                <span class="pkg-snippet-label">Build from source via Xcode</span>
+                <div class="pkg-snippet-row">
+                  <code>xcodebuild -scheme MacPulse build</code>
+                  <button type="button" class="pkg-copy-mini" data-copy="git clone https://github.com/princepal9120/MacPulse.git &amp;&amp; cd MacPulse &amp;&amp; xcodebuild -project MacPulse/MacPulse.xcodeproj -scheme MacPulse -configuration Release build" aria-label="Copy build command" title="Copy command">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

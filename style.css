@@ -1019,7 +1019,7 @@ code, kbd, samp, pre {
 
 @media (min-width: 860px) {
   .pkg-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1035,6 +1035,7 @@ code, kbd, samp, pre {
   box-shadow: 0 4px 20px -4px oklch(0% 0 0 / 0.05);
   transition: all var(--dur-fast) var(--ease-out);
   height: 100%;
+  min-width: 0;
 }
 
 .pkg-card:hover {
@@ -1066,26 +1067,37 @@ code, kbd, samp, pre {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .pkg-download-btn {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-line-faint);
-  background-color: var(--color-paper-ivory);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-paper-sand);
   text-decoration: none;
   color: var(--color-ink-darkwarm);
   transition: all var(--dur-fast) var(--ease-out);
 }
 
 .pkg-download-btn:hover {
-  border-color: var(--color-line);
+  border-color: var(--color-brand);
   background-color: var(--color-surface-hover);
   transform: translateY(-1px);
+}
+
+.pkg-download-btn.is-primary {
+  background: linear-gradient(135deg, var(--color-paper-sand), oklch(58% 0.20 256 / 0.12));
+  border-color: oklch(58% 0.20 256 / 0.35);
+  box-shadow: 0 2px 8px -2px oklch(58% 0.20 256 / 0.25);
+}
+
+.pkg-download-btn.is-primary:hover {
+  border-color: var(--color-brand);
+  box-shadow: 0 4px 14px -2px oklch(58% 0.20 256 / 0.4);
 }
 
 .pkg-btn-icon {
@@ -1122,10 +1134,18 @@ code, kbd, samp, pre {
   font-variant-numeric: tabular-nums;
 }
 
+.pkg-snippet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
 .pkg-snippet-block {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .pkg-snippet-label {
@@ -1145,6 +1165,8 @@ code, kbd, samp, pre {
   border-radius: var(--radius-sm);
   padding: 8px 10px;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .pkg-snippet-row code {
@@ -1152,26 +1174,38 @@ code, kbd, samp, pre {
   color: var(--color-ink);
   overflow-x: auto;
   white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  scrollbar-width: none;
+}
+
+.pkg-snippet-row code::-webkit-scrollbar {
+  display: none;
 }
 
 .pkg-copy-mini {
-  background: none;
-  border: none;
+  background: oklch(100% 0 0 / 0.05);
+  border: 1px solid var(--color-line-faint, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-xs);
   color: var(--color-brand);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  padding: 4px 6px;
   flex-shrink: 0;
-  transition: opacity var(--dur-fast), color var(--dur-fast);
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
 .pkg-copy-mini:hover {
-  opacity: 0.7;
+  background: oklch(58% 0.20 256 / 0.15);
+  border-color: var(--color-brand);
+  transform: scale(1.05);
 }
 
 .pkg-copy-mini.is-copied {
+  background: oklch(70% 0.20 145 / 0.15);
+  border-color: var(--color-success);
   color: var(--color-success);
 }
 
@@ -1188,17 +1222,17 @@ code, kbd, samp, pre {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--color-ink-stone);
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: var(--radius-full);
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-border-card);
-  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.04);
+  background-color: var(--color-paper-sand);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 2px 8px oklch(0% 0 0 / 0.08);
   word-break: break-all;
   max-width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   transition: border-color var(--dur-fast), background-color var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
 }

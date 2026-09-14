@@ -7,7 +7,7 @@ cask "macpulse" do
   desc "Native macOS system cleaner and deep uninstaller"
   homepage "https://trymacpulse.pages.dev"
 
-  depends_on macos: ">= :tahoe"
+  depends_on macos: ">= :sonoma"
 
   app "MacPulse.app"
 
