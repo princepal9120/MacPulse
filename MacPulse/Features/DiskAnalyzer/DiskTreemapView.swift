@@ -177,6 +177,9 @@ public struct DiskTreemapView: View {
                     }
                 }
             )
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Disk treemap chart")
+            .accessibilityValue("\(tiles.count) sections visible")
         }
     }
 

@@ -62,7 +62,7 @@ public struct MonitorView: View {
             HStack(spacing: 4) {
                 ForEach(MonitorTab.allCases) { tab in
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { activeTab = tab }
+                        withAnimation(Animation.appleMomentum) { activeTab = tab }
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: tab.icon)
@@ -81,6 +81,8 @@ public struct MonitorView: View {
                         .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(tab.rawValue)
+                    .accessibilityAddTraits(activeTab == tab ? [.isSelected] : [])
                 }
             }
             .padding(4)
@@ -998,33 +1000,23 @@ public struct MonitorHUDView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header: Icon + Title + Updated status + Issues
+        VStack(alignment: .leading, spacing: 10) {
+            // Health score header + device chips (mole.fit style)
             headerRow
+            chipRow
 
-            // 2-Column Grid of 6 Compact Metric Cards
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            // 2-column tile grid
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
                 hudCPUCard
-                hudMemoryCard
                 hudGPUCard
-                hudPowerCard
+                hudMemoryCard
                 hudDiskCard
                 hudNetworkCard
+                hudFanCard
             }
 
-            // Battery Banner Card
             hudBatteryCard
-
-            if let privacyMonitor {
-                HStack(spacing: 6) {
-                    Image(systemName: privacyMonitor.cameraActive || privacyMonitor.micActive ? "eye.trianglebadge.exclamationmark" : "checkmark.shield")
-                    Text(privacyMonitor.cameraActive || privacyMonitor.micActive ? "Camera or microphone active" : "Privacy idle")
-                }
-                .font(.caption)
-                .foregroundStyle(privacyMonitor.cameraActive || privacyMonitor.micActive ? .red : .green)
-            }
-
-            // Top Processes Card
+            privacyRow
             hudTopProcessesCard
 
             DisclosureGroup(isExpanded: $showingFeatures) {
@@ -1046,359 +1038,370 @@ public struct MonitorHUDView: View {
             } label: {
                 Label("MacPulse Features", systemImage: "square.grid.2x2")
                     .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.white.opacity(0.8))
             }
-            .tint(.primary)
+            .tint(.white)
 
             // Footer bar: Open window & Quit
             hudFooterBar
         }
         .padding(14)
-        .frame(width: 360)
+        .frame(width: 380)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(red: 0.13, green: 0.12, blue: 0.10)))
         .task { viewModel.start() }
     }
 
-    // MARK: - Header Row
+    // MARK: - Mole-style helpers
+
+    private var issueCount: Int {
+        viewModel.anomalies.filter { $0.severity != "Optimal" }.count
+    }
+
+    private var healthScore: Int {
+        issueCount == 0 ? 100 : max(40, 100 - issueCount * 15)
+    }
+
+    private var osVersionShort: String {
+        let v = ProcessInfo.processInfo.operatingSystemVersion
+        return "macOS \(v.majorVersion).\(v.minorVersion)"
+    }
+
+    private func moleChip(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 9, weight: .medium, design: .monospaced))
+            .foregroundStyle(Color.white.opacity(0.65))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+            .lineLimit(1)
+    }
+
+    private func moleTile<Content: View>(
+        title: String,
+        icon: String,
+        tint: Color,
+        chip: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Label(title, systemImage: icon)
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(tint)
+                    .lineLimit(1)
+                Spacer(minLength: 2)
+                Text(chip)
+                    .font(.system(size: 8, weight: .medium, design: .monospaced))
+                    .foregroundStyle(Color.white.opacity(0.55))
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 2)
+                    .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    .lineLimit(1)
+            }
+            content()
+        }
+        .padding(10)
+        .background(Color.white.opacity(0.045), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func moleBar(_ fraction: Double, tint: Color) -> some View {
+        GeometryReader { geo in
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(Color.white.opacity(0.10))
+                .overlay(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(tint)
+                        .frame(width: geo.size.width * min(1, max(0, fraction)))
+                }
+        }
+        .frame(height: 4)
+    }
+
+    private var chipRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 5) {
+                moleChip(viewModel.metrics.macModel)
+                moleChip(Int64(viewModel.metrics.totalMemory).formattedByteCount())
+                moleChip(osVersionShort)
+                moleChip("up \(viewModel.metrics.uptimeFormatted)")
+                moleChip(viewModel.metrics.networkName)
+            }
+        }
+    }
+
+    private var privacyRow: some View {
+        Group {
+            if let privacyMonitor {
+                HStack(spacing: 6) {
+                    Image(systemName: privacyMonitor.cameraActive || privacyMonitor.micActive ? "eye.trianglebadge.exclamationmark" : "checkmark.shield")
+                    Text(privacyMonitor.cameraActive || privacyMonitor.micActive ? "Camera or microphone active" : "Privacy idle")
+                }
+                .font(.caption)
+                .foregroundStyle(privacyMonitor.cameraActive || privacyMonitor.micActive ? .red : .green)
+            }
+        }
+    }
+
+    // MARK: - Header Row (health score)
     private var headerRow: some View {
-        HStack {
-            MacPulseLogo(size: 26)
-            Text("MacPulse Monitor")
-                .font(.system(size: 13, weight: .bold))
+        HStack(spacing: 8) {
+            Image(systemName: healthScore == 100 ? "sun.max.fill" : "exclamationmark.triangle.fill")
+                .font(.system(size: 18))
+                .foregroundStyle(healthScore == 100 ? .green : .orange)
+            Text("\(healthScore)")
+                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+            Text(healthScore == 100 ? "All checks passed" : "\(issueCount) issue\(issueCount > 1 ? "s" : "") need attention")
+                .font(.system(size: 11))
+                .foregroundStyle(Color.white.opacity(0.6))
+                .lineLimit(2)
 
             Spacer()
 
-            Button {
-                Task { await viewModel.refresh() }
-            } label: {
-                Label(updatedLabel, systemImage: "arrow.clockwise")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.plain)
-            .help("Refresh metrics")
-
-            let anomalyCount = viewModel.anomalies.filter { $0.severity != "Optimal" }.count
-            if anomalyCount > 0 {
-                HStack(spacing: 4) {
-                    Image(systemName: "exclamationmark.triangle.fill")
+            VStack(alignment: .trailing, spacing: 2) {
+                Button {
+                    Task { await viewModel.refresh() }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
                         .font(.caption2)
-                    Text("\(anomalyCount) issue\(anomalyCount > 1 ? "s" : "")")
-                        .font(.caption2.bold())
+                        .foregroundStyle(Color.white.opacity(0.55))
                 }
-                .foregroundStyle(.orange)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.orange.opacity(0.12), in: Capsule())
+                .buttonStyle(.plain)
+                .help("Refresh metrics")
+                Text(updatedLabel)
+                    .font(.system(size: 8))
+                    .foregroundStyle(Color.white.opacity(0.35))
             }
         }
     }
 
     // MARK: - HUD CPU Card
     private var hudCPUCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("CPU", systemImage: "cpu")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.blue)
-                Spacer()
-                VStack(alignment: .trailing, spacing: 1) {
-                    Text(String(format: "%.1f%%", viewModel.metrics.cpuPercent))
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                    Text(String(format: "%.0f°C", viewModel.metrics.cpuTemp))
-                        .font(.system(size: 9))
-                        .foregroundStyle(.secondary)
-                }
+        moleTile(
+            title: "CPU",
+            icon: "cpu",
+            tint: .green,
+            chip: String(format: "%.0f°C", viewModel.metrics.cpuTemp)
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(String(format: "%.0f", viewModel.metrics.cpuPercent))
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("%")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("USER")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(String(format: "%.1f%%", viewModel.metrics.userPercent))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.cyan)
-                }
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("SYSTEM")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(String(format: "%.1f%%", viewModel.metrics.systemPercent))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.yellow)
-                }
-            }
-
-            DualSparklineView(
-                seriesA: viewModel.cpuHistory,
-                colorA: .cyan,
-                seriesB: viewModel.cpuHistory.map { $0 * 0.6 },
-                colorB: .yellow
-            )
-            .frame(height: 22)
+            SparklineView(values: viewModel.cpuHistory, color: .green)
+                .frame(height: 26)
+            Text("idle · Load \(String(format: "%.1f", viewModel.metrics.loadAverage.first ?? 0))/\(viewModel.metrics.activeProcessorCount)")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
     }
 
     // MARK: - HUD Memory Card
     private var hudMemoryCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("Memory", systemImage: "memorychip")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.purple)
-                Spacer()
-                Text(String(format: "%.0f%%", viewModel.metrics.memoryPercent))
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+        moleTile(
+            title: "MEM",
+            icon: "memorychip",
+            tint: .green,
+            chip: "PRS \(Int(viewModel.metrics.pressurePercent))%"
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(String(format: "%.0f", viewModel.metrics.memoryPercent))
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("%")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text(Int64(viewModel.metrics.usedMemory).formattedByteCount())
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.purple)
-                Text("used")
-                    .font(.system(size: 9))
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack {
-                Text("Pressure")
-                    .font(.system(size: 9))
-                    .foregroundStyle(.secondary)
-                Spacer()
-                HStack(spacing: 3) {
-                    Circle()
-                        .fill(viewModel.metrics.pressureState == "Critical" ? Color.red : (viewModel.metrics.pressureState == "Warning" ? Color.orange : Color.green))
-                        .frame(width: 5, height: 5)
-                    Text(viewModel.metrics.pressureState)
-                        .font(.system(size: 9, weight: .medium))
-                }
-            }
+            moleBar(viewModel.metrics.memoryPercent / 100, tint: .purple)
+                .padding(.vertical, 8)
+            Text("\(Int64(viewModel.metrics.freeMemory).formattedByteCount()) free · \(viewModel.metrics.pressureState)")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
     }
 
     // MARK: - HUD GPU Card
     private var hudGPUCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("GPU", systemImage: "square.grid.2x2.fill")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.indigo)
-                Spacer()
-                VStack(alignment: .trailing, spacing: 1) {
-                    Text(String(format: "%.0f%%", viewModel.metrics.gpuPercent))
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                    Text(String(format: "%.0f°C", viewModel.metrics.gpuTemp))
-                        .font(.system(size: 9))
-                        .foregroundStyle(.secondary)
-                }
+        moleTile(
+            title: "GPU",
+            icon: "square.grid.2x2.fill",
+            tint: .orange,
+            chip: String(format: "%.0f°C", viewModel.metrics.gpuTemp)
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(String(format: "%.0f", viewModel.metrics.gpuPercent))
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("%")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("MODEL")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(viewModel.metrics.gpuName.replacingOccurrences(of: "Apple ", with: ""))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.indigo)
-                        .lineLimit(1)
-                }
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("CORES")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text("\(viewModel.metrics.gpuCoreCount)")
-                        .font(.system(size: 10, weight: .bold))
-                }
-            }
-
-            SparklineView(values: viewModel.gpuHistory, color: .indigo, maxValue: 100)
-                .frame(height: 22)
+            SparklineView(values: viewModel.gpuHistory, color: .orange, maxValue: 100)
+                .frame(height: 26)
+            Text("idle · \(viewModel.metrics.gpuCoreCount) cores")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
     }
 
-    // MARK: - HUD Power Card
-    private var hudPowerCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("Power", systemImage: "bolt.fill")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.yellow)
-                Spacer()
-                Text(String(format: "%.0fW", viewModel.metrics.systemPowerWatts))
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+    // MARK: - HUD Fan Card
+    private var hudFanCard: some View {
+        moleTile(
+            title: "FAN",
+            icon: "fan.fill",
+            tint: .orange,
+            chip: thermalLabel
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("\(viewModel.metrics.fanRPM)")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("RPM")
+                    .font(.system(size: 9))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("CPU")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(String(format: "%.1fW", viewModel.metrics.cpuPowerWatts))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.cyan)
-                }
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("GPU")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(String(format: "%.1fW", viewModel.metrics.gpuPowerWatts))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.indigo)
-                }
-            }
-
-            SparklineView(values: viewModel.powerHistory, color: .blue)
-                .frame(height: 22)
+            .padding(.vertical, 8)
+            Text("Managed by macOS · \(String(format: "%.0fW", viewModel.metrics.systemPowerWatts))")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
+    }
+
+    private var thermalLabel: String {
+        switch viewModel.metrics.thermalState {
+        case .nominal: return "Nominal"
+        case .fair: return "Fair"
+        case .serious: return "Serious"
+        case .critical: return "Critical"
+        @unknown default: return "Nominal"
+        }
     }
 
     // MARK: - HUD Disk Card
     private var hudDiskCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("Disk", systemImage: "internaldrive")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.cyan)
-                Spacer()
-                let totalIO = viewModel.metrics.diskReadBytesPerSec + viewModel.metrics.diskWriteBytesPerSec
-                Text(totalIO > 1024 * 1024
-                     ? String(format: "%.1f MB/s", totalIO / (1024 * 1024))
-                     : String(format: "%.0f KB/s", totalIO / 1024))
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+        moleTile(
+            title: "Disk",
+            icon: "internaldrive",
+            tint: .blue,
+            chip: Int64(viewModel.metrics.totalDisk).formattedByteCount()
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(String(format: "%.0f", viewModel.metrics.diskPercent))
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("%")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("READ")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(formatShortRate(viewModel.metrics.diskReadBytesPerSec))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.cyan)
-                }
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("WRITE")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(formatShortRate(viewModel.metrics.diskWriteBytesPerSec))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.red)
-                }
-            }
-
-            DualSparklineView(
-                seriesA: viewModel.diskReadHistory,
-                colorA: .cyan,
-                seriesB: viewModel.diskWriteHistory,
-                colorB: .red
-            )
-            .frame(height: 22)
+            moleBar(viewModel.metrics.diskPercent / 100, tint: .blue)
+                .padding(.vertical, 8)
+            Text("\(Int64(viewModel.metrics.freeDisk).formattedByteCount()) free")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
     }
 
     // MARK: - HUD Network Card
     private var hudNetworkCard: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("Network", systemImage: "network")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.red)
-                Spacer()
-                let totalNet = viewModel.metrics.networkInBytesPerSec + viewModel.metrics.networkOutBytesPerSec
-                Text(totalNet > 1024 * 1024
-                     ? String(format: "%.1f MB/s", totalNet / (1024 * 1024))
-                     : String(format: "%.0f KB/s", totalNet / 1024))
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+        let totalNet = viewModel.metrics.networkInBytesPerSec + viewModel.metrics.networkOutBytesPerSec
+        return moleTile(
+            title: "Network",
+            icon: "network",
+            tint: .blue,
+            chip: viewModel.metrics.networkName
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(formatShortRate(totalNet).components(separatedBy: " ").first ?? "0")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text(formatShortRate(totalNet).components(separatedBy: " ").dropFirst().joined(separator: " "))
+                    .font(.system(size: 9))
+                    .foregroundStyle(Color.white.opacity(0.5))
             }
-
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("DOWN")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(formatShortRate(viewModel.metrics.networkInBytesPerSec))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.green)
-                }
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("UP")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(formatShortRate(viewModel.metrics.networkOutBytesPerSec))
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.pink)
-                }
-            }
-
             DualSparklineView(
                 seriesA: viewModel.networkInHistory,
                 colorA: .green,
                 seriesB: viewModel.networkOutHistory,
-                colorB: .pink
+                colorB: .blue
             )
-            .frame(height: 22)
+            .frame(height: 26)
+            Text("↓ \(formatShortRate(viewModel.metrics.networkInBytesPerSec)) · ↑ \(formatShortRate(viewModel.metrics.networkOutBytesPerSec))")
+                .font(.system(size: 8, design: .monospaced))
+                .foregroundStyle(Color.white.opacity(0.45))
+                .lineLimit(1)
         }
-        .padding(10)
-        .glassCard(cornerRadius: 12)
     }
 
     // MARK: - Battery Banner Card
     private var hudBatteryCard: some View {
-        HStack {
-            Image(systemName: viewModel.metrics.battery.isCharging ? "battery.100.bolt" : "battery.75")
-                .foregroundStyle(.green)
-                .font(.system(size: 14))
-
-            Text("Battery")
-                .font(.system(size: 11, weight: .bold))
-
-            Spacer()
-
-            HStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Image(systemName: viewModel.metrics.battery.isCharging ? "powerplug.fill" : "bolt.fill")
-                        .font(.system(size: 10))
-                    Text(viewModel.metrics.battery.isCharging ? "Plugged In" : "On Battery")
-                        .font(.system(size: 10, weight: .semibold))
+        let battery = viewModel.metrics.battery
+        let timeText: String? = {
+            if battery.isCharging, let mins = battery.timeToFullMinutes {
+                return "Full in \(mins / 60)h \(mins % 60)m"
+            } else if !battery.isCharging, let mins = battery.timeToEmptyMinutes {
+                return "\(mins / 60)h \(mins % 60)m remaining"
+            }
+            return nil
+        }()
+        return VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Label("BATTERY", systemImage: "battery.100")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.green)
+                    .lineLimit(1)
+                Spacer()
+                if let health = battery.healthPercent {
+                    Text("\(Int(health))% Health")
+                        .font(.system(size: 8, weight: .medium, design: .monospaced))
+                        .foregroundStyle(.green)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                        .lineLimit(1)
                 }
-                .foregroundStyle(.secondary)
-
-                Text("\(Int(viewModel.metrics.battery.percentage))%")
-                    .font(.system(size: 12, weight: .bold))
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("\(Int(battery.percentage))%")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text(battery.isCharging ? "Plugged In" : "On Battery")
+                    .font(.system(size: 10))
+                    .foregroundStyle(Color.white.opacity(0.5))
+            }
+            if let timeText {
+                Text(timeText)
+                    .font(.system(size: 8, design: .monospaced))
+                    .foregroundStyle(Color.white.opacity(0.45))
             }
         }
         .padding(10)
-        .glassCard(cornerRadius: 12)
+        .background(Color.white.opacity(0.045), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     // MARK: - Top Processes Card
     private var hudTopProcessesCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Label("Top Processes", systemImage: "list.bullet.rectangle")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(.orange)
-
+                Label("TOP PROCESSES", systemImage: "chart.bar.fill")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(Color.white.opacity(0.55))
                 Spacer()
-
-                Button {
-                    processSortMode = (processSortMode == "CPU") ? "Memory" : "CPU"
-                } label: {
-                    Text("by \(processSortMode)")
-                        .font(.caption2.bold())
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
+                Text("CPU")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundStyle(processSortMode == "CPU" ? Color.white.opacity(0.8) : Color.white.opacity(0.3))
+                    .onTapGesture { processSortMode = "CPU" }
+                Text("Memory")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundStyle(processSortMode == "Memory" ? Color.white.opacity(0.8) : Color.white.opacity(0.3))
+                    .onTapGesture { processSortMode = "Memory" }
             }
 
             let procs = processSortMode == "CPU"
@@ -1408,30 +1411,32 @@ public struct MonitorHUDView: View {
             if procs.isEmpty {
                 Text("Collecting...")
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.white.opacity(0.4))
                     .padding(.vertical, 4)
             } else {
-                VStack(spacing: 4) {
+                VStack(spacing: 5) {
                     ForEach(procs) { p in
                         HStack {
                             Text(p.name)
                                 .font(.system(size: 11, weight: .medium))
+                                .foregroundStyle(Color.white.opacity(0.9))
                                 .lineLimit(1)
-                            Spacer()
-                            if processSortMode == "CPU" {
-                                Text(String(format: "%.1f%%", p.cpuPercent))
-                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
-                            } else {
-                                Text(p.memoryFormatted)
-                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
-                            }
+                            Spacer(minLength: 8)
+                            Text(String(format: "%.1f%%", p.cpuPercent))
+                                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                .foregroundStyle(Color.white.opacity(0.55))
+                                .frame(width: 48, alignment: .trailing)
+                            Text(p.memoryFormatted)
+                                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                .foregroundStyle(Color.white.opacity(0.55))
+                                .frame(width: 72, alignment: .trailing)
                         }
                     }
                 }
             }
         }
         .padding(10)
-        .glassCard(cornerRadius: 12)
+        .background(Color.white.opacity(0.045), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     // MARK: - Footer Bar
@@ -1445,7 +1450,7 @@ public struct MonitorHUDView: View {
             } label: {
                 Label("Open", systemImage: "macwindow")
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.white.opacity(0.6))
             }
             .buttonStyle(.plain)
             .help("Open MacPulse Dashboard")
@@ -1457,7 +1462,7 @@ public struct MonitorHUDView: View {
             } label: {
                 Label("Quit", systemImage: "power")
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.red.opacity(0.9))
             }
             .buttonStyle(.plain)
             .help("Quit MacPulse")

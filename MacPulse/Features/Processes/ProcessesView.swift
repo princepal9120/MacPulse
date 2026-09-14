@@ -69,6 +69,7 @@ public struct ProcessesView: View {
                     }
                 }
             }
+            .accessibilityLabel("processes_tooltip_blacklist".localized)
             .help("processes_tooltip_blacklist".localized)
         }
 
@@ -82,6 +83,7 @@ public struct ProcessesView: View {
                     }
                 }
             }
+            .accessibilityLabel("processes_tooltip_whitelist".localized)
             .help("processes_tooltip_whitelist".localized)
         }
 
@@ -89,6 +91,7 @@ public struct ProcessesView: View {
             Button(action: { Task { await viewModel.scan() } }) {
                 Image(systemName: "arrow.clockwise")
             }
+            .accessibilityLabel("processes_tooltip_refresh".localized)
             .help("processes_tooltip_refresh".localized)
         }
     }
@@ -102,6 +105,7 @@ public struct ProcessesView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .accessibilityElement(children: .combine)
 
             Spacer(minLength: 16)
 

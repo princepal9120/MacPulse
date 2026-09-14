@@ -14,13 +14,17 @@ struct RingGaugeView: View {
                 .trim(from: 0, to: max(0.015, CGFloat(min(100, max(0, percent))) / 100))
                 .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.4), value: percent)
+                .animation(Animation.appleMomentum, value: percent)
             VStack(spacing: 2) {
                 Image(systemName: icon).font(.caption2).foregroundStyle(color)
                 Text("\(Int(percent.rounded()))%")
                     .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .monospacedDigit()
                     .minimumScaleFactor(0.7)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(icon)")
+        .accessibilityValue("\(Int(percent.rounded())) percent")
     }
 }

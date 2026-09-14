@@ -11,6 +11,7 @@ struct RootView: View {
     @Bindable var updatePrompt: UpdatePromptController
     @Binding var availableUpdate: AvailableUpdate?
     @State private var onboarding = OnboardingController()
+    @State private var diskAnalyzerViewModel = DiskAnalyzerViewModel()
 
     private var currentVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "version_unknown".localized
@@ -25,7 +26,7 @@ struct RootView: View {
         .overlay {
             GlassOverlayView(manager: GlassOverlayManager.shared)
         }
-        .frame(minWidth: 1080, minHeight: 700)
+        .frame(minWidth: 860, minHeight: 580)
         .environment(\.locale, appSettings.language.locale)
         .environment(\.onboardingActive, onboarding.isPresented)
         .sheet(isPresented: $onboarding.isPresented) {
@@ -110,8 +111,8 @@ struct RootView: View {
         .listStyle(.sidebar)
         .padding(.leading, 8)
         .scrollContentBackground(.hidden)
-        // Keep labels readable when macOS restores a narrow previous window.
-        .navigationSplitViewColumnWidth(min: 240, ideal: 252, max: 300)
+        // Responsive sidebar column width for compact and full-sized windows.
+        .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 280)
         .safeAreaInset(edge: .top, spacing: 0) { brandLockup }
         .safeAreaInset(edge: .bottom, spacing: 0) { sidebarStatusStrip }
         // Rebuild so every `.localized` row matches the selected language.
@@ -269,7 +270,7 @@ struct RootView: View {
         case .cleanup:
             CleanupView(viewModel: cleanupViewModel)
         case .diskSpace:
-            DiskAnalyzerView(settings: appSettings)
+            DiskAnalyzerView(settings: appSettings, viewModel: diskAnalyzerViewModel)
         case .duplicates:
             DuplicatesView()
         case .processes:

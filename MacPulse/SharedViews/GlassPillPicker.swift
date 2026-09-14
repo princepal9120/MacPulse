@@ -10,6 +10,7 @@ struct GlassPillPicker<T: Hashable>: View {
     let label: (T) -> String
 
     @Environment(\.locale) private var locale
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(
         items: [T],
@@ -35,11 +36,15 @@ struct GlassPillPicker<T: Hashable>: View {
 
     private func pillRow(horizontalPadding: CGFloat) -> some View {
         HStack(spacing: 2) {
-            ForEach(items, id: \.self) { item in
+            ForEach(items, id: \.self) { (item: T) in
                 let isSelected = selection == item
                 Button {
-                    withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
+                    if reduceMotion {
                         selection = item
+                    } else {
+                        withAnimation(Animation.appleMomentum) {
+                            selection = item
+                        }
                     }
                 } label: {
                     HStack(spacing: 5) {
@@ -63,6 +68,8 @@ struct GlassPillPicker<T: Hashable>: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(label(item))
+                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
         .padding(4)

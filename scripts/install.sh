@@ -27,7 +27,12 @@ ditto "$MNT/MacPulse.app" "$DEST/MacPulse.app"
 hdiutil detach "$MNT" >/dev/null
 
 # Unsigned GitHub builds get quarantine; clear so Gatekeeper won’t say “damaged”.
-/usr/bin/xattr -cr "$DEST/MacPulse.app"
+# `xattr -cr` is recursive on stock macOS; fall back to a per-file clear so a
+# stricter xattr implementation can never abort the install (set -e).
+if ! /usr/bin/xattr -cr "$DEST/MacPulse.app" 2>/dev/null; then
+  /usr/bin/find "$DEST/MacPulse.app" -exec /usr/bin/xattr -c {} \; 2>/dev/null || true
+fi
+/usr/bin/xattr -d com.apple.quarantine "$DEST/MacPulse.app" 2>/dev/null || true
 
 echo "Done. Opening MacPulse…"
 open "$DEST/MacPulse.app"

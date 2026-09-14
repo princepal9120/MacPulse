@@ -73,6 +73,7 @@ public struct DuplicatesView: View {
                             .foregroundColor(.secondary)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Clear search")
                 }
             }
             .padding(.horizontal, 8)

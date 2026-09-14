@@ -27,9 +27,16 @@ struct DashboardView: View {
                     )
 
                     // Layer 1 — hero: disk usage + stat tiles.
-                    HStack(spacing: 20) {
-                        diskUsageCard
-                        rightColumn
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 20) {
+                            diskUsageCard
+                            rightColumn
+                        }
+                        VStack(spacing: 16) {
+                            diskUsageCard
+                            rightColumn
+                                .frame(maxWidth: .infinity)
+                        }
                     }
 
                     // Layer 2 — live performance sparklines.
@@ -38,19 +45,31 @@ struct DashboardView: View {
                     }
 
                     // Layer 3 — detail: processes, privacy, recent ops.
-                    HStack(alignment: .top, spacing: 20) {
-                        if let monitorVM = monitorViewModel {
-                            DashboardTopProcessesCard(viewModel: monitorVM)
-                                .frame(maxWidth: .infinity)
-                        }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 20) {
+                            if let monitorVM = monitorViewModel {
+                                DashboardTopProcessesCard(viewModel: monitorVM)
+                                    .frame(maxWidth: .infinity)
+                            }
 
+                            VStack(spacing: 16) {
+                                if let privacy = privacyMonitor {
+                                    DashboardPrivacyCard(viewModel: privacy)
+                                }
+                                recentOperationsSection
+                            }
+                            .frame(maxWidth: monitorViewModel != nil ? 420 : .infinity)
+                        }
                         VStack(spacing: 16) {
+                            if let monitorVM = monitorViewModel {
+                                DashboardTopProcessesCard(viewModel: monitorVM)
+                                    .frame(maxWidth: .infinity)
+                            }
                             if let privacy = privacyMonitor {
                                 DashboardPrivacyCard(viewModel: privacy)
                             }
                             recentOperationsSection
                         }
-                        .frame(maxWidth: monitorViewModel != nil ? 420 : .infinity)
                     }
                 }
                 .padding(.horizontal, 20)

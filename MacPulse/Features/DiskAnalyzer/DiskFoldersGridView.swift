@@ -109,6 +109,10 @@ public struct DiskFoldersGridView: View {
             .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(item.name), \(item.isDirectory ? "folder" : "file")")
+        .accessibilityValue(FileManager.formatSize(item.size))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .simultaneousGesture(
             TapGesture(count: 2).onEnded {
                 onOpen(item)

@@ -160,6 +160,10 @@ public struct DiskTopSizesView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(item.name), rank \(index)")
+        .accessibilityValue("\(FileManager.formatSize(item.size))")
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .simultaneousGesture(
             TapGesture(count: 2).onEnded {
                 onOpen(item)

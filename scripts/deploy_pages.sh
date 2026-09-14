@@ -7,7 +7,7 @@ cd "$ROOT_DIR"
 
 echo "Syncing website artifacts to .pages-dist..."
 mkdir -p .pages-dist
-cp index.html style.css tokens.css .pages-dist/
+cp -f index.html style.css tokens.css favicon.ico favicon.png apple-touch-icon.png .pages-dist/
 cp -r assets .pages-dist/
 
 echo "Deploying to Cloudflare Pages (project: trymacpulse)..."
