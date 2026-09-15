@@ -186,10 +186,14 @@ public final class CleanupItemManager {
     // MARK: - Expansion
 
     public func toggleCategoryExpansion(_ categoryId: UUID) {
-        if expandedCategoryIds.contains(categoryId) {
-            expandedCategoryIds.remove(categoryId)
-        } else {
+        setCategoryExpansion(categoryId, isExpanded: !expandedCategoryIds.contains(categoryId))
+    }
+
+    public func setCategoryExpansion(_ categoryId: UUID, isExpanded: Bool) {
+        if isExpanded {
             expandedCategoryIds.insert(categoryId)
+        } else {
+            expandedCategoryIds.remove(categoryId)
         }
     }
 

@@ -1,10 +1,48 @@
 import Foundation
 import Observation
 import OSLog
-import AppKit
 
 private extension Logger {
     static let coordinator = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.macpulse", category: "CleanupCoordinator")
+}
+
+/// Serializes engine events for SwiftUI and applies backpressure before the
+/// producer can create an unbounded main-actor backlog.
+private final class CleanupEventBuffer: @unchecked Sendable {
+    let stream: AsyncStream<CleanupEngineEvent>
+
+    private let continuation: AsyncStream<CleanupEngineEvent>.Continuation
+    private let permits: DispatchSemaphore
+
+    init(capacity: Int = 512) {
+        let pair = AsyncStream<CleanupEngineEvent>.makeStream(
+            bufferingPolicy: .bufferingOldest(capacity)
+        )
+        stream = pair.stream
+        continuation = pair.continuation
+        permits = DispatchSemaphore(value: capacity)
+    }
+
+    func yield(_ event: CleanupEngineEvent) {
+        permits.wait()
+        switch continuation.yield(event) {
+        case .enqueued:
+            break
+        case .dropped, .terminated:
+            // Do not leak a permit if the stream was closed during cancellation.
+            permits.signal()
+        @unknown default:
+            permits.signal()
+        }
+    }
+
+    func markConsumed() {
+        permits.signal()
+    }
+
+    func finish() {
+        continuation.finish()
+    }
 }
 
 @Observable
@@ -78,20 +116,30 @@ public final class CleanupCoordinator: @unchecked Sendable {
                 self.isLogFlushScheduled = false
                 self.skippedItems = []
                 
-                // Close running apps before scan for better cache cleanup
-                await self.closeRunningApps()
-                
                 let categories = options.scanCategories()
                 
-                _ = try await self.engine.scan(categories: categories, options: options) { [weak self] event in
+                let eventBuffer = CleanupEventBuffer()
+                let eventConsumer = Task { @MainActor [weak self] in
                     guard let self else { return }
-                    Task { @MainActor in
+                    for await event in eventBuffer.stream {
+                        eventBuffer.markConsumed()
                         self.handleEngineEvent(event)
                     }
                 }
-                
-                // Allow final main-actor logs to process, then flush
-                try? await Task.sleep(for: .milliseconds(100))
+
+                do {
+                    _ = try await self.engine.scan(categories: categories, options: options) { event in
+                        // AsyncStream.Continuation is thread-safe. Yielding here
+                        // avoids creating one MainActor task per filesystem event.
+                        eventBuffer.yield(event)
+                    }
+                } catch {
+                    eventBuffer.finish()
+                    await eventConsumer.value
+                    throw error
+                }
+                eventBuffer.finish()
+                await eventConsumer.value
                 self.flushLogs()
 
                 // Review-only groups stay opt-in (never auto-selected).
@@ -125,9 +173,6 @@ public final class CleanupCoordinator: @unchecked Sendable {
         currentTask?.cancel()
         currentTask = Task {
             do {
-                // Close running apps before cleanup
-                await self.closeRunningApps()
-
                 try self.stateMachine.transition(to: .executing)
                 self.totalFreedMB = 0
                 self.totalFreedBytes = 0
@@ -151,15 +196,27 @@ public final class CleanupCoordinator: @unchecked Sendable {
                 var records: [OperationRecord] = []
                 var hadPartialFailure = false
 
-                let results = try await self.engine.run(categories: safeCategories, dryRun: false, options: options) { [weak self] event in
+                let eventBuffer = CleanupEventBuffer()
+                let eventConsumer = Task { @MainActor [weak self] in
                     guard let self else { return }
-                    Task { @MainActor in
+                    for await event in eventBuffer.stream {
+                        eventBuffer.markConsumed()
                         self.handleEngineEvent(event)
                     }
                 }
 
-                // Allow final main-actor logs to process, then flush
-                try? await Task.sleep(for: .milliseconds(100))
+                let results: [CleanupEngineResult]
+                do {
+                    results = try await self.engine.run(categories: safeCategories, dryRun: false, options: options) { event in
+                        eventBuffer.yield(event)
+                    }
+                } catch {
+                    eventBuffer.finish()
+                    await eventConsumer.value
+                    throw error
+                }
+                eventBuffer.finish()
+                await eventConsumer.value
                 self.flushLogs()
 
                 for result in results {
@@ -245,8 +302,11 @@ public final class CleanupCoordinator: @unchecked Sendable {
                     ))
                 }
 
-                let transaction = CleanupTransaction(id: UUID(), timestamp: Date(), operations: records)
-                try await self.journal.log(transaction: transaction)
+                let totalFreed = records.reduce(0) { $0 + $1.bytesFreed }
+                if totalFreed > 0 {
+                    let transaction = CleanupTransaction(id: UUID(), timestamp: Date(), operations: records)
+                    try await self.journal.log(transaction: transaction)
+                }
 
                 if !self.skippedItems.isEmpty || hadPartialFailure {
                     let skippedList = self.skippedItems.map { "\($0.label) (\($0.reason))" }.joined(separator: ", ")
@@ -414,50 +474,6 @@ public final class CleanupCoordinator: @unchecked Sendable {
         }
     }
 
-    @MainActor
-    private func closeRunningApps() async {
-        let appsToClose = NSWorkspace.shared.runningApplications.filter { app in
-            app.activationPolicy == .regular &&
-            app.bundleIdentifier != Bundle.main.bundleIdentifier &&
-            !(app.bundleIdentifier ?? "").hasPrefix("com.apple.")
-        }
-
-        for app in appsToClose {
-            app.terminate()
-        }
-
-        do {
-            try await Task.sleep(for: .seconds(3))
-        } catch {
-            Logger.coordinator.warning("Sleep interrupted during app termination")
-        }
-
-        let safetyPolicy = ProcessSafetyPolicy()
-        for app in appsToClose {
-            if !app.isTerminated {
-                let process = RunningProcess(
-                    pid: app.processIdentifier,
-                    name: app.localizedName ?? "Unknown",
-                    path: app.bundleURL?.path,
-                    user: nil,
-                    cpuPercent: 0,
-                    memoryBytes: 0,
-                    threadCount: 0,
-                    startTime: nil,
-                    parentPID: 0,
-                    bundleID: app.bundleIdentifier
-                )
-                let permission = safetyPolicy.isKillable(process)
-                if case .allowed = permission {
-                    app.forceTerminate()
-                    Logger.coordinator.info("Force terminated: \(app.localizedName ?? "Unknown")")
-                } else if case .blocked(let reason) = permission {
-                    Logger.coordinator.warning("Skipped force terminate for protected process: \(app.localizedName ?? "Unknown") - \(reason)")
-                }
-            }
-        }
-    }
-    
     @MainActor
     private func handleEngineEvent(_ event: CleanupEngineEvent) {
         switch event {
