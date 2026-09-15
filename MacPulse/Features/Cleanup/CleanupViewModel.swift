@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 import OSLog
-import AppKit
 
 @Observable
 public final class CleanupViewModel {
@@ -64,25 +63,6 @@ public final class CleanupViewModel {
     }
 
     @MainActor
-    public func closeRunningApps() async {
-        let appsToClose = NSWorkspace.shared.runningApplications.filter { app in
-            app.activationPolicy == .regular &&
-            app.bundleIdentifier != Bundle.main.bundleIdentifier &&
-            !(app.bundleIdentifier ?? "").hasPrefix("com.apple.")
-        }
-
-        for app in appsToClose {
-            app.terminate()
-        }
-
-        try? await Task.sleep(for: .seconds(3))
-
-        for app in appsToClose {
-            app.forceTerminate()
-        }
-    }
-
-    @MainActor
     public func reset() {
         coordinator.reset()
         options = CleanupOptions()
@@ -102,6 +82,10 @@ public final class CleanupViewModel {
 
     public func toggleCategoryExpansion(_ categoryId: UUID) {
         itemManager.toggleCategoryExpansion(categoryId)
+    }
+
+    public func setCategoryExpansion(_ categoryId: UUID, isExpanded: Bool) {
+        itemManager.setCategoryExpansion(categoryId, isExpanded: isExpanded)
     }
 
     public func showAllItems(_ categoryId: UUID) {

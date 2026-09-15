@@ -22,6 +22,17 @@ struct PermissionsView: View {
             .frame(width: 480)
             .fixedSize(horizontal: false, vertical: true)
         }
+        .task {
+            while !Task.isCancelled && !permissionsManager.hasFullDiskAccess {
+                try? await Task.sleep(for: .milliseconds(1000))
+                await MainActor.run {
+                    permissionsManager.refresh()
+                    if permissionsManager.hasFullDiskAccess {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Header
@@ -114,29 +125,53 @@ struct PermissionsView: View {
     // MARK: - Buttons
 
     private var actionButtons: some View {
-        HStack(spacing: 12) {
-            Button {
-                permissionsManager.openFullDiskAccessSettings()
-            } label: {
-                Label("permissions_open_settings".localized, systemImage: "gear")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 28)
-            }
-            .glassButtonStyle()
-            .controlSize(.large)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Button {
+                    permissionsManager.openFullDiskAccessSettings()
+                } label: {
+                    Label("permissions_open_settings".localized, systemImage: "gear")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 28)
+                }
+                .glassButtonStyle()
+                .controlSize(.large)
 
-            Button {
-                permissionsManager.refresh()
-            } label: {
-                Label("permissions_check_status".localized, systemImage: "arrow.clockwise")
-                    .font(.subheadline)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 28)
+                Button {
+                    permissionsManager.revealAppInFinder()
+                } label: {
+                    Label("permissions_show_in_finder".localized, systemImage: "folder.badge.gearshape")
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 28)
+                }
+                .glassButtonStyle()
+                .controlSize(.large)
+                .help("permissions_finder_tip".localized)
+
+                Button {
+                    permissionsManager.refresh()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.subheadline)
+                        .frame(width: 28, height: 28)
+                }
+                .glassButtonStyle()
+                .controlSize(.large)
+                .help("permissions_check_status".localized)
             }
-            .glassButtonStyle()
-            .controlSize(.large)
+
+            HStack(spacing: 6) {
+                Image(systemName: "lock.shield.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.green)
+                Text("permissions_privacy_note".localized)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 4)
         }
     }
 

@@ -992,3 +992,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Доступ до папок";
+"onboarding_folders_sub" = "Пошук старих резервних копій у папках Desktop, Downloads і Documents.";
+"onboarding_folders_body" = "Лише перегляд: MacPulse не видаляє файли з цих папок без вашого явного підтвердження.";
+"onboarding_folders_grant" = "Надати доступ до папок";
+"onboarding_folders_granted" = "Доступ надано";
+"onboarding_folders_denied" = "Не надано — цю папку буде пропущено";
+"onboarding_folders_optional" = "Необовʼязково — доступ можна надати пізніше у налаштуваннях.";

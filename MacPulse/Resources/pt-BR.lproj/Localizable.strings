@@ -959,3 +959,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Acesso a pastas";
+"onboarding_folders_sub" = "Encontrar backups antigos em Desktop, Downloads e Documentos.";
+"onboarding_folders_body" = "Somente revisão: o MacPulse nunca exclui arquivos dessas pastas sem sua confirmação explícita.";
+"onboarding_folders_grant" = "Permitir acesso às pastas";
+"onboarding_folders_granted" = "Concedido";
+"onboarding_folders_denied" = "Não concedido — esta pasta será ignorada";
+"onboarding_folders_optional" = "Opcional — você pode conceder acesso depois nos Ajustes.";

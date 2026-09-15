@@ -78,11 +78,16 @@ class DashboardViewModel: ObservableObject {
     private func fetchHistory() async {
         do {
             let allTransactions = try await journal.loadAll()
-            recentTransactions = Array(allTransactions.reversed().prefix(5))
+            // Prefer transactions that freed space; exclude empty 0-byte stubs when real records exist
+            let positiveTransactions = allTransactions.filter { transaction in
+                transaction.operations.reduce(0) { $0 + $1.bytesFreed } > 0
+            }
+            let displayList = positiveTransactions.isEmpty ? allTransactions : positiveTransactions
+            recentTransactions = Array(displayList.reversed().prefix(5))
             totalFreedBytes = allTransactions.reduce(0) { sum, transaction in
                 sum + transaction.operations.reduce(0) { $0 + $1.bytesFreed }
             }
-            cleanupCount = allTransactions.count
+            cleanupCount = positiveTransactions.isEmpty ? allTransactions.count : positiveTransactions.count
         } catch {
             Logger.dashboard.error("Failed to load history: \(error.localizedDescription, privacy: .public)")
         }
@@ -145,7 +150,7 @@ class DashboardViewModel: ObservableObject {
         let otherUsed = max(0, usedDiskSpace - identifiedSum)
 
         var items: [DiskCategoryItem] = []
-        if caches > 0 {
+        if caches >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_caches".localized,
                 bytes: caches,
@@ -154,7 +159,7 @@ class DashboardViewModel: ObservableObject {
                 iconName: "archivebox.fill"
             ))
         }
-        if logs > 0 {
+        if logs >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_logs".localized,
                 bytes: logs,
@@ -163,7 +168,7 @@ class DashboardViewModel: ObservableObject {
                 iconName: "doc.text.fill"
             ))
         }
-        if dev > 0 {
+        if dev >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_dev".localized,
                 bytes: dev,
@@ -172,7 +177,7 @@ class DashboardViewModel: ObservableObject {
                 iconName: "hammer.fill"
             ))
         }
-        if apps > 0 {
+        if apps >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_apps".localized,
                 bytes: apps,
@@ -181,7 +186,7 @@ class DashboardViewModel: ObservableObject {
                 iconName: "app.badge.fill"
             ))
         }
-        if media > 0 {
+        if media >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_media".localized,
                 bytes: media,
@@ -190,7 +195,7 @@ class DashboardViewModel: ObservableObject {
                 iconName: "photo.stack.fill"
             ))
         }
-        if otherUsed > 0 {
+        if otherUsed >= 0 {
             items.append(DiskCategoryItem(
                 label: "dashboard_radar_other".localized,
                 bytes: otherUsed,

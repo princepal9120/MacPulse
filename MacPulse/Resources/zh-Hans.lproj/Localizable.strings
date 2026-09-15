@@ -959,3 +959,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "文件夹访问权限";
+"onboarding_folders_sub" = "在桌面、下载和文稿文件夹中查找旧备份。";
+"onboarding_folders_body" = "仅查看：未经您的明确确认，MacPulse 绝不会删除这些文件夹中的文件。";
+"onboarding_folders_grant" = "授予文件夹访问权限";
+"onboarding_folders_granted" = "已授予";
+"onboarding_folders_denied" = "未授予 — 将跳过此文件夹";
+"onboarding_folders_optional" = "可选 — 稍后可在设置中授予访问权限。";

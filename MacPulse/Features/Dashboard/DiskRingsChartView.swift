@@ -50,24 +50,27 @@ public struct DiskRingsChartView: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             cardHeader
-            
-            Spacer(minLength: 0)
-            
-            HStack(alignment: .center, spacing: 24) {
-                legendGrid
-                    .frame(width: 250)
-                
-                Spacer()
-                
-                ringsChart
-                    .frame(width: 270, height: 270)
-                
-                Spacer()
+
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .center, spacing: 20) {
+                    legendGrid
+                        .frame(minWidth: 200, maxWidth: 260)
+
+                    Spacer(minLength: 8)
+
+                    ringsChart(size: 240)
+
+                    Spacer(minLength: 0)
+                }
+
+                VStack(spacing: 16) {
+                    ringsChart(size: 220)
+                        .frame(maxWidth: .infinity)
+                    legendGrid
+                        .frame(maxWidth: .infinity)
+                }
             }
-            
-            Spacer(minLength: 0)
         }
-        .frame(maxHeight: .infinity)
     }
     
     // MARK: - Card Header
@@ -119,85 +122,81 @@ public struct DiskRingsChartView: View {
     }
     
     // MARK: - Rings Chart
-    
-    private var ringsChart: some View {
-        GeometryReader { geo in
-            let size = min(geo.size.width, geo.size.height)
-            let centerHoleRadius: CGFloat = 28
-            let availableRadius = (size / 2) - centerHoleRadius
-            let ringCount = CGFloat(max(1, sortedItems.count))
-            let spacing: CGFloat = 3.0
-            let ringWidth = max(10, min(30, (availableRadius - spacing * ringCount) / ringCount))
-            
-            ZStack {
-                // Center Interactive Text
-                VStack(spacing: 1) {
-                    if let hovered = hoveredItem {
-                        let pctString = formattedCategoryPercent(for: hovered.bytes)
-                        Text(pctString)
-                            .font(.system(size: 22, weight: .bold, design: .rounded))
-                            .foregroundColor(hovered.color)
-                            .transition(.opacity)
-                        Text(hovered.label)
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: centerHoleRadius * 1.7)
-                            .transition(.opacity)
-                    } else {
-                        Text("\(usedPercent)%")
-                            .font(.system(size: 22, weight: .bold, design: .rounded))
-                            .foregroundColor(.primary)
-                            .transition(.opacity)
-                        Text("dashboard_used".localized)
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: centerHoleRadius * 1.7)
-                            .transition(.opacity)
-                    }
+
+    private func ringsChart(size: CGFloat = 240) -> some View {
+        let centerHoleRadius: CGFloat = 28
+        let availableRadius = max(10, (size / 2) - centerHoleRadius)
+        let ringCount = CGFloat(max(1, sortedItems.count))
+        let spacing: CGFloat = 3.0
+        let ringWidth = max(8, min(26, (availableRadius - spacing * ringCount) / ringCount))
+
+        return ZStack {
+            // Center Interactive Text
+            VStack(spacing: 1) {
+                if let hovered = hoveredItem {
+                    let pctString = formattedCategoryPercent(for: hovered.bytes)
+                    Text(pctString)
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .foregroundColor(hovered.color)
+                        .transition(.opacity)
+                    Text(hovered.label)
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: centerHoleRadius * 1.7)
+                        .transition(.opacity)
+                } else {
+                    Text("\(usedPercent)%")
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                        .transition(.opacity)
+                    Text("dashboard_used".localized)
+                        .font(.system(size: 9))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: centerHoleRadius * 1.7)
+                        .transition(.opacity)
                 }
-                .animation(.easeInOut(duration: 0.15), value: hoveredID)
-                
-                // Concentric Activity Rings
-                ForEach(Array(sortedItems.enumerated()), id: \.element.id) { index, item in
-                    let radius = (size / 2) - CGFloat(index) * (ringWidth + spacing) - ringWidth / 2
-                    let progress = totalUsed > 0 ? max(0.015, Double(item.bytes) / Double(totalUsed)) : 0.0
-                    let isHovered = hoveredID == item.id
-                    let isDimmed = hoveredID != nil && !isHovered
-                    
-                    ZStack {
-                        // Background Track
-                        Circle()
-                            .stroke(item.color.opacity(0.12), lineWidth: ringWidth)
-                        
-                        // Progress Arc
-                        Circle()
-                            .trim(from: 0, to: CGFloat(progress))
-                            .stroke(
-                                LinearGradient(colors: item.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing),
-                                style: StrokeStyle(lineWidth: ringWidth, lineCap: .round)
-                            )
-                            .rotationEffect(.degrees(-90))
-                            .shadow(color: isHovered ? item.color.opacity(0.65) : item.color.opacity(0.15), radius: isHovered ? 5 : 1, x: 0, y: 1)
-                    }
-                    .frame(width: max(10, radius * 2), height: max(10, radius * 2))
-                    .opacity(isDimmed ? 0.35 : 1.0)
-                    .scaleEffect(isHovered ? 1.03 : 1.0)
-                    .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isHovered)
-                    .contentShape(Circle().stroke(lineWidth: ringWidth + 4))
-                    .onHover { hover in
-                        withAnimation(.easeInOut(duration: 0.15)) {
-                            hoveredID = hover ? item.id : nil
-                        }
+            }
+            .animation(.easeInOut(duration: 0.15), value: hoveredID)
+
+            // Concentric Activity Rings
+            ForEach(Array(sortedItems.enumerated()), id: \.element.id) { index, item in
+                let radius = (size / 2) - CGFloat(index) * (ringWidth + spacing) - ringWidth / 2
+                let progress = totalUsed > 0 ? max(0.015, Double(item.bytes) / Double(totalUsed)) : 0.0
+                let isHovered = hoveredID == item.id
+                let isDimmed = hoveredID != nil && !isHovered
+
+                ZStack {
+                    // Background Track
+                    Circle()
+                        .stroke(item.color.opacity(0.12), lineWidth: ringWidth)
+
+                    // Progress Arc
+                    Circle()
+                        .trim(from: 0, to: CGFloat(progress))
+                        .stroke(
+                            LinearGradient(colors: item.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing),
+                            style: StrokeStyle(lineWidth: ringWidth, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                        .shadow(color: isHovered ? item.color.opacity(0.65) : item.color.opacity(0.15), radius: isHovered ? 5 : 1, x: 0, y: 1)
+                }
+                .frame(width: max(10, radius * 2), height: max(10, radius * 2))
+                .opacity(isDimmed ? 0.35 : 1.0)
+                .scaleEffect(isHovered ? 1.03 : 1.0)
+                .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isHovered)
+                .contentShape(Circle().stroke(lineWidth: ringWidth + 4))
+                .onHover { hover in
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        hoveredID = hover ? item.id : nil
                     }
                 }
             }
-            .frame(width: size, height: size)
-            .position(x: geo.size.width / 2, y: geo.size.height / 2)
         }
+        .frame(width: size, height: size)
     }
     
     // MARK: - Legend Grid (Single Column Left Layout)

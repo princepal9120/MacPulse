@@ -959,3 +959,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "フォルダへのアクセス";
+"onboarding_folders_sub" = "デスクトップ・ダウンロード・書類から古いバックアップを検索します。";
+"onboarding_folders_body" = "確認のみ：明示的な確認なしにこれらのフォルダ内のファイルを削除することはありません。";
+"onboarding_folders_grant" = "フォルダアクセスを許可";
+"onboarding_folders_granted" = "許可済み";
+"onboarding_folders_denied" = "未許可 — このフォルダはスキップされます";
+"onboarding_folders_optional" = "任意 — 後から設定で許可できます。";

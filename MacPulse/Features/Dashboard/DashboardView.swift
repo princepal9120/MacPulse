@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import AppKit
 
 struct DashboardView: View {
     @StateObject private var viewModel: DashboardViewModel
@@ -28,19 +29,33 @@ struct DashboardView: View {
 
                     // Layer 1 — hero: disk usage + stat tiles.
                     ViewThatFits(in: .horizontal) {
-                        HStack(spacing: 20) {
+                        // Wide layout: Disk usage hero on left, right column (Stats + System Info) on right
+                        HStack(alignment: .top, spacing: 20) {
                             diskUsageCard
+                                .frame(minWidth: 500)
                             rightColumn
                         }
+                        // Compact / minimized window layout: Disk usage hero on top, Stats + System Info side-by-side below
                         VStack(spacing: 16) {
                             diskUsageCard
-                            rightColumn
-                                .frame(maxWidth: .infinity)
+                            HStack(alignment: .top, spacing: 16) {
+                                statsCard
+                                    .frame(minWidth: 200)
+                                systemInfoCard
+                                    .frame(minWidth: 200)
+                            }
+                        }
+                        // Narrow fallback: stacked
+                        VStack(spacing: 16) {
+                            diskUsageCard
+                            statsCard
+                            systemInfoCard
                         }
                     }
 
                     // Layer 2 — live performance sparklines.
                     if let monitorVM = monitorViewModel {
+                        MemoryHealthCard(viewModel: monitorVM)
                         DashboardLiveMonitorSection(viewModel: monitorVM)
                     }
 
@@ -121,18 +136,16 @@ struct DashboardView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, minHeight: 260)
             } else {
                 DiskRingsChartView(
                     items: viewModel.diskCategories,
                     totalUsed: viewModel.usedDiskSpace,
                     totalDisk: viewModel.totalDiskSpace
                 )
-                .frame(maxHeight: .infinity)
             }
         }
         .padding()
-        .frame(maxHeight: .infinity)
         .glassCard()
     }
     
@@ -218,27 +231,61 @@ struct TransactionRow: View {
         transaction.operations.reduce(0) { $0 + $1.bytesFreed }
     }
 
+    var operationsSummary: String {
+        let items = transaction.operations
+            .filter { $0.bytesFreed > 0 }
+            .map { $0.itemPath }
+        if items.isEmpty {
+            let all = transaction.operations.map { $0.itemPath }
+            if let first = all.first {
+                return all.count > 1 ? "\(first) +\(all.count - 1)" : first
+            }
+            return "System Maintenance"
+        }
+        if items.count == 1 {
+            return items[0]
+        } else if items.count == 2 {
+            return "\(items[0]), \(items[1])"
+        } else {
+            return "\(items[0]), \(items[1]) +\(items.count - 2)"
+        }
+    }
+
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: totalFreed > 0 ? "checkmark.circle.fill" : "sparkles")
                 .font(.title3)
-                .foregroundColor(.green)
+                .foregroundColor(totalFreed > 0 ? .green : .secondary)
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(transaction.timestamp.formatted(.dateTime.year().month().day().locale(LanguageManager.shared.currentLocale)))
+                Text(operationsSummary)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                Text(transaction.timestamp.formatted(.dateTime.hour().minute().locale(LanguageManager.shared.currentLocale)))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(transaction.timestamp.formatted(.dateTime.year().month().day().locale(LanguageManager.shared.currentLocale)))
+                    Text("·")
+                    Text(transaction.timestamp.formatted(.dateTime.hour().minute().locale(LanguageManager.shared.currentLocale)))
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
             }
 
             Spacer()
 
-            Text(String(format: "dashboard_freed_prefix".localized, totalFreed.formattedByteCount()))
-                .font(.system(.subheadline, design: .rounded, weight: .bold))
-                .foregroundColor(.green)
+            if totalFreed > 0 {
+                Text(String(format: "dashboard_freed_prefix".localized, totalFreed.formattedByteCount()))
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                    .foregroundColor(.green)
+            } else {
+                Text("Clean")
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.secondary.opacity(0.12), in: Capsule())
+            }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 8)
@@ -575,6 +622,100 @@ struct DashboardLiveMonitorSection: View {
         } else {
             return String(format: "%.0f KB/s", bytesPerSec / 1024)
         }
+    }
+}
+
+// MARK: - Plain-language memory help
+struct MemoryHealthCard: View {
+    @ObservedObject var viewModel: MonitorViewModel
+    @State private var showingSteps = false
+
+    private var isElevated: Bool {
+        viewModel.metrics.pressureState != "Normal"
+    }
+
+    private var tint: Color {
+        viewModel.metrics.pressureState == "Critical" ? .red : .orange
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: isElevated ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(isElevated ? tint : .green)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(isElevated ? "Your Mac needs more room to work" : "Your Mac has enough memory")
+                        .font(.headline)
+                    Text(isElevated
+                         ? "Memory is getting full. Apps may slow down or show warnings."
+                         : "MacPulse will show you what to close if memory gets low.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 0)
+
+                Text("\(Int(viewModel.metrics.memoryPercent))% used")
+                    .font(.caption.bold())
+                    .foregroundStyle(isElevated ? tint : .green)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background((isElevated ? tint : .green).opacity(0.12), in: Capsule())
+            }
+
+            if isElevated {
+                Button(showingSteps ? "Hide steps" : "Show me what to do") {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showingSteps.toggle()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(tint)
+
+                if showingSteps {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Try these steps:")
+                            .font(.subheadline.weight(.semibold))
+                        Text("1. Close apps you are not using.")
+                        Text("2. If the warning returns, restart the app using the most memory.")
+                        Text("3. If it still returns, save your work and restart your Mac.")
+
+                        if !viewModel.topProcessesByMemory.isEmpty {
+                            Text("Apps using the most memory")
+                                .font(.subheadline.weight(.semibold))
+                                .padding(.top, 4)
+
+                            ForEach(viewModel.topProcessesByMemory.prefix(3)) { process in
+                                HStack {
+                                    Text(process.name)
+                                    Spacer()
+                                    Text(process.memoryFormatted)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .font(.caption)
+                            }
+                        }
+
+                        Button("Open Activity Monitor") {
+                            NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"))
+                        }
+                        .buttonStyle(.link)
+                        .padding(.top, 2)
+                    }
+                    .font(.subheadline)
+                    .padding(.leading, 36)
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassCard()
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(isElevated
+            ? "Memory warning. Your Mac needs more room to work."
+            : "Memory is healthy.")
     }
 }
 

@@ -959,3 +959,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Accesso alle cartelle";
+"onboarding_folders_sub" = "Trova i vecchi backup in Desktop, Download e Documenti.";
+"onboarding_folders_body" = "Solo revisione: MacPulse non elimina mai i file di queste cartelle senza la tua conferma esplicita.";
+"onboarding_folders_grant" = "Consenti accesso alle cartelle";
+"onboarding_folders_granted" = "Concesso";
+"onboarding_folders_denied" = "Non concesso — questa cartella verrà ignorata";
+"onboarding_folders_optional" = "Facoltativo — puoi concedere l'accesso in seguito nelle Impostazioni.";

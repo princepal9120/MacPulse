@@ -995,3 +995,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Доступ к папкам";
+"onboarding_folders_sub" = "Поиск старых резервных копий в папках Desktop, Downloads и Documents.";
+"onboarding_folders_body" = "Только просмотр: MacPulse не удаляет файлы из этих папок без вашего явного подтверждения.";
+"onboarding_folders_grant" = "Разрешить доступ к папкам";
+"onboarding_folders_granted" = "Доступ разрешён";
+"onboarding_folders_denied" = "Не разрешено — эта папка будет пропущена";
+"onboarding_folders_optional" = "Необязательно — доступ можно выдать позже в настройках.";

@@ -57,8 +57,8 @@ private enum OnboardingStep: Int, CaseIterable {
 struct OnboardingView: View {
     @Bindable var permissionsManager: PermissionsManager
     @Bindable var onboarding: OnboardingController
+    var onStartFirstScan: (() -> Void)? = nil
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dismiss) private var dismiss
 
     @State private var step: OnboardingStep = .welcome
 
@@ -73,11 +73,27 @@ struct OnboardingView: View {
             .frame(width: 520)
             .fixedSize(horizontal: false, vertical: true)
         }
-        .onAppear { permissionsManager.refresh() }
+        .onAppear {
+            permissionsManager.refresh()
+        }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             permissionsManager.refresh()
             if permissionsManager.hasFullDiskAccess, step == .permissions {
-                withAnimation(.easeInOut(duration: 0.25)) { step = .ready }
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { step = .ready }
+            }
+        }
+        .task(id: step) {
+            guard step == .permissions else { return }
+            while !Task.isCancelled && !permissionsManager.hasFullDiskAccess {
+                try? await Task.sleep(for: .milliseconds(1000))
+                await MainActor.run {
+                    permissionsManager.refresh()
+                    if permissionsManager.hasFullDiskAccess {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                            step = .ready
+                        }
+                    }
+                }
             }
         }
     }
@@ -248,68 +264,122 @@ struct OnboardingView: View {
     }
 
     private var permissionsCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 14) {
-                Image(systemName: "externaldrive.badge.checkmark")
-                    .font(.title2)
-                    .foregroundColor(permissionsManager.hasFullDiskAccess ? .green : .orange)
+        VStack(alignment: .leading, spacing: 12) {
+            if permissionsManager.hasFullDiskAccess {
+                HStack(spacing: 14) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.green)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text("permissions.full_disk_access".localized)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("permissions_status_active_banner".localized)
                             .font(.headline)
-                        Spacer()
-                        Text(permissionsManager.hasFullDiskAccess
-                              ? "permissions_status_granted".localized
-                              : "permissions_status_required".localized)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(
-                                (permissionsManager.hasFullDiskAccess ? Color.green : Color.orange).opacity(0.12),
-                                in: Capsule()
-                            )
+                            .foregroundColor(.primary)
+                        Text("onboarding_ready_fda_ok".localized)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    Text("permissions_fda_description".localized)
-                        .font(.caption)
+                    Spacer(minLength: 0)
+                }
+                .padding(14)
+                .glassCard(cornerRadius: 12)
+            } else {
+                // Scan depth comparison
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label("permissions_scan_depth_standard".localized, systemImage: "bolt")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Text("permissions_scan_depth_standard_sub".localized)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Label("permissions_scan_depth_deep".localized, systemImage: "sparkles")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.accentColor)
+                            Spacer(minLength: 0)
+                            Text("Recommended")
+                                .font(.system(size: 9, weight: .bold))
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(Color.accentColor.opacity(0.18), in: Capsule())
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        Text("permissions_scan_depth_deep_sub".localized)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.accentColor.opacity(0.25), lineWidth: 1))
+                }
+
+                // Instructions
+                VStack(alignment: .leading, spacing: 8) {
+                    instructionStep(1, "permissions_step1".localized)
+                    instructionStep(2, "permissions_step2".localized)
+                    instructionStep(3, "permissions_step3".localized)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassCard(cornerRadius: 10)
+
+                // Action buttons
+                HStack(spacing: 10) {
+                    Button {
+                        permissionsManager.openFullDiskAccessSettings()
+                    } label: {
+                        Label("permissions_open_settings".localized, systemImage: "gear")
+                            .font(.subheadline.weight(.medium))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 28)
+                    }
+                    .glassButtonStyle()
+                    .controlSize(.large)
+
+                    Button {
+                        permissionsManager.revealAppInFinder()
+                    } label: {
+                        Label("permissions_show_in_finder".localized, systemImage: "folder.badge.gearshape")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 28)
+                    }
+                    .glassButtonStyle()
+                    .controlSize(.large)
+                    .help("permissions_finder_tip".localized)
+
+                    Button {
+                        permissionsManager.refresh()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.subheadline)
+                            .frame(width: 28, height: 28)
+                    }
+                    .glassButtonStyle()
+                    .controlSize(.large)
+                    .help("permissions_check_status".localized)
+                }
+
+                // Privacy guarantee note
+                HStack(spacing: 6) {
+                    Image(systemName: "lock.shield.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                    Text("permissions_privacy_note".localized)
+                        .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
-            }
-            .padding(14)
-            .glassCard(cornerRadius: 12)
-
-            VStack(alignment: .leading, spacing: 10) {
-                instructionStep(1, "permissions_step1".localized)
-                instructionStep(2, "permissions_step2".localized)
-                instructionStep(3, "permissions_step3".localized)
-                instructionStep(4, "permissions_step4".localized)
-            }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 12)
-
-            HStack(spacing: 12) {
-                Button {
-                    permissionsManager.openFullDiskAccessSettings()
-                } label: {
-                    Label("permissions_open_settings".localized, systemImage: "gear")
-                        .font(.subheadline.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 28)
-                }
-                .glassButtonStyle()
-                .controlSize(.large)
-
-                Button {
-                    permissionsManager.refresh()
-                } label: {
-                    Label("permissions_check_status".localized, systemImage: "arrow.clockwise")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 28)
-                }
-                .glassButtonStyle()
-                .controlSize(.large)
+                .padding(.horizontal, 4)
             }
         }
     }
@@ -329,9 +399,9 @@ struct OnboardingView: View {
     private var readyCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
-                Image(systemName: permissionsManager.hasFullDiskAccess ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
+                Image(systemName: permissionsManager.hasFullDiskAccess ? "checkmark.seal.fill" : "sparkles")
                     .font(.title2)
-                    .foregroundStyle(permissionsManager.hasFullDiskAccess ? .green : .orange)
+                    .foregroundStyle(permissionsManager.hasFullDiskAccess ? .green : Color.accentColor)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(permissionsManager.hasFullDiskAccess
                           ? "onboarding_ready_fda_ok".localized
@@ -346,6 +416,18 @@ struct OnboardingView: View {
             }
             .padding(14)
             .glassCard(cornerRadius: 12)
+
+            HStack(spacing: 12) {
+                Image(systemName: "bolt.badge.checkmark.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.accentColor)
+                Text(permissionsManager.hasFullDiskAccess ? "permissions_scan_depth_deep_sub".localized : "permissions_scan_depth_standard_sub".localized)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .glassCard(cornerRadius: 10)
         }
     }
 
@@ -354,9 +436,13 @@ struct OnboardingView: View {
     private var footerBar: some View {
         HStack {
             if step != .welcome {
-                Button("onboarding_back".localized) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        step = OnboardingStep(rawValue: step.rawValue - 1) ?? .welcome
+                Button(step == .ready ? "onboarding_explore_dashboard".localized : "onboarding_back".localized) {
+                    if step == .ready {
+                        finish(startScan: false)
+                    } else {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            step = OnboardingStep(rawValue: step.rawValue - 1) ?? .welcome
+                        }
                     }
                 }
                 .buttonStyle(.plain)
@@ -364,7 +450,7 @@ struct OnboardingView: View {
                 .foregroundStyle(.secondary)
             } else {
                 Button("onboarding_skip".localized) {
-                    finish()
+                    finish(startScan: false)
                 }
                 .buttonStyle(.plain)
                 .font(.caption)
@@ -376,10 +462,17 @@ struct OnboardingView: View {
             Button {
                 advance()
             } label: {
-                Text(primaryButtonTitle)
-                    .font(.subheadline.weight(.semibold))
-                    .frame(minWidth: 120)
-                    .frame(height: 28)
+                if step == .ready {
+                    Label("onboarding_start_first_scan".localized, systemImage: "sparkles")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minWidth: 140)
+                        .frame(height: 28)
+                } else {
+                    Text(primaryButtonTitle)
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minWidth: 120)
+                        .frame(height: 28)
+                }
             }
             .glassButtonStyle()
             .controlSize(.large)
@@ -396,13 +489,13 @@ struct OnboardingView: View {
             return permissionsManager.hasFullDiskAccess
                 ? "onboarding_continue".localized
                 : "onboarding_continue_without".localized
-        case .ready: return "onboarding_open_thismac".localized
+        case .ready: return "onboarding_start_first_scan".localized
         }
     }
 
     private func advance() {
         if step == .ready {
-            finish()
+            finish(startScan: true)
             return
         }
         withAnimation(.easeInOut(duration: 0.25)) {
@@ -410,9 +503,11 @@ struct OnboardingView: View {
         }
     }
 
-    private func finish() {
+    private func finish(startScan: Bool = false) {
         onboarding.complete()
-        dismiss()
+        if startScan {
+            onStartFirstScan?()
+        }
     }
 }
 
