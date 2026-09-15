@@ -758,6 +758,21 @@ struct CleanupEngineTests {
 
     // MARK: - CleanupItemManager selection totals
 
+    @Test("Category expansion setter applies the requested state")
+    func categoryExpansionSetterIsIdempotent() {
+        let manager = CleanupItemManager()
+        let categoryID = UUID()
+
+        manager.setCategoryExpansion(categoryID, isExpanded: true)
+        #expect(manager.expandedCategoryIds.contains(categoryID))
+
+        manager.setCategoryExpansion(categoryID, isExpanded: true)
+        #expect(manager.expandedCategoryIds.count == 1)
+
+        manager.setCategoryExpansion(categoryID, isExpanded: false)
+        #expect(!manager.expandedCategoryIds.contains(categoryID))
+    }
+
     @Test("Selected size deduplicates the same path across categories")
     func selectedSizeDeduplicatesPaths() {
         let manager = CleanupItemManager()

@@ -28,10 +28,11 @@ public struct CleanupView: View {
                     content
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                Divider()
-                
-                footer
+
+                if shouldShowFooter {
+                    Divider()
+                    footer
+                }
             }
             .background {
                 if viewModel.state == .scanning || viewModel.state == .executing {
@@ -83,122 +84,162 @@ public struct CleanupView: View {
         }
     }
     
+    private var shouldShowFooter: Bool {
+        viewModel.state == .preview || (viewModel.settings.isDebugMode && !viewModel.scriptLogs.isEmpty && viewModel.state != .failed)
+    }
+
     @ViewBuilder
     private var idleView: some View {
         @Bindable var vm = viewModel
-        
+
         ScrollView {
-            VStack(spacing: 28) {
-                // Hero
-                VStack(spacing: 6) {
-                    HStack(spacing: 8) {
+            VStack(spacing: 24) {
+                ScreenHeader(
+                    "menu_cleanup".localized,
+                    subtitle: "cleanup_subtitle".localized
+                )
+
+                // Hero action card
+                VStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.accentColor.opacity(0.12))
+                            .frame(width: 54, height: 54)
+
                         Image(systemName: "sparkles")
-                            .font(.system(size: 22, weight: .semibold))
-                            .foregroundStyle(.tint)
-                        
-                        Text("cleanup_ready".localized)
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundStyle(Color.accentColor)
                     }
-                    
-                    Text("cleanup_ready_sub".localized)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 420)
+
+                    VStack(spacing: 4) {
+                        Text("cleanup_ready".localized)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .tracking(-0.4)
+
+                        Text("cleanup_ready_sub".localized)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: 440)
+                    }
+
+                    Button(action: { viewModel.startScan() }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "sparkles")
+                            Text("cleanup_start_scan".localized)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(minWidth: 220, minHeight: 32)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .fluidPressFeedback()
+                    .padding(.top, 4)
                 }
-                .padding(.top, 16)
-                
+                .padding(.vertical, 24)
+                .padding(.horizontal, 28)
+                .frame(maxWidth: .infinity)
+                .glassCard(cornerRadius: 16)
+
                 // Options card
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("cleanup_additional_options".localized)
+                VStack(alignment: .leading, spacing: 14) {
+                    Label("cleanup_additional_options".localized, systemImage: "slider.horizontal.3")
                         .font(.headline)
-                    
+
                     optionToggle(
+                        icon: "doc.badge.gearshape",
                         title: "cleanup_option_ds_store".localized,
                         subtitle: "cleanup_option_ds_store_sub".localized,
                         value: $vm.options.cleanDSStore
                     )
-                    
+
+                    Divider()
+
                     optionToggle(
+                        icon: "clock.arrow.circlepath",
                         title: "cleanup_option_tm_snapshots".localized,
                         subtitle: "cleanup_option_tm_snapshots_sub".localized,
                         value: $vm.options.cleanTimeMachineSnapshots
                     )
-                    
+
+                    Divider()
+
                     DisclosureGroup(
                         isExpanded: $isExtendedOptionsExpanded,
                         content: {
                             VStack(alignment: .leading, spacing: 14) {
                                 optionToggle(
+                                    icon: "icloud",
                                     title: "cleanup_option_cloud_docs".localized,
                                     subtitle: "cleanup_option_cloud_docs_sub".localized,
                                     value: $vm.options.cleanCloudDocs
                                 )
                                 optionToggle(
+                                    icon: "mic",
                                     title: "cleanup_option_voice_memos".localized,
                                     subtitle: "cleanup_option_voice_memos_sub".localized,
                                     value: $vm.options.cleanVoiceMemos
                                 )
                                 optionToggle(
+                                    icon: "waveform",
                                     title: "cleanup_option_garageband_logic".localized,
                                     subtitle: "cleanup_option_garageband_logic_sub".localized,
                                     value: $vm.options.cleanGarageBandLogic
                                 )
                                 optionToggle(
+                                    icon: "film",
                                     title: "cleanup_option_imovie_final_cut".localized,
                                     subtitle: "cleanup_option_imovie_final_cut_sub".localized,
                                     value: $vm.options.cleanIMovieFinalCut
                                 )
                                 optionToggle(
+                                    icon: "moon.zzz",
                                     title: "cleanup_option_sleep_image".localized,
                                     subtitle: "cleanup_option_sleep_image_sub".localized,
                                     value: $vm.options.cleanSleepImage
                                 )
                             }
-                            .padding(.leading, 20)
+                            .padding(.leading, 8)
                             .padding(.top, 8)
                         },
                         label: {
                             HStack {
-                                Text("cleanup_extended_title".localized)
+                                Label("cleanup_extended_title".localized, systemImage: "ellipsis.circle")
+                                    .font(.subheadline.weight(.medium))
                                 Spacer()
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                withAnimation {
+                                withAnimation(.appleCriticallyDamped) {
                                     isExtendedOptionsExpanded.toggle()
                                 }
                             }
                         }
                     )
                 }
-                .padding()
-                .glassCard(cornerRadius: 12)
-                
-                // Start button
-                Button(action: { viewModel.startScan() }) {
-                    Text("cleanup_start_scan".localized)
-                        .font(.headline)
-                        .frame(maxWidth: 280)
-                        .frame(height: 32)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                
-                Spacer()
+                .padding(20)
+                .frame(maxWidth: .infinity)
+                .glassCard(cornerRadius: 16)
             }
-            .frame(maxWidth: 680)
             .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .frame(maxWidth: 720)
             .frame(maxWidth: .infinity)
         }
     }
-    
-    private func optionToggle(title: String, subtitle: String, value: Binding<Bool>) -> some View {
-        HStack {
+
+    private func optionToggle(icon: String? = nil, title: String, subtitle: String, value: Binding<Bool>) -> some View {
+        HStack(spacing: 12) {
+            if let icon {
+                Image(systemName: icon)
+                    .font(.system(size: 15))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, alignment: .center)
+            }
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.subheadline)
+                    .fontWeight(.medium)
                 Text(subtitle)
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -552,9 +593,6 @@ public struct CleanupView: View {
                     .foregroundColor(.secondary)
             }
             .contentShape(Rectangle())
-            .onTapGesture {
-                viewModel.toggleCategoryExpansion(category.id)
-            }
         }
         .padding(.vertical, 4)
     }
@@ -562,10 +600,9 @@ public struct CleanupView: View {
     // MARK: - Category DisclosureGroup
 
     private func categoryDisclosureGroup(for category: CleanupPreviewItem) -> some View {
-        let isExpanded = viewModel.isExpanded(category.id)
         return DisclosureGroup(isExpanded: Binding(
-            get: { isExpanded },
-            set: { _ in viewModel.toggleCategoryExpansion(category.id) }
+            get: { viewModel.isExpanded(category.id) },
+            set: { viewModel.setCategoryExpansion(category.id, isExpanded: $0) }
         )) {
             ForEach(viewModel.visibleItems(for: category.id)) { item in
                 CleanupFileRow(item: item, settings: viewModel.settings) {

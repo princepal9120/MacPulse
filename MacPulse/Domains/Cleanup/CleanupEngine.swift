@@ -1,6 +1,8 @@
 import Foundation
+import AppKit
 import OSLog
 import CoreServices
+import AppKit
 
 private extension Logger {
     static let engine = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.macpulse", category: "CleanupEngine")
@@ -204,7 +206,12 @@ public actor CleanupEngine {
         var results: [CleanupEngineResult] = []
         let total = categories.count
 
-        let maxConcurrency = dryRun ? ProcessInfo.processInfo.activeProcessorCount : 1
+        // Cleanup scans are filesystem-bound. Matching CPU core count can create
+        // too many simultaneous directory walks and make the whole machine
+        // unresponsive, especially when the dashboard is also sampling disk use.
+        let maxConcurrency = dryRun
+            ? min(3, max(1, ProcessInfo.processInfo.activeProcessorCount))
+            : 1
 
         var pending = Array(categories.enumerated())
         var completedCount = 0
@@ -699,12 +706,23 @@ extension CleanupEngine {
         // shared / app_data / user_content never enter this executor.
         let paths = resolvedEmbeddedPaths(for: category)
         progress?(.log("Scanning \(label) (\(paths.count) paths)..."))
+
+        // Live-profile guard: never touch caches owned by running apps
+        // (Chromium/Electron apps crash when their caches are deleted underneath them).
+        let guardCategories: [CleanupCategory] = [.browserCaches, .appCaches]
+        let runningIDs = guardCategories.contains(category) ? await runningBundleIDs() : []
+
         var totalFreed: Int64 = 0
         var removed = 0
         var skipped = 0
         var failed = 0
         for path in paths {
             try Task.checkCancellation()
+            if let owner = runningAppOwning(path: path, runningIDs: runningIDs) {
+                progress?(.log("  \(shortPath(path)) — skipped (\(owner) is running; quit it to clean)"))
+                skipped += 1
+                continue
+            }
             do {
                 let (freed, item) = try await cleanContents(of: path, dryRun: dryRun, progress: progress)
                 if freed > 0 || item != nil {
@@ -2450,6 +2468,10 @@ extension CleanupEngine {
     // MARK: 25. Mail Downloads
 
     func cleanMailDownloads(dryRun: Bool, progress: (@Sendable (CleanupEngineEvent) -> Void)?) async throws -> [CleanupEngineResult] {
+        guard PermissionsManager.checkFullDiskAccess() else {
+            progress?(.log("Mail Downloads: skipped (requires Full Disk Access)"))
+            return [CleanupEngineResult(label: "Mail Downloads", freedMB: 0)]
+        }
         let home = fileSystemContext.homePath
         progress?(.log("Scanning Mail downloads..."))
         var freed: Int64 = 0
@@ -2700,6 +2722,17 @@ extension CleanupEngine {
         progress?(.log("Scanning Chrome extra caches..."))
         var freed: Int64 = 0
 
+        // Never delete live profile caches while the browser is running —
+        // Chromium apps crash when their Service Worker / Code Cache / GPU cache
+        // is removed underneath them.
+        let runningIDs = await runningBundleIDs()
+        let chromeVariants = ["com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.canary", "com.google.Chrome.dev"]
+        if chromeVariants.contains(where: runningIDs.contains) {
+            progress?(.log("  ✗ Google Chrome is running — skipped to avoid crashing it. Quit Chrome and rescan."))
+            progress?(.result(label: "Chrome Extra Caches", freedMB: 0))
+            return [CleanupEngineResult(label: "Chrome Extra Caches", freedMB: 0)]
+        }
+
         let chromeBase = "\(home)/Library/Application Support/Google/Chrome/Default"
         let chromeBaseRoot = "\(home)/Library/Application Support/Google/Chrome"
         // Session Storage / Service Worker registration intentionally excluded.
@@ -2708,12 +2741,6 @@ extension CleanupEngine {
             "Service Worker/CacheStorage", "Service Worker/ScriptCache",
         ]
         let rootSubdirs = ["GrShaderCache", "ShaderCache"]
-
-        // Check if Chrome is running and warn
-        let isChromeRunning = await isAppRunning(bundleIdentifier: "com.google.Chrome")
-        if isChromeRunning {
-            progress?(.log("  ⚠ Chrome is running — some cache files may be locked"))
-        }
 
         for sub in subdirs {
             let path = "\(chromeBase)/\(sub)"
@@ -2735,9 +2762,48 @@ extension CleanupEngine {
     }
 
     private func isAppRunning(bundleIdentifier: String) async -> Bool {
-        let result = try? await commandRunner.run(command: "/bin/bash", arguments: ["-c", "pgrep -x \(bundleIdentifier) >/dev/null 2>&1"])
-        return result?.exitCode == 0
+        // NOTE: `pgrep -x <bundleID>` matches process *names*, not bundle IDs, and
+        // always failed — so the "app is running" checks below never fired and live
+        // browser caches were deleted under running apps, crashing them.
+        await MainActor.run {
+            NSWorkspace.shared.runningApplications.contains {
+                $0.bundleIdentifier == bundleIdentifier
+            }
+        }
     }
+
+    /// Bundle IDs of all running GUI applications (main-thread snapshot).
+    private func runningBundleIDs() async -> Set<String> {
+        await MainActor.run {
+            Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
+        }
+    }
+
+    /// Chromium/Electron apps crash when their caches are deleted while running.
+    /// Maps cache-path fragments to the owning app's bundle ID so live profiles
+    /// are never touched.
+    private static let liveAppPathGuards: [(fragments: [String], bundleIDs: [String], name: String)] = [
+        (fragments: ["Google/Chrome", "com.google.Chrome"], bundleIDs: ["com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.canary", "com.google.Chrome.dev"], name: "Google Chrome"),
+        (fragments: ["Firefox"], bundleIDs: ["org.mozilla.firefox", "org.mozilla.firefoxdeveloperedition", "org.mozilla.nightly"], name: "Firefox"),
+        (fragments: ["Microsoft Edge", "microsoft.edgemac"], bundleIDs: ["com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary"], name: "Microsoft Edge"),
+        (fragments: ["BraveSoftware", "com.brave.Browser"], bundleIDs: ["com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly"], name: "Brave"),
+        (fragments: ["Vivaldi"], bundleIDs: ["com.vivaldi.Vivaldi"], name: "Vivaldi"),
+        (fragments: ["Opera Software", "com.operasoftware"], bundleIDs: ["com.operasoftware.Opera", "com.operasoftware.OperaGX"], name: "Opera"),
+        (fragments: ["User Data/Arc", "company.thebrowser"], bundleIDs: ["company.thebrowser.Browser", "company.thebrowser.Browser.beta"], name: "Arc"),
+        (fragments: ["Chromium"], bundleIDs: ["org.chromium.Chromium"], name: "Chromium"),
+    ]
+
+    /// Returns the display name of the running app that owns `path`'s live caches,
+    /// or nil when the path is safe to touch.
+    private func runningAppOwning(path: String, runningIDs: Set<String>) -> String? {
+        for guard_ in Self.liveAppPathGuards where guard_.fragments.contains(where: { path.localizedCaseInsensitiveContains($0) }) {
+            if guard_.bundleIDs.isEmpty || guard_.bundleIDs.contains(where: runningIDs.contains) {
+                return guard_.name
+            }
+        }
+        return nil
+    }
+
 
     // MARK: 36. Launch Agents (user)
 
@@ -2829,6 +2895,10 @@ extension CleanupEngine {
     // MARK: 43. Photos Cache
 
     func cleanPhotosCache(dryRun: Bool, progress: (@Sendable (CleanupEngineEvent) -> Void)?) async throws -> [CleanupEngineResult] {
+        guard PermissionsManager.checkFullDiskAccess() else {
+            progress?(.log("Photos Cache: skipped (requires Full Disk Access)"))
+            return [CleanupEngineResult(label: "Photos Cache", freedMB: 0)]
+        }
         let home = fileSystemContext.homePath
         progress?(.log("Scanning Photos cache..."))
         let (freed, item) = try await cleanContents(of: "\(home)/Library/Containers/com.apple.Photos/Data/Library/Caches", dryRun: dryRun, progress: progress)
@@ -2856,11 +2926,13 @@ extension CleanupEngine {
         let home = fileSystemContext.homePath
         progress?(.log("Scanning GarageBand / Logic Pro..."))
         var freed: Int64 = 0
-        let paths = [
+        var paths = [
             "\(home)/Music/GarageBand",
             "\(home)/Music/Logic",
-            "\(home)/Library/Containers/com.apple.garageband10/Data/Library/Caches",
         ]
+        if PermissionsManager.checkFullDiskAccess() {
+            paths.append("\(home)/Library/Containers/com.apple.garageband10/Data/Library/Caches")
+        }
         for path in paths {
             let (f, item) = try await cleanContents(of: path, dryRun: dryRun, progress: progress)
             freed += f
@@ -2920,15 +2992,36 @@ extension CleanupEngine {
         let home = fileSystemContext.homePath
         let minAgeDays = 30
         let cutoff = Date().addingTimeInterval(TimeInterval(-minAgeDays * 24 * 60 * 60))
-        let roots = ["Desktop", "Downloads", "Documents"].map { "\(home)/\($0)" }
+        // TCC-protected folders: only scan what the user actually granted. Enumerating
+        // a denied/not-granted folder is what caused macOS permission dialogs to
+        // appear repeatedly during scans.
+        let protectedFolders: [(folder: FolderAccessManager.Folder, root: String)] = [
+            (.desktop, "\(home)/Desktop"),
+            (.downloads, "\(home)/Downloads"),
+            (.documents, "\(home)/Documents"),
+        ]
         progress?(.log("Scanning old backups (age ≥ \(minAgeDays)d, review-only; ~/Backups never wholesale)..."))
 
         var totalBytes: Int64 = 0
         var found = 0
         var skipped = 0
 
-        for root in roots {
+        for (folder, root) in protectedFolders {
             try Task.checkCancellation()
+            let status = FolderAccessManager.shared.status(folder)
+            let hasAccess: Bool
+            switch status {
+            case .granted:
+                hasAccess = true
+            case .denied:
+                hasAccess = false
+                progress?(.log("  \(folder.name): skipped (folder access not granted)"))
+            case .notDetermined:
+                // Never trigger system permission dialogs mid-scan.
+                hasAccess = false
+                progress?(.log("  \(folder.name): skipped (grant Full Disk Access in Settings to scan)"))
+            }
+            guard hasAccess else { continue }
             guard fm.fileExists(atPath: root) else { continue }
             let entries = (try? fm.contentsOfDirectory(atPath: root)) ?? []
             for name in entries {
@@ -3146,6 +3239,18 @@ extension CleanupEngine {
             progress?(.result(label: "Font Cache", freedMB: 0))
             return [CleanupEngineResult(label: "Font Cache", freedMB: 0)]
         }
+        // Removing the Apple Type Services databases while GUI apps are running can
+        // crash their text rendering. Only proceed when no third-party app is open.
+        let hasRunningGUIApps = await MainActor.run {
+            NSWorkspace.shared.runningApplications.contains {
+                $0.activationPolicy == .regular && $0.bundleIdentifier != Bundle.main.bundleIdentifier
+            }
+        }
+        if hasRunningGUIApps {
+            progress?(.log("  ✗ Font cache: skipped — other apps are open (removing font databases can crash them). Quit all apps and retry."))
+            progress?(.result(label: "Font Cache", freedMB: 0))
+            return [CleanupEngineResult(label: "Font Cache", freedMB: 0)]
+        }
         let result = try? await commandRunner.run(command: "/bin/bash", arguments: ["-c", "sudo atsutil databases -remove"])
         if result?.exitCode == 0 {
             progress?(.log("  Font cache cleared — restart required"))
@@ -3241,5 +3346,4 @@ extension CleanupEngine {
         DateFormatter.makeLocalized(dateStyle: .medium).string(from: date)
     }
 }
-
 

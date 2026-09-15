@@ -2,8 +2,6 @@ import SwiftUI
 import OSLog
 
 
-private let crashLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "input.MacPulse", category: "Crash")
-
 /// One source of truth for MacPulse branding across the menu bar and app UI.
 struct MacPulseLogo: View {
     var size: CGFloat
@@ -21,8 +19,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
+        var found = false
         for window in NSApp.windows where window.canBecomeMain {
             window.makeKeyAndOrderFront(nil)
+            found = true
+        }
+        if !found {
+            NotificationCenter.default.post(name: .macPulseReopenMainWindow, object: nil)
         }
     }
 
@@ -32,9 +35,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !flag {
+            var found = false
             for window in sender.windows where window.canBecomeMain {
                 window.makeKeyAndOrderFront(nil)
-                return true
+                found = true
+            }
+            if !found {
+                NotificationCenter.default.post(name: .macPulseReopenMainWindow, object: nil)
             }
         }
         return true
@@ -61,14 +68,15 @@ struct MacPulseApp: App {
     @State private var availableUpdate: AvailableUpdate? = nil
     @State private var isCheckingForUpdates = false
     
-    // ponytail: detect test runner so app host stays inert during unit tests
+    // ponytail: detect test runner so app host stays inert during unit tests.
+    // Only trust the environment variable: NSClassFromString("XCTestCase") also
+    // returns non-nil when the XCTest framework is merely loaded into the process
+    // (e.g. launched from an IDE/test harness), which wrongly blanked the window.
     private static var isRunningTests: Bool {
-        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || NSClassFromString("XCTestCase") != nil
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
     init() {
-        Self.installCrashHandlers()
-
         let engine = CleanupEngine(commandRunner: commandRunner)
         self.cleanupViewModel = CleanupViewModel(engine: engine, journal: journal, settings: appSettings)
 
@@ -81,34 +89,8 @@ struct MacPulseApp: App {
         }
     }
     
-    private static func installCrashHandlers() {
-        NSSetUncaughtExceptionHandler { exception in
-            let desc = exception.description
-            crashLogger.fault("Uncaught exception: \(exception.name.rawValue): \(desc)")
-            crashLogger.fault("Stack trace: \(exception.callStackSymbols.joined(separator: "\n"))")
-            fflush(stderr)
-            abort()
-        }
-        
-        signal(SIGABRT) { _ in
-            crashLogger.fault("Received SIGABRT")
-            fflush(stderr)
-            _exit(1)
-        }
-        signal(SIGSEGV) { _ in
-            crashLogger.fault("Received SIGSEGV")
-            fflush(stderr)
-            _exit(1)
-        }
-        signal(SIGBUS) { _ in
-            crashLogger.fault("Received SIGBUS")
-            fflush(stderr)
-            _exit(1)
-        }
-    }
-
     var body: some Scene {
-        WindowGroup("MacPulse") {
+        WindowGroup("MacPulse", id: "main") {
             if Self.isRunningTests {
                 EmptyView()
             } else {
@@ -126,6 +108,9 @@ struct MacPulseApp: App {
                     availableUpdate = await updateChecker.checkForUpdate()
                     monitorViewModel.start()
                     privacyMonitorViewModel.start()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .macPulseReopenMainWindow)) { _ in
+                    openWindow(id: "main")
                 }
             }
         }

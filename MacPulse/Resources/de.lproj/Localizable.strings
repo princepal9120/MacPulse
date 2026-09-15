@@ -960,3 +960,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Ordnerzugriff";
+"onboarding_folders_sub" = "Alte Backups in Schreibtisch, Downloads und Dokumente finden.";
+"onboarding_folders_body" = "Nur Ansicht: MacPulse löscht niemals Dateien in diesen Ordnern ohne deine ausdrückliche Bestätigung.";
+"onboarding_folders_grant" = "Ordnerzugriff erlauben";
+"onboarding_folders_granted" = "Erteilt";
+"onboarding_folders_denied" = "Nicht erteilt — dieser Ordner wird übersprungen";
+"onboarding_folders_optional" = "Optional — Zugriff kann später in den Einstellungen erteilt werden.";

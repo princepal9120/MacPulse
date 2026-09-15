@@ -3,6 +3,7 @@ import SwiftUI
 extension Notification.Name {
     static let macPulseNavigate = Notification.Name("MacPulse.navigate")
     static let macPulseReplayOnboarding = Notification.Name("MacPulse.replayOnboarding")
+    static let macPulseReopenMainWindow = Notification.Name("MacPulse.reopenMainWindow")
 }
 
 enum NavigationItem: String, CaseIterable, Identifiable, Hashable {

@@ -503,6 +503,8 @@
 "onboarding_back" = "Back";
 "onboarding_skip" = "Skip for now";
 "onboarding_open_thismac" = "Open This Mac";
+"onboarding_start_first_scan" = "Start First Diagnostic Scan";
+"onboarding_explore_dashboard" = "Explore Dashboard";
 "onboarding_step_a11y" = "Step %lld of %lld";
 "permissions_fda_description" = "Required to access ~/Library/Caches, ~/Library/Application Support, and other system folders.";
 "permissions_instructions_title" = "How to grant Full Disk Access:";
@@ -512,6 +514,15 @@
 "permissions_step4" = "Return to MacPulse and click 'Check Status'.";
 "permissions_open_settings" = "Open System Settings";
 "permissions_check_status" = "Check Status";
+"permissions_show_in_finder" = "Show in Finder";
+"permissions_finder_tip" = "Missing from the list? Drag MacPulse from Finder directly into System Settings.";
+"permissions_privacy_badge" = "100% Local · Zero Telemetry · Safe";
+"permissions_privacy_note" = "MacPulse never transmits data. All scans and cleanups stay on your Mac.";
+"permissions_scan_depth_standard" = "Standard Scan";
+"permissions_scan_depth_standard_sub" = "Basic temporary files (~1–2 GB)";
+"permissions_scan_depth_deep" = "Deep Scan (Full Disk Access)";
+"permissions_scan_depth_deep_sub" = "Xcode DerivedData, caches & leftovers (~15–40+ GB)";
+"permissions_status_active_banner" = "Full Disk Access Granted — Deep Scanning Ready";
 "permissions_dismiss_temp" = "Remind me later";
 "permissions_dismiss_permanent" = "Don't show again";
 "permissions_warning_title" = "Are you sure?";
@@ -1046,3 +1057,11 @@
 "age_map_stage_all_confirm_title" = "Move all untouched files to Trash?";
 "age_map_stage_all_confirm_message" = "This moves %d file(s) totaling %@ to the Trash. You can restore them from there.";
 "age_map_stage_all_confirm_action" = "Move to Trash";
+
+"onboarding_folders_title" = "Folder Access";
+"onboarding_folders_sub" = "Find old backups in Desktop, Downloads, and Documents.";
+"onboarding_folders_body" = "Review-only: MacPulse never deletes files in these folders without your explicit confirmation.";
+"onboarding_folders_grant" = "Grant Folder Access";
+"onboarding_folders_granted" = "Granted";
+"onboarding_folders_denied" = "Not granted — this folder will be skipped";
+"onboarding_folders_optional" = "Optional — you can grant access later in Settings.";

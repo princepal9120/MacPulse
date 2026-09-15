@@ -11,6 +11,7 @@
 		0025FDCCBE620B27A88A17A1 /* ParentLinker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C2514ADFBB5E6A83A2FB55 /* ParentLinker.swift */; };
 		0034381EEDFEBD9342599AB4 /* EmbeddedCleanupPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0161725DC48B94D957228EB3 /* EmbeddedCleanupPaths.swift */; };
 		00CF78722CECD33C0634541C /* TrashManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C5FD8CA29FB9E59A400223 /* TrashManager.swift */; };
+		F1E2D3C4B5A6978877665544 /* FolderAccessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* FolderAccessManager.swift */; };
 		01FE9E2C2B37A96C1F4A8B00 /* ApplicationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E17B97D1E3EEB28B3DDD0E /* ApplicationRule.swift */; };
 		03FDBD7F79B43C582A6C0EC5 /* ConfidenceEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA64165D2FBAC03ACE56DC6 /* ConfidenceEngineTests.swift */; };
 		0428CB5B74191FAFF78C6F48 /* LittleSnitchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6439AA19BF8E10021E213015 /* LittleSnitchRule.swift */; };
@@ -439,6 +440,7 @@
 		91A11C06D6D12353C59E09EF /* FileScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileScanner.swift; sourceTree = "<group>"; };
 		93A4B8FC5247795B48722C8E /* DiskScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskScanner.swift; sourceTree = "<group>"; };
 		93C5FD8CA29FB9E59A400223 /* TrashManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashManager.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* FolderAccessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAccessManager.swift; sourceTree = "<group>"; };
 		966FFAFDB46A9A4BD17A38C0 /* FileScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileScannerTests.swift; sourceTree = "<group>"; };
 		9B7117987756095224817906 /* CleanupCategory+FixtureMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CleanupCategory+FixtureMapping.swift"; sourceTree = "<group>"; };
 		9BC27E2AFD7483AE0F08948D /* AndroidStudioRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidStudioRule.swift; sourceTree = "<group>"; };
@@ -1012,6 +1014,7 @@
 				E1A2E95E11A06D80AF0E0F73 /* GlassOverlayView.swift */,
 				08402BF5E1C6101310B2B476 /* LanguageManager.swift */,
 				4F30EB8C917D9A5DB59EB765 /* LiquidGlass+Compatibility.swift */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* FolderAccessManager.swift */,
 				B11E70859EF02D55B8D38476 /* LiquidGlassLoaderView.swift */,
 				C60D09570C1465B18FF11785 /* NormalizedPath.swift */,
 				9E5214D1AD87C67377076C08 /* NotificationManager.swift */,
@@ -1462,6 +1465,7 @@
 				40E1527BCA6EC0FDC18716A6 /* TimeMachineScanner.swift in Sources */,
 				B17DA1284BD059BAA16189CF /* TransactionJournal.swift in Sources */,
 				00CF78722CECD33C0634541C /* TrashManager.swift in Sources */,
+				F1E2D3C4B5A6978877665544 /* FolderAccessManager.swift in Sources */,
 				1E8FBA40BF362852FD68AB34 /* UIMetadataProvider.swift in Sources */,
 				EDF297B65D382745EED0B1DB /* UninstallSnapshot.swift in Sources */,
 				E656F0232A7C09D30D3A8B70 /* UninstallerService.swift in Sources */,

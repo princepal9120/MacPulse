@@ -30,7 +30,17 @@ struct RootView: View {
         .environment(\.locale, appSettings.language.locale)
         .environment(\.onboardingActive, onboarding.isPresented)
         .sheet(isPresented: $onboarding.isPresented) {
-            OnboardingView(permissionsManager: permissionsManager, onboarding: onboarding)
+            OnboardingView(
+                permissionsManager: permissionsManager,
+                onboarding: onboarding,
+                onStartFirstScan: {
+                    selection = .feature(.cleanup)
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(300))
+                        cleanupViewModel.startScan()
+                    }
+                }
+            )
         }
         .sheet(isPresented: $permissionsManager.showGuidance) {
             PermissionsView(permissionsManager: permissionsManager)
@@ -109,12 +119,12 @@ struct RootView: View {
             }
         }
         .listStyle(.sidebar)
-        .padding(.leading, 8)
         .scrollContentBackground(.hidden)
         // Responsive sidebar column width for compact and full-sized windows.
         .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 280)
         .safeAreaInset(edge: .top, spacing: 0) { brandLockup }
         .safeAreaInset(edge: .bottom, spacing: 0) { sidebarStatusStrip }
+        .clipped()
         // Rebuild so every `.localized` row matches the selected language.
         .id(appSettings.language)
     }
@@ -130,7 +140,7 @@ struct RootView: View {
                     .frame(width: 18, alignment: .center)
             }
             .tag(destination)
-            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
             .listRowBackground(rowBackground(for: destination))
         }
     }
@@ -138,9 +148,10 @@ struct RootView: View {
     @ViewBuilder
     private func rowBackground(for destination: SidebarDestination) -> some View {
         if selection == destination {
-            // Selected row: soft accent pill instead of the default tint wash.
+            // Selected row: soft accent pill bounded inside the sidebar row.
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(destination.tint.opacity(0.14))
+                .padding(.horizontal, 4)
                 .padding(.vertical, 1)
         }
     }

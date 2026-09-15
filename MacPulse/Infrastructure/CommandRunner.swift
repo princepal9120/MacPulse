@@ -42,6 +42,15 @@ public actor CommandRunner {
             private var isResumed = false
             private var stdoutData = Data()
             private var stderrData = Data()
+            private var timedOut = false
+
+            func markTimeout() -> Bool {
+                lock.lock()
+                defer { lock.unlock() }
+                if isResumed { return false }
+                timedOut = true
+                return true
+            }
 
             func appendStdout(_ data: Data) {
                 lock.lock()
@@ -73,7 +82,11 @@ public actor CommandRunner {
                 defer { lock.unlock() }
                 guard !isResumed else { return }
                 isResumed = true
-                continuation.resume(with: result)
+                if timedOut {
+                    continuation.resume(throwing: CommandRunnerError.timeout)
+                } else {
+                    continuation.resume(with: result)
+                }
             }
         }
 
@@ -125,18 +138,23 @@ public actor CommandRunner {
 
                 group.addTask {
                     try await Task.sleep(for: timeout)
+                    _ = state.markTimeout()
                     if process.isRunning {
                         process.terminate()
                     }
                     throw CommandRunnerError.timeout
                 }
 
-                guard let result = try await group.next() else {
-                    throw CommandRunnerError.invalidExecutable
+                do {
+                    guard let result = try await group.next() else {
+                        throw CommandRunnerError.invalidExecutable
+                    }
+                    group.cancelAll()
+                    return result
+                } catch {
+                    group.cancelAll()
+                    throw error
                 }
-
-                group.cancelAll()
-                return result
             }
         } onCancel: {
             if process.isRunning {

@@ -958,3 +958,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Accès aux dossiers";
+"onboarding_folders_sub" = "Rechercher les anciennes sauvegardes dans Bureau, Téléchargements et Documents.";
+"onboarding_folders_body" = "Révision seule : MacPulse ne supprime jamais de fichiers de ces dossiers sans votre confirmation explicite.";
+"onboarding_folders_grant" = "Autoriser l'accès aux dossiers";
+"onboarding_folders_granted" = "Accordé";
+"onboarding_folders_denied" = "Non accordé — ce dossier sera ignoré";
+"onboarding_folders_optional" = "Optionnel — vous pouvez autoriser l'accès plus tard dans les réglages.";

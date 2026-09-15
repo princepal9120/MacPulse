@@ -994,3 +994,11 @@
 /* System Monitor */
 "menu_monitor" = "Monitor";
 "monitor_subtitle" = "Live system metrics";
+
+"onboarding_folders_title" = "Acceso a carpetas";
+"onboarding_folders_sub" = "Buscar copias de seguridad antiguas en Escritorio, Descargas y Documentos.";
+"onboarding_folders_body" = "Solo revisión: MacPulse nunca borra archivos de estas carpetas sin tu confirmación explícita.";
+"onboarding_folders_grant" = "Permitir acceso a carpetas";
+"onboarding_folders_granted" = "Concedido";
+"onboarding_folders_denied" = "No concedido — esta carpeta se omitirá";
+"onboarding_folders_optional" = "Opcional — puedes conceder acceso más tarde en Ajustes.";

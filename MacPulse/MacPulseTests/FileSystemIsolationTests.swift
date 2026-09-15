@@ -123,6 +123,12 @@ final class FileSystemIsolationTests: XCTestCase {
 
     func test_oldBackupsReviewScanDoesNotTouchBackupsRoot() async throws {
         let home = fileSystemContext.homeDirectory
+        // Grant the isolated test folders so the scan doesn't hit the TCC gate.
+        for folder in FolderAccessManager.Folder.allCases {
+            FolderAccessManager.shared.setGranted(folder, true)
+        }
+        defer { FolderAccessManager.shared.reset() }
+
         let backupsRoot = home.appendingPathComponent("Backups", isDirectory: true)
         let desktop = home.appendingPathComponent("Desktop", isDirectory: true)
         try FileManager.default.createDirectory(at: backupsRoot, withIntermediateDirectories: true)
@@ -162,5 +168,30 @@ final class FileSystemIsolationTests: XCTestCase {
         let backupsPrefix = (backupsRoot.path as NSString).standardizingPath
         XCTAssertFalse(paths.contains(where: { $0.hasPrefix(backupsPrefix) }))
         XCTAssertTrue(FileManager.default.fileExists(atPath: keep.path))
+    }
+
+    func test_folderAccessManager_deniedStateIsPreserved() {
+        defer { FolderAccessManager.shared.reset() }
+        FolderAccessManager.shared.setGranted(.desktop, false)
+        XCTAssertEqual(FolderAccessManager.shared.status(.desktop), .denied)
+        // Refreshing a denied folder must return false without prompting or changing state
+        XCTAssertFalse(FolderAccessManager.shared.refresh(.desktop))
+        XCTAssertEqual(FolderAccessManager.shared.status(.desktop), .denied)
+    }
+
+    func test_permissionsManager_checkFullDiskAccessDoesNotCrash() {
+        // Must return a boolean cleanly without triggering system prompts
+        let hasFDA = PermissionsManager.checkFullDiskAccess()
+        let manager = PermissionsManager()
+        XCTAssertEqual(manager.hasFullDiskAccess, hasFDA)
+    }
+
+    func test_cleanupEngine_photosCacheGuardedByFDA() async throws {
+        let engine = CleanupEngine(fileSystemContext: fileSystemContext)
+        // Without FDA in testing sandbox, photos cache should safely return 0 freed without throwing
+        if !PermissionsManager.checkFullDiskAccess() {
+            let results = try await engine.run(categories: [.photosCache], dryRun: true)
+            XCTAssertEqual(results.first?.freedMB, 0)
+        }
     }
 }
