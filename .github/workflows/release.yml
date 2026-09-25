@@ -74,12 +74,20 @@ jobs:
           DMG_FILE=$(ls MacPulse-*.dmg | head -n 1)
           SHA_FILE="${DMG_FILE}.sha256"
 
-          echo "Publishing $DMG_FILE and $SHA_FILE to GitHub Releases under $TAG..."
+          # Stable-name duplicates (MacPulse.dmg / MacPulse.dmg.sha256) let the
+          # landing page and install.sh use releases/latest/download/MacPulse.dmg
+          # without breaking on every version bump.
+          cp "$DMG_FILE" MacPulse.dmg
+          awk '{print $1 "  MacPulse.dmg"}' "$SHA_FILE" > MacPulse.dmg.sha256
+
+          echo "Publishing $DMG_FILE, $SHA_FILE and stable-name copies to GitHub Releases under $TAG..."
 
           if gh release view "$TAG" &>/dev/null; then
-            gh release upload "$TAG" "$DMG_FILE" "$SHA_FILE" --clobber
+            gh release upload "$TAG" "$DMG_FILE" "$SHA_FILE" MacPulse.dmg MacPulse.dmg.sha256 --clobber
           else
-            gh release create "$TAG" "$DMG_FILE" "$SHA_FILE"               --title "MacPulse $TAG"               --notes "Native macOS system cleaner and deep uninstaller for Apple Silicon and Intel Macs."
+            gh release create "$TAG" "$DMG_FILE" "$SHA_FILE" MacPulse.dmg MacPulse.dmg.sha256 \
+              --title "MacPulse $TAG" \
+              --notes "Native macOS system cleaner and deep uninstaller for Apple Silicon and Intel Macs."
           fi
           echo "Successfully published release $TAG!"
 

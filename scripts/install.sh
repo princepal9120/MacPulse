@@ -9,7 +9,12 @@ trap 'rm -rf "$TMP"' EXIT
 
 echo "Fetching latest release from $REPO…"
 API="https://api.github.com/repos/${REPO}/releases/latest"
-DMG_URL="$(curl -fsSL "$API" | python3 -c 'import json,sys; r=json.load(sys.stdin); print(next(a["browser_download_url"] for a in r["assets"] if a["name"].endswith(".dmg") and not a["name"].endswith(".sha256")))')"
+# Prefer the stable-name asset (MacPulse.dmg); fall back to the versioned name.
+# grep/sed only — python3 is a CLT stub on fresh macOS installs.
+URLS="$(curl -fsSL "$API" | sed -n 's/.*"browser_download_url": *"\([^"]*\.dmg\)".*/\1/p')"
+DMG_URL="$(printf '%s\n' "$URLS" | grep '/MacPulse\.dmg$' | head -n1)"
+[[ -n "$DMG_URL" ]] || DMG_URL="$(printf '%s\n' "$URLS" | head -n1)"
+[[ -n "$DMG_URL" ]] || { echo "No DMG asset found in latest release" >&2; exit 1; }
 DMG_NAME="$(basename "$DMG_URL")"
 
 echo "Downloading $DMG_NAME…"
