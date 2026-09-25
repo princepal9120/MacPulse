@@ -29,4 +29,3 @@ cask "macpulse" do
     "~/Library/Preferences/input.MacPulse.plist",
   ]
 end
-
