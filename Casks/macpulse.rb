@@ -4,8 +4,8 @@ cask "macpulse" do
 
   url "https://github.com/princepal9120/MacPulse/releases/download/v#{version}/MacPulse-#{version}.dmg"
   name "MacPulse"
-  desc "Native macOS system cleaner and deep uninstaller"
-  homepage "https://trymacpulse.pages.dev"
+  desc "Native system cleaner and deep uninstaller"
+  homepage "https://trymacpulse.pages.dev/"
 
   livecheck do
     url :url
