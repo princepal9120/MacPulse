@@ -276,6 +276,13 @@ def merge_issues(existing: list[str], extra: list[str]) -> list[str]:
 
 
 def main() -> int:
+    if not UI.exists():
+        print(
+            "ui_metadata.json is maintainer-local (gitignored, protected "
+            "catalog) — place it under MacPulse/Resources/ to run this script.",
+            file=sys.stderr,
+        )
+        return 1
     ui = json.loads(UI.read_text())
     toolchains = ui.get("toolchains", {})
     if not toolchains:

@@ -1,80 +1,104 @@
 #!/usr/bin/env bash
 # One-time Apple Developer ID + notarization setup for MacPulse.
+#
+# Interactive by default. Non-interactive mode (CI/automation): set
+#   APPLE_TEAM_ID                          - 10-char team id, required
+#   ASC_ISSUER_ID, ASC_KEY_ID, ASC_KEY_PATH - App Store Connect API key (preferred)
+#   or APPLE_ID, APPLE_APP_PASSWORD         - Apple ID + app-specific password
+# Non-interactive triggers when stdin is not a TTY or MACPULSE_NONINTERACTIVE=1.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="$ROOT_DIR/.signing.env"
 PROFILE_NAME="${NOTARY_PROFILE:-MacPulse-Notary}"
+NONINTERACTIVE=0
+[[ "${MACPULSE_NONINTERACTIVE:-0}" == "1" || ! -t 0 ]] && NONINTERACTIVE=1
+
+maybe_open() {
+  [[ "$NONINTERACTIVE" == "1" ]] && return 0
+  open "$1" 2>/dev/null || true
+}
 
 echo "=== MacPulse signing setup ==="
-echo
-echo "You need an active Apple Developer Program membership (\$99/year)."
-echo "Opened: https://developer.apple.com/account"
-echo
 
-IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null \
-  | awk -F'"' '/Developer ID Application/{print $2; exit}' || true)"
+IDENTITY="${CODESIGN_IDENTITY:-$(security find-identity -v -p codesigning 2>/dev/null \
+  | awk -F'"' '/Developer ID Application/{print $2; exit}' || true)}"
 
 if [[ -z "$IDENTITY" ]]; then
   cat <<'EOF'
 No "Developer ID Application" certificate in Keychain yet.
 
 Do this in Xcode (once):
-  1. Xcode → Settings → Accounts → add your Apple ID
-  2. Select your team → Manage Certificates…
-  3. + → Developer ID Application
+  1. Xcode -> Settings -> Accounts -> add your Apple ID
+  2. Select your team -> Manage Certificates...
+  3. + -> Developer ID Application
   4. Re-run: ./scripts/setup_signing.sh
 
 Or create the cert at:
   https://developer.apple.com/account/resources/certificates/list
 EOF
-  open "https://developer.apple.com/account/resources/certificates/list" 2>/dev/null || true
+  maybe_open "https://developer.apple.com/account/resources/certificates/list"
   exit 1
 fi
 
 echo "Found certificate: $IDENTITY"
-echo
 
 # Team ID is the 10-char id in parentheses on developer.apple.com Membership.
-read -r -p "Apple Team ID (10 chars, e.g. ABCD123456): " TEAM_ID
+TEAM_ID="${APPLE_TEAM_ID:-}"
+if [[ "$NONINTERACTIVE" == "0" && -z "$TEAM_ID" ]]; then
+  read -r -p "Apple Team ID (10 chars, e.g. ABCD123456): " TEAM_ID
+fi
 TEAM_ID="$(echo "$TEAM_ID" | tr -d '[:space:]')"
 if [[ ! "$TEAM_ID" =~ ^[A-Z0-9]{10}$ ]]; then
-  echo "Team ID must be exactly 10 A–Z/0–9 characters." >&2
+  echo "APPLE_TEAM_ID must be exactly 10 A-Z/0-9 characters." >&2
   exit 1
 fi
 
-echo
-echo "Notary credentials (pick one):"
-echo "  A) App Store Connect API key (recommended)"
-echo "  B) Apple ID + app-specific password"
-read -r -p "Choice [A/B]: " CHOICE
-CHOICE="$(echo "$CHOICE" | tr '[:lower:]' '[:upper:]')"
-
-if [[ "$CHOICE" == "A" ]]; then
-  echo
-  echo "Create a key at: https://appstoreconnect.apple.com/access/integrations/api"
-  echo "Role: Developer or Admin. Download the .p8 once."
-  open "https://appstoreconnect.apple.com/access/integrations/api" 2>/dev/null || true
-  read -r -p "Issuer ID (UUID): " ISSUER_ID
-  read -r -p "Key ID: " KEY_ID
-  read -r -p "Path to AuthKey_XXX.p8: " KEY_PATH
-  KEY_PATH="${KEY_PATH/#\~/$HOME}"
-  [[ -f "$KEY_PATH" ]] || { echo "Missing key file: $KEY_PATH" >&2; exit 1; }
-  xcrun notarytool store-credentials "$PROFILE_NAME" \
-    --key "$KEY_PATH" \
-    --key-id "$KEY_ID" \
-    --issuer "$ISSUER_ID"
+if [[ "$NONINTERACTIVE" == "1" ]]; then
+  if [[ -n "${ASC_KEY_PATH:-}" && -n "${ASC_KEY_ID:-}" && -n "${ASC_ISSUER_ID:-}" ]]; then
+    [[ -f "$ASC_KEY_PATH" ]] || { echo "Missing key file: $ASC_KEY_PATH" >&2; exit 1; }
+    xcrun notarytool store-credentials "$PROFILE_NAME" \
+      --key "$ASC_KEY_PATH" --key-id "$ASC_KEY_ID" --issuer "$ASC_ISSUER_ID"
+  elif [[ -n "${APPLE_ID:-}" && -n "${APPLE_APP_PASSWORD:-}" ]]; then
+    xcrun notarytool store-credentials "$PROFILE_NAME" \
+      --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APPLE_APP_PASSWORD"
+  else
+    cat >&2 <<'EOF'
+Non-interactive mode needs env credentials. Set either:
+  ASC_ISSUER_ID + ASC_KEY_ID + ASC_KEY_PATH   (App Store Connect API key)
+or:
+  APPLE_ID + APPLE_APP_PASSWORD               (app-specific password)
+EOF
+    exit 1
+  fi
 else
   echo
-  echo "Create an app-specific password at: https://appleid.apple.com/account/manage"
-  open "https://appleid.apple.com/account/manage" 2>/dev/null || true
-  read -r -p "Apple ID email: " APPLE_ID
-  read -r -s -p "App-specific password: " APP_PASSWORD
-  echo
-  xcrun notarytool store-credentials "$PROFILE_NAME" \
-    --apple-id "$APPLE_ID" \
-    --team-id "$TEAM_ID" \
-    --password "$APP_PASSWORD"
+  echo "Notary credentials (pick one):"
+  echo "  A) App Store Connect API key (recommended)"
+  echo "  B) Apple ID + app-specific password"
+  read -r -p "Choice [A/B]: " CHOICE
+  CHOICE="$(echo "$CHOICE" | tr '[:lower:]' '[:upper:]')"
+
+  if [[ "$CHOICE" == "A" ]]; then
+    echo
+    echo "Create a key at: https://appstoreconnect.apple.com/access/integrations/api"
+    echo "Role: Developer or Admin. Download the .p8 once."
+    maybe_open "https://appstoreconnect.apple.com/access/integrations/api"
+    read -r -p "Issuer ID (UUID): " ISSUER_ID
+    read -r -p "Key ID: " KEY_ID
+    read -r -p "Path to AuthKey_XXX.p8: " KEY_PATH
+    KEY_PATH="${KEY_PATH/#\~/$HOME}"
+    [[ -f "$KEY_PATH" ]] || { echo "Missing key file: $KEY_PATH" >&2; exit 1; }
+    xcrun notarytool store-credentials "$PROFILE_NAME" \
+      --key "$KEY_PATH" --key-id "$KEY_ID" --issuer "$ISSUER_ID"
+  else
+    maybe_open "https://appleid.apple.com/account/manage"
+    read -r -p "Apple ID email: " APPLE_ID
+    read -r -s -p "App-specific password: " APP_PASSWORD
+    echo
+    xcrun notarytool store-credentials "$PROFILE_NAME" \
+      --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_PASSWORD"
+  fi
 fi
 
 cat > "$ENV_FILE" <<EOF
