@@ -141,3 +141,6 @@ derived_data/
 graphify-out/
 
 .pages-dist/
+
+# Wrangler local state
+.wrangler/

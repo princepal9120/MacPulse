@@ -28,7 +28,7 @@ jobs:
       - name: Stage website artifacts
         run: |
           mkdir -p _site
-          cp index.html style.css tokens.css _site/
+          cp index.html style.css tokens.css favicon.ico favicon.png apple-touch-icon.png _site/
           cp -r assets _site/
 
       - name: Setup GitHub Pages
