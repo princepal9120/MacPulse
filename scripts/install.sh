@@ -8,7 +8,7 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "${TMP}"' EXIT
 
 # The release workflow publishes a stable-name MacPulse.dmg on every release,
-# so releases/latest/download works forever — no GitHub API call needed
+# so releases/latest/download works forever - no GitHub API call needed
 # (unauthenticated api.github.com is rate-limited to 60 req/hr per IP and
 # 403s on shared NAT/VPN/CI egress).
 DMG_NAME="MacPulse.dmg"
@@ -16,7 +16,7 @@ DMG_URL="https://github.com/${REPO}/releases/latest/download/${DMG_NAME}"
 
 echo "Downloading ${DMG_NAME} from ${REPO}..."
 if ! curl -fL --progress-bar -o "${TMP}/${DMG_NAME}" "${DMG_URL}"; then
-  echo "Stable-name asset not found — falling back to release API lookup..."
+  echo "Stable-name asset not found - falling back to release API lookup..."
   URLS="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" \
     | sed -n 's/.*"browser_download_url": *"\([^"]*\.dmg\)".*/\1/p')"
   DMG_URL="$(printf '%s\n' "${URLS}" | head -n1)"
