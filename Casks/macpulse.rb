@@ -13,7 +13,7 @@ cask "macpulse" do
 
   # Homebrew sets the download quarantine xattr (0181), which makes macOS 26
   # refuse to launch this ad-hoc-signed app ("Not Opened", no override).
-  postflight do
+  postflight_steps do
     system_command "/usr/bin/xattr",
                    args: ["-cr", "#{appdir}/MacPulse.app"]
   end
