@@ -65,6 +65,14 @@ def _under_root(path: str, root: str) -> bool:
 
 
 def main() -> int:
+    if not ENGINE.exists() or not UI.exists():
+        print(
+            "engine_paths.json / ui_metadata.json are maintainer-local "
+            "(gitignored, protected catalogs) — place them under "
+            "MacPulse/Resources/ to run this validation.",
+            file=sys.stderr,
+        )
+        return 1
     engine = json.loads(ENGINE.read_text())
     ui = json.loads(UI.read_text())
 

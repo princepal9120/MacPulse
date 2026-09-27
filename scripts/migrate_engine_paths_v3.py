@@ -523,6 +523,14 @@ def merge_issues(base: list[str], extra: list[str]) -> list[str]:
 
 
 def main() -> int:
+    if not ENGINE.exists() or not UI.exists():
+        print(
+            "engine_paths.json / ui_metadata.json are maintainer-local "
+            "(gitignored, protected catalogs) — place them under "
+            "MacPulse/Resources/ to run this migration.",
+            file=sys.stderr,
+        )
+        return 1
     engine = json.loads(ENGINE.read_text())
     ui = json.loads(UI.read_text())
     src_apps: dict[str, dict] = engine["apps"]

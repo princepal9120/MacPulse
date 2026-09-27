@@ -66,18 +66,25 @@ Apple only skips Gatekeeper warnings for **paid** Developer ID + notarization
 curl -fsSL https://raw.githubusercontent.com/princepal9120/MacPulse/main/scripts/install.sh | bash
 ```
 
+**Or Homebrew:**
+
+```sh
+brew install --cask princepal9120/tap/macpulse
+```
+
+Use the fully qualified name — an unrelated `macpulse` cask in
+homebrew-cask core ships a different app.
+
 **Or manual DMG:**
 
 1. Download from [Releases](https://github.com/princepal9120/MacPulse/releases/latest)
 2. Drag MacPulse → Applications (or `~/Applications`)
-3. macOS will warn because the build is not notarized. Pick one:
+3. macOS will warn because the build is not notarized. On macOS 26 the
+   dialog offers only “Move to Trash”/“Done” — clearing the quarantine
+   flag in Terminal is the required step:
 
 ```sh
-# Option A — clear the download quarantine flag (fastest)
 xattr -cr /Applications/MacPulse.app
-
-# Option B — GUI: right-click the app → Open → Open, or
-# System Settings → Privacy & Security → “Open Anyway”
 ```
 
 > Builds older than v1.0.0 (2026-09-14) are *unsigned* rather than ad-hoc
